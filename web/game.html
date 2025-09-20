@@ -12,11 +12,41 @@
         }
         
         body {
-            background: radial-gradient(ellipse at center, #0c0c0c 0%, #000000 100%);
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #000000 100%);
             font-family: 'Arial', sans-serif;
             color: #4a9eff;
             overflow: hidden;
             height: 100vh;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: twinkle 4s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
         }
         
         #gameContainer {
@@ -46,13 +76,33 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 15px;
-            border: 2px solid #4a9eff;
-            backdrop-filter: blur(10px);
-            min-width: 250px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 46, 0.9) 100%);
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 
+                0 0 20px rgba(74, 158, 255, 0.3),
+                inset 0 0 20px rgba(74, 158, 255, 0.1);
+            backdrop-filter: blur(15px);
+            min-width: 280px;
             pointer-events: auto;
+            position: relative;
+        }
+        
+        .game-ui::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff, #ffd700, #4a9eff);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            z-index: -1;
         }
         
         .character-info {
@@ -726,8 +776,8 @@
                     experience: 0,
                     coins: 1000,
                     gems: 50,
-                    vehicles: [],
-                    currentVehicle: null,
+                    vehicles: ['Stellar Explorer'],
+                    currentVehicle: 'Stellar Explorer', // Give player a spaceship by default!
                     chatMessages: [],
                     isOnline: true,
                     lastSeen: Date.now(),
@@ -965,8 +1015,11 @@
             render() {
                 if (this.gameState !== 'playing') return;
                 
-                // Clear canvas
-                this.ctx.fillStyle = 'rgba(12, 12, 12, 0.1)';
+                // Create stunning starfield background
+                this.drawStarfield();
+                
+                // Clear canvas with space effect
+                this.ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 
                 // Apply camera transform
@@ -976,17 +1029,17 @@
                 this.ctx.rotate(this.camera.angle);
                 this.ctx.translate(-this.player.x, -this.player.y);
                 
-                // Draw 3D planets
+                // Draw 3D planets with enhanced visuals
                 this.world.planets.forEach(planet => {
                     this.draw3DPlanet(planet);
                 });
                 
-                // Draw space stations
+                // Draw space stations with better visuals
                 this.world.spaceStations.forEach(station => {
                     this.drawSpaceStation(station);
                 });
                 
-                // Draw new addictive features
+                // Draw new addictive features with enhanced visuals
                 this.world.pets.forEach(pet => {
                     this.drawPet(pet);
                 });
@@ -1007,10 +1060,52 @@
                     this.drawMiniGame(game);
                 });
                 
-                // Draw player
+                // Draw player with enhanced visibility
                 this.drawPlayer();
                 
+                // Draw spaceship if player has one
+                if (this.player.currentVehicle) {
+                    this.drawSpaceship();
+                }
+                
                 this.ctx.restore();
+                
+                // Draw particle effects
+                this.drawParticleEffects();
+            }
+            
+            drawStarfield() {
+                // Create animated starfield
+                const time = Date.now() * 0.001;
+                
+                for (let i = 0; i < 200; i++) {
+                    const x = (Math.sin(i * 0.1 + time) * this.canvas.width / 2) + this.canvas.width / 2;
+                    const y = (Math.cos(i * 0.1 + time * 0.5) * this.canvas.height / 2) + this.canvas.height / 2;
+                    const size = Math.sin(i * 0.2 + time) * 2 + 1;
+                    const opacity = Math.sin(i * 0.3 + time) * 0.5 + 0.5;
+                    
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+            
+            drawParticleEffects() {
+                // Add floating particles
+                const time = Date.now() * 0.001;
+                
+                for (let i = 0; i < 50; i++) {
+                    const x = (Math.sin(i * 0.2 + time) * this.canvas.width) + this.canvas.width / 2;
+                    const y = (Math.cos(i * 0.15 + time * 0.8) * this.canvas.height) + this.canvas.height / 2;
+                    const size = Math.sin(i * 0.3 + time) * 3 + 2;
+                    const opacity = Math.sin(i * 0.4 + time) * 0.3 + 0.2;
+                    
+                    this.ctx.fillStyle = `rgba(74, 158, 255, ${opacity})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
             }
             
             draw3DPlanet(planet) {
@@ -1026,14 +1121,30 @@
                 
                 if (projectedSize < 5) return; // Don't draw if too small
                 
-                // Create 3D sphere effect
+                // Enhanced 3D sphere effect with multiple layers
+                const outerGlow = this.ctx.createRadialGradient(
+                    projectedX, projectedY, 0,
+                    projectedX, projectedY, projectedSize * 1.5
+                );
+                outerGlow.addColorStop(0, 'transparent');
+                outerGlow.addColorStop(0.7, 'transparent');
+                outerGlow.addColorStop(1, planet.color + '40');
+                
+                // Outer glow
+                this.ctx.fillStyle = outerGlow;
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX, projectedY, projectedSize * 1.5, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Main planet gradient
                 const gradient = this.ctx.createRadialGradient(
                     projectedX - projectedSize/3, projectedY - projectedSize/3, 0,
                     projectedX, projectedY, projectedSize
                 );
-                gradient.addColorStop(0, this.lightenColor(planet.color, 0.4));
-                gradient.addColorStop(0.6, planet.color);
-                gradient.addColorStop(1, this.darkenColor(planet.color, 0.3));
+                gradient.addColorStop(0, this.lightenColor(planet.color, 0.6));
+                gradient.addColorStop(0.3, this.lightenColor(planet.color, 0.3));
+                gradient.addColorStop(0.7, planet.color);
+                gradient.addColorStop(1, this.darkenColor(planet.color, 0.4));
                 
                 // Draw planet
                 this.ctx.fillStyle = gradient;
@@ -1041,19 +1152,51 @@
                 this.ctx.arc(projectedX, projectedY, projectedSize, 0, Math.PI * 2);
                 this.ctx.fill();
                 
-                // Add planet glow
+                // Planet atmosphere
+                const atmosphere = this.ctx.createRadialGradient(
+                    projectedX, projectedY, projectedSize * 0.8,
+                    projectedX, projectedY, projectedSize * 1.2
+                );
+                atmosphere.addColorStop(0, 'transparent');
+                atmosphere.addColorStop(0.5, planet.color + '20');
+                atmosphere.addColorStop(1, 'transparent');
+                
+                this.ctx.fillStyle = atmosphere;
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX, projectedY, projectedSize * 1.2, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Planet surface details
+                this.ctx.fillStyle = this.darkenColor(planet.color, 0.2);
+                for (let i = 0; i < 5; i++) {
+                    const detailX = projectedX + (Math.sin(i * 1.2) * projectedSize * 0.7);
+                    const detailY = projectedY + (Math.cos(i * 1.2) * projectedSize * 0.7);
+                    this.ctx.beginPath();
+                    this.ctx.arc(detailX, detailY, projectedSize * 0.1, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                // Enhanced planet glow
                 this.ctx.shadowColor = planet.color;
-                this.ctx.shadowBlur = 20 * scale;
+                this.ctx.shadowBlur = 30 * scale;
                 this.ctx.beginPath();
                 this.ctx.arc(projectedX, projectedY, projectedSize, 0, Math.PI * 2);
                 this.ctx.fill();
                 this.ctx.shadowBlur = 0;
                 
-                // Draw planet name
+                // Planet name with enhanced styling
                 this.ctx.fillStyle = '#ffd700';
-                this.ctx.font = `${14 * scale}px Arial`;
+                this.ctx.font = `bold ${16 * scale}px Arial`;
                 this.ctx.textAlign = 'center';
-                this.ctx.fillText(planet.name, projectedX, projectedY - projectedSize - 10);
+                this.ctx.strokeStyle = '#000000';
+                this.ctx.lineWidth = 3 * scale;
+                this.ctx.strokeText(planet.name, projectedX, projectedY - projectedSize - 15);
+                this.ctx.fillText(planet.name, projectedX, projectedY - projectedSize - 15);
+                
+                // Planet type indicator
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.font = `${10 * scale}px Arial`;
+                this.ctx.fillText(planet.type, projectedX, projectedY - projectedSize - 35);
                 
                 // Draw planet aliens
                 planet.aliens.forEach(alien => {
@@ -1073,27 +1216,74 @@
                 
                 if (projectedSize < 2) return;
                 
-                // Animated alien body
-                const bounce = Math.sin(alien.animationFrame) * 2;
+                // Enhanced animated alien body
+                const bounce = Math.sin(alien.animationFrame) * 4;
+                const wiggle = Math.sin(alien.animationFrame * 2) * 3;
+                const pulse = Math.sin(alien.animationFrame * 3) * 0.2 + 1;
                 
-                this.ctx.fillStyle = alien.color;
-                this.ctx.fillRect(
-                    projectedX - projectedSize/2,
-                    projectedY - projectedSize - bounce,
-                    projectedSize,
-                    projectedSize * 1.5
+                // Alien body with gradient
+                const alienGradient = this.ctx.createLinearGradient(
+                    projectedX - projectedSize/2, projectedY - projectedSize,
+                    projectedX + projectedSize/2, projectedY + projectedSize
                 );
+                alienGradient.addColorStop(0, alien.color);
+                alienGradient.addColorStop(0.5, this.lightenColor(alien.color, 0.3));
+                alienGradient.addColorStop(1, alien.color);
+                
+                this.ctx.fillStyle = alienGradient;
+                this.ctx.fillRect(
+                    projectedX - projectedSize/2 * pulse + wiggle,
+                    projectedY - projectedSize - bounce,
+                    projectedSize * pulse,
+                    projectedSize * 1.5 * pulse
+                );
+                
+                // Alien head
+                this.ctx.fillStyle = this.lightenColor(alien.color, 0.2);
+                this.ctx.beginPath();
+                this.ctx.arc(
+                    projectedX + wiggle, 
+                    projectedY - projectedSize - bounce - 8, 
+                    6 * alienScale * pulse, 
+                    0, Math.PI * 2
+                );
+                this.ctx.fill();
+                
+                // Alien eyes
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX - 2 + wiggle, projectedY - projectedSize - bounce - 10, 1.5 * alienScale * pulse, 0, Math.PI * 2);
+                this.ctx.arc(projectedX + 2 + wiggle, projectedY - projectedSize - bounce - 10, 1.5 * alienScale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Alien pupils
+                this.ctx.fillStyle = '#000000';
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX - 2 + wiggle, projectedY - projectedSize - bounce - 10, 0.8 * alienScale * pulse, 0, Math.PI * 2);
+                this.ctx.arc(projectedX + 2 + wiggle, projectedY - projectedSize - bounce - 10, 0.8 * alienScale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
                 
                 // Alien glow
                 this.ctx.shadowColor = alien.color;
-                this.ctx.shadowBlur = 10 * alienScale;
+                this.ctx.shadowBlur = 15 * alienScale;
                 this.ctx.fillRect(
-                    projectedX - projectedSize/2,
+                    projectedX - projectedSize/2 * pulse + wiggle,
                     projectedY - projectedSize - bounce,
-                    projectedSize,
-                    projectedSize * 1.5
+                    projectedSize * pulse,
+                    projectedSize * 1.5 * pulse
                 );
                 this.ctx.shadowBlur = 0;
+                
+                // Alien name if friendly
+                if (alien.friendly) {
+                    this.ctx.fillStyle = '#4CAF50';
+                    this.ctx.font = `${8 * alienScale}px Arial`;
+                    this.ctx.textAlign = 'center';
+                    this.ctx.strokeStyle = '#000000';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.strokeText(alien.name, projectedX + wiggle, projectedY - projectedSize - bounce - 20);
+                    this.ctx.fillText(alien.name, projectedX + wiggle, projectedY - projectedSize - bounce - 20);
+                }
             }
             
             drawSpaceStation(station) {
@@ -1133,39 +1323,151 @@
             }
             
             drawPlayer() {
-                const bounce = Math.sin(this.player.animationFrame) * 2;
-                const scale = this.player.flying ? 1.2 : 1;
+                const bounce = Math.sin(this.player.animationFrame) * 3;
+                const scale = this.player.flying ? 1.3 : 1;
+                const pulse = Math.sin(this.player.animationFrame * 2) * 0.1 + 1;
                 
-                // Player body
-                this.ctx.fillStyle = this.player.customization.skin;
+                // Player body with enhanced visibility
+                const gradient = this.ctx.createLinearGradient(
+                    -this.player.width/2, -this.player.height/2,
+                    this.player.width/2, this.player.height/2
+                );
+                gradient.addColorStop(0, this.player.customization.skin);
+                gradient.addColorStop(0.5, this.lightenColor(this.player.customization.skin, 0.3));
+                gradient.addColorStop(1, this.player.customization.skin);
+                
+                this.ctx.fillStyle = gradient;
                 this.ctx.fillRect(
-                    -this.player.width/2,
-                    -this.player.height/2 - bounce,
-                    this.player.width * scale,
-                    this.player.height * scale
+                    -this.player.width/2 * scale * pulse,
+                    -this.player.height/2 * scale * pulse - bounce,
+                    this.player.width * scale * pulse,
+                    this.player.height * scale * pulse
                 );
                 
-                // Player glow
+                // Player outline for visibility
+                this.ctx.strokeStyle = '#ffd700';
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeRect(
+                    -this.player.width/2 * scale * pulse,
+                    -this.player.height/2 * scale * pulse - bounce,
+                    this.player.width * scale * pulse,
+                    this.player.height * scale * pulse
+                );
+                
+                // Player glow effect
                 this.ctx.shadowColor = this.player.customization.skin;
-                this.ctx.shadowBlur = 15;
+                this.ctx.shadowBlur = 25;
                 this.ctx.fillRect(
-                    -this.player.width/2,
-                    -this.player.height/2 - bounce,
-                    this.player.width * scale,
-                    this.player.height * scale
+                    -this.player.width/2 * scale * pulse,
+                    -this.player.height/2 * scale * pulse - bounce,
+                    this.player.width * scale * pulse,
+                    this.player.height * scale * pulse
                 );
                 this.ctx.shadowBlur = 0;
                 
+                // Player head
+                this.ctx.fillStyle = this.lightenColor(this.player.customization.skin, 0.2);
+                this.ctx.beginPath();
+                this.ctx.arc(0, -this.player.height/2 * scale * pulse - bounce - 10, 8 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Player eyes
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.beginPath();
+                this.ctx.arc(-3 * scale * pulse, -this.player.height/2 * scale * pulse - bounce - 12, 2 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.arc(3 * scale * pulse, -this.player.height/2 * scale * pulse - bounce - 12, 2 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Player eye pupils
+                this.ctx.fillStyle = '#000000';
+                this.ctx.beginPath();
+                this.ctx.arc(-3 * scale * pulse, -this.player.height/2 * scale * pulse - bounce - 12, 1 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.arc(3 * scale * pulse, -this.player.height/2 * scale * pulse - bounce - 12, 1 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
                 // Jetpack trail if flying
                 if (this.player.flying) {
-                    this.ctx.fillStyle = '#ffd700';
+                    const trailGradient = this.ctx.createLinearGradient(0, this.player.height/2, 0, this.player.height/2 + 40);
+                    trailGradient.addColorStop(0, '#ffd700');
+                    trailGradient.addColorStop(0.5, '#ff6b6b');
+                    trailGradient.addColorStop(1, 'transparent');
+                    
+                    this.ctx.fillStyle = trailGradient;
                     this.ctx.fillRect(
-                        -2,
-                        this.player.height/2,
-                        4,
-                        30
+                        -3 * scale * pulse,
+                        this.player.height/2 * scale * pulse,
+                        6 * scale * pulse,
+                        40 * scale * pulse
                     );
                 }
+                
+                // Player name tag
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.font = `bold ${12 * scale * pulse}px Arial`;
+                this.ctx.textAlign = 'center';
+                this.ctx.strokeStyle = '#000000';
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeText(this.player.name, 0, -this.player.height/2 * scale * pulse - bounce - 25);
+                this.ctx.fillText(this.player.name, 0, -this.player.height/2 * scale * pulse - bounce - 25);
+            }
+            
+            drawSpaceship() {
+                if (!this.player.currentVehicle) return;
+                
+                const shipX = this.player.x + 50;
+                const shipY = this.player.y - 20;
+                const shipWidth = 40;
+                const shipHeight = 20;
+                const pulse = Math.sin(this.player.animationFrame * 3) * 0.1 + 1;
+                
+                // Spaceship body
+                const shipGradient = this.ctx.createLinearGradient(
+                    shipX - shipWidth/2, shipY - shipHeight/2,
+                    shipX + shipWidth/2, shipY + shipHeight/2
+                );
+                shipGradient.addColorStop(0, '#4a9eff');
+                shipGradient.addColorStop(0.5, '#6bb6ff');
+                shipGradient.addColorStop(1, '#2196F3');
+                
+                this.ctx.fillStyle = shipGradient;
+                this.ctx.fillRect(
+                    shipX - shipWidth/2 * pulse,
+                    shipY - shipHeight/2 * pulse,
+                    shipWidth * pulse,
+                    shipHeight * pulse
+                );
+                
+                // Spaceship wings
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.fillRect(shipX - shipWidth/2 * pulse - 10, shipY - 5 * pulse, 10 * pulse, 10 * pulse);
+                this.ctx.fillRect(shipX + shipWidth/2 * pulse, shipY - 5 * pulse, 10 * pulse, 10 * pulse);
+                
+                // Spaceship cockpit
+                this.ctx.fillStyle = '#87CEEB';
+                this.ctx.beginPath();
+                this.ctx.arc(shipX, shipY, 8 * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Spaceship glow
+                this.ctx.shadowColor = '#4a9eff';
+                this.ctx.shadowBlur = 20;
+                this.ctx.fillRect(
+                    shipX - shipWidth/2 * pulse,
+                    shipY - shipHeight/2 * pulse,
+                    shipWidth * pulse,
+                    shipHeight * pulse
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // Engine trails
+                const engineGradient = this.ctx.createLinearGradient(0, shipY + shipHeight/2, 0, shipY + shipHeight/2 + 30);
+                engineGradient.addColorStop(0, '#ffd700');
+                engineGradient.addColorStop(0.5, '#ff6b6b');
+                engineGradient.addColorStop(1, 'transparent');
+                
+                this.ctx.fillStyle = engineGradient;
+                this.ctx.fillRect(shipX - 5 * pulse, shipY + shipHeight/2 * pulse, 4 * pulse, 30 * pulse);
+                this.ctx.fillRect(shipX + 1 * pulse, shipY + shipHeight/2 * pulse, 4 * pulse, 30 * pulse);
             }
             
             // ===== DRAWING METHODS FOR ADDICTIVE FEATURES =====
