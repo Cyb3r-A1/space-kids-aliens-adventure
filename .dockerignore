@@ -1,0 +1,71 @@
+# Docker ignore file for Space Kids & Aliens Adventure
+# This file tells Docker which files to exclude from the build context
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+DOCKER_README.md
+*.md
+
+# Docker files
+Dockerfile
+Dockerfile.simple
+docker-compose.yml
+.dockerignore
+
+# Scripts
+docker-setup.sh
+simple-docker-setup.sh
+run-game.sh
+quick-start.sh
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+
+# Python cache (if any)
+__pycache__/
+*.pyc
+*.pyo
+
+# Build artifacts
+build/
+dist/
+*.o
+*.so
+*.dylib
+
+# Game-specific ignores
+# Keep all .gd, .tscn, .tres files as they are needed for the game
+# Keep project.godot as it's essential
+
+# Optional: Exclude large media files if not needed
+# *.png
+# *.jpg
+# *.wav
+# *.mp3

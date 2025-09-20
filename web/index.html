@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Space Kids & Aliens Adventure</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Arial', sans-serif;
+            color: #4a9eff;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            border: 2px solid #4a9eff;
+            box-shadow: 0 0 30px rgba(74, 158, 255, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+        }
+        
+        .game-info {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin: 30px 0;
+        }
+        
+        .controls {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .control-key {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .download-section {
+            margin: 40px 0;
+            padding: 20px;
+            background: rgba(74, 158, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.4);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #4a9eff;
+        }
+        
+        .feature h3 {
+            color: #ffd700;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Space Kids & Aliens Adventure 🌌</h1>
+        
+        <div class="game-info">
+            <p>Embark on an epic cosmic journey! Explore galaxies, terraform planets, build space stations, and befriend alien companions in this exciting 3D adventure game.</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🌌 Galaxy Exploration</h3>
+                <p>Discover multiple galaxies with unique characteristics and resources</p>
+            </div>
+            <div class="feature">
+                <h3>🪐 Planet Terraforming</h3>
+                <p>Transform hostile worlds into habitable environments</p>
+            </div>
+            <div class="feature">
+                <h3>👽 Alien Companions</h3>
+                <p>Meet and befriend various alien species</p>
+            </div>
+            <div class="feature">
+                <h3>🏗️ Space Building</h3>
+                <p>Construct space stations and research facilities</p>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <h3>🎮 Game Controls</h3>
+            <p><span class="control-key">Arrow Keys:</span> Move your Space Explorer</p>
+            <p><span class="control-key">Space:</span> Jump and use Jetpack</p>
+            <p><span class="control-key">I:</span> Open Inventory</p>
+            <p><span class="control-key">B:</span> Building Menu</p>
+            <p><span class="control-key">G:</span> Galaxy Map</p>
+            <p><span class="control-key">P:</span> Planet Information</p>
+            <p><span class="control-key">R:</span> Terraforming Options</p>
+            <p><span class="control-key">V:</span> Travel Menu</p>
+        </div>
+        
+        <div class="download-section">
+            <h3>📥 How to Play</h3>
+            <p>To play this game, you'll need to export it from Godot:</p>
+            <ol style="text-align: left; max-width: 600px; margin: 0 auto;">
+                <li>Open the project in Godot Editor</li>
+                <li>Go to <strong>Project → Export</strong></li>
+                <li>Add a <strong>Web (HTML5)</strong> export preset</li>
+                <li>Download the Web export template if prompted</li>
+                <li>Export the project to the <code>web/</code> folder</li>
+                <li>Refresh this page to play!</li>
+            </ol>
+        </div>
+        
+        <div class="download-section">
+            <h3>🌐 Share Your Game</h3>
+            <p>Once exported, you can share your game by:</p>
+            <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                <li>Uploading the <code>web/</code> folder to any web hosting service</li>
+                <li>Using GitHub Pages for free hosting</li>
+                <li>Sharing the local server URL with friends</li>
+            </ul>
+        </div>
+        
+        <p style="margin-top: 40px; font-size: 0.9em; opacity: 0.7;">
+            Built with Godot Engine 4.4.1 | Space Kids & Aliens Adventure
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://drkv5kr648q54"]
+
+[ext_resource type="Script" path="res://AlienCompanion.gd" id=1]
+
+[sub_resource type="CapsuleShape3D" id=1]
+
+[sub_resource type="CapsuleMesh" id=2]
+
+[sub_resource type="SphereMesh" id=3]
+
+[node name="AlienCompanion" type="CharacterBody3D"]
+script = ExtResource(1)
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource(2)
+scale = Vector3(0.5, 1, 0.5)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource(1)
+
+[node name="InteractionArea" type="Area3D" parent="."]
+
+[node name="InteractionCollider" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource(1)
+scale = Vector3(2, 1, 2)
+
+[node name="GlowEffect" type="MeshInstance3D" parent="."]
+mesh = SubResource(3)
+scale = Vector3(1.2, 1.2, 1.2)
+visible = false
+
+[node name="ParticleTrail" type="CPUParticles3D" parent="."]
+emitting = false
+amount = 20
+lifetime = 2.0
+direction = Vector3(0, 0, -1)
+spread = 30.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0

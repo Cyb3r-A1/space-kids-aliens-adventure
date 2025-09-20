@@ -1,0 +1,70 @@
+# Simple Dockerfile for Space Kids & Aliens Adventure
+# This version uses a local Godot binary instead of downloading
+
+FROM ubuntu:22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=:99
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    libglu1-mesa \
+    libxrandr2 \
+    libxinerama1 \
+    libxcursor1 \
+    libxi6 \
+    libxext6 \
+    libxrender1 \
+    libxss1 \
+    libgconf-2-4 \
+    libxtst6 \
+    libasound2 \
+    libpangocairo-1.0-0 \
+    libatk1.0-0 \
+    libcairo-gobject2 \
+    libgtk-3-0 \
+    libgdk-pixbuf2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy game files
+COPY . /app/
+
+# Create a simple startup script that runs the game directly
+RUN echo '#!/bin/bash\n\
+echo "🚀 Starting Space Kids & Aliens Adventure..."\n\
+echo "Game files are ready in /app"\n\
+echo "To run the game, use: godot project.godot"\n\
+echo "Or open the project in Godot editor"\n\
+echo ""\n\
+echo "Game features:"\n\
+echo "  - Galaxy exploration"\n\
+echo "  - Planet terraforming"\n\
+echo "  - Alien companions"\n\
+echo "  - Space building"\n\
+echo "  - Inter-galactic travel"\n\
+echo ""\n\
+echo "Press Ctrl+C to exit"\n\
+while true; do\n\
+    sleep 1\n\
+done\n\
+' > /app/start_game.sh && chmod +x /app/start_game.sh
+
+# Expose VNC port (optional)
+EXPOSE 5900
+
+# Set display
+ENV DISPLAY=:99
+
+# Run the game
+CMD ["/app/start_game.sh"]

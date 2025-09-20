@@ -1,0 +1,51 @@
+FROM ubuntu:22.04
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    libglu1-mesa \
+    libxrandr2 \
+    libxinerama1 \
+    libxcursor1 \
+    libxi6 \
+    libxext6 \
+    libxrender1 \
+    libxss1 \
+    libgconf-2-4 \
+    libxtst6 \
+    libasound2 \
+    libpangocairo-1.0-0 \
+    libatk1.0-0 \
+    libcairo-gobject2 \
+    libgtk-3-0 \
+    libgdk-pixbuf2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download Godot
+RUN wget -O godot.zip "https://downloads.tuxfamily.org/godotengine/4.4.1/Godot_v4.4.1-stable_linux.x86_64.zip" \
+    && unzip godot.zip \
+    && mv Godot_v4.4.1-stable_linux.x86_64 /usr/local/bin/godot \
+    && chmod +x /usr/local/bin/godot \
+    && rm godot.zip
+
+WORKDIR /app
+COPY . /app/
+
+# Create startup script
+RUN echo '#!/bin/bash\n\
+Xvfb :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset &\n\
+fluxbox &\n\
+sleep 2\n\
+echo "Starting Space Kids & Aliens Adventure..."\n\
+godot project.godot\n\
+' > /app/start.sh && chmod +x /app/start.sh
+
+ENV DISPLAY=:99
+EXPOSE 5900
+CMD ["/app/start.sh"]

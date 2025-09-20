@@ -1,0 +1,29 @@
+[build]
+  publish = "web"
+  command = "echo 'No build step needed - static files only'"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
+
+[[headers]]
+  for = "*.pck"
+  [headers.values]
+    Content-Type = "application/octet-stream"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

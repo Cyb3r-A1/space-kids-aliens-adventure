@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://kidcharacter"]
+
+[ext_resource type="Script" path="res://KidCharacter.gd" id=1]
+
+[sub_resource type="CapsuleShape3D" id=1]
+
+[node name="KidCharacter" type="CharacterBody3D"]
+script = ExtResource(1)
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = CapsuleMesh
+scale = Vector3(0.5, 1, 0.5)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource(1)
+
+[node name="InteractionArea" type="Area3D" parent="."]
+
+[node name="InteractionCollider" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource(1)
+scale = Vector3(2, 1, 2)

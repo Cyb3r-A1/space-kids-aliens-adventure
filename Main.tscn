@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://cbytyekibqcjx"]
+
+[ext_resource type="PackedScene" uid="uid://spacekid" path="res://SpaceKid.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://spacegameui" path="res://SpaceGameUI.tscn" id="4"]
+[ext_resource type="Script" uid="uid://bym6j2161avcd" path="res://SpaceGameManager.gd" id="5"]
+[ext_resource type="Script" uid="uid://c6upy54adpks" path="res://ResourceSpawner.gd" id="6"]
+
+[sub_resource type="Environment" id="2"]
+background_mode = 2
+ambient_light_energy = 0.5
+tonemap_mode = 1
+tonemap_exposure = 1.5
+glow_enabled = true
+
+[sub_resource type="PlaneMesh" id="3"]
+
+[sub_resource type="BoxShape3D" id="4"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("5")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("2")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
+light_energy = 2.0
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0, 5, -10)
+current = true
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0)
+mesh = SubResource("3")
+
+[node name="GroundBody" type="StaticBody3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="GroundBody#GroundCollider" type="CollisionShape3D" parent="."]
+shape = SubResource("4")
+
+[node name="SpaceKidInstance" parent="." instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="GameUI" parent="." instance=ExtResource("4")]
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResourceSpawner" type="Node3D" parent="."]
+script = ExtResource("6")

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  space-kids-game:
+    build: .
+    container_name: space-kids-aliens-adventure
+    ports:
+      - "5900:5900"  # VNC port for remote access
+    environment:
+      - DISPLAY=:99
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    
+  # Optional: Add a web interface for game control
+  game-web-ui:
+    image: nginx:alpine
+    container_name: game-web-ui
+    ports:
+      - "8080:80"
+    volumes:
+      - ./web-ui:/usr/share/nginx/html
+    depends_on:
+      - space-kids-game
+    restart: unless-stopped
+
+  # Optional: Add a database for game saves
+  game-database:
+    image: postgres:15-alpine
+    container_name: game-database
+    environment:
+      POSTGRES_DB: space_kids_game
+      POSTGRES_USER: gamer
+      POSTGRES_PASSWORD: cosmic_adventure
+    volumes:
+      - game_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  game_data:
