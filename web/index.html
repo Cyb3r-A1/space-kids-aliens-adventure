@@ -152,7 +152,7 @@
         </div>
         
         <div class="status">
-            ✅ <strong>Game Ready!</strong> Your Space Kids & Aliens Adventure is now live and ready to play!
+            ✅ <strong>Game Ready!</strong> Your Space Kids & Aliens Adventure is now live and playable in your browser!
         </div>
         
         <div class="play-section">
@@ -194,8 +194,8 @@
         </div>
         
         <div class="coming-soon">
-            <h3>🌐 Full Web Version Coming Soon!</h3>
-            <p>The complete 3D game will be available once exported from Godot. For now, you can play the desktop version!</p>
+            <h3>🌐 Full 3D Version Available!</h3>
+            <p>Play the complete 3D adventure game directly in your browser! Click "Launch Game" to start your cosmic journey.</p>
         </div>
         
         <div class="footer">
@@ -206,64 +206,8 @@
     
     <script>
         function playGame() {
-            // Create a better game launch experience
-            const gameModal = document.createElement('div');
-            gameModal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 1000;
-            `;
-            
-            const gameContent = document.createElement('div');
-            gameContent.style.cssText = `
-                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-                padding: 40px;
-                border-radius: 20px;
-                border: 2px solid #4a9eff;
-                text-align: center;
-                max-width: 500px;
-                color: #4a9eff;
-                box-shadow: 0 0 30px rgba(74, 158, 255, 0.5);
-            `;
-            
-            gameContent.innerHTML = `
-                <h2 style="color: #ffd700; margin-top: 0;">🎮 Game Launch Options!</h2>
-                <div style="margin: 20px 0;">
-                    <h3 style="color: #4a9eff;">🚀 Option 1: Play Now (Desktop)</h3>
-                    <p>Download Godot Engine (free) and play the full 3D game!</p>
-                    <a href="https://godotengine.org/download" target="_blank" style="
-                        display: inline-block;
-                        padding: 10px 20px;
-                        background: linear-gradient(45deg, #4a9eff, #6bb6ff);
-                        color: white;
-                        text-decoration: none;
-                        border-radius: 20px;
-                        margin: 10px;
-                    ">Download Godot</a>
-                </div>
-                <div style="margin: 20px 0;">
-                    <h3 style="color: #ffd700;">🌐 Option 2: Web Version</h3>
-                    <p>Full browser game coming soon! Check back later.</p>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" style="
-                    padding: 10px 20px;
-                    background: #ff6b6b;
-                    color: white;
-                    border: none;
-                    border-radius: 20px;
-                    cursor: pointer;
-                ">Close</button>
-            `;
-            
-            gameModal.appendChild(gameContent);
-            document.body.appendChild(gameModal);
+            // Launch the actual playable game in browser
+            window.location.href = 'game.html';
         }
         
         function shareGame() {

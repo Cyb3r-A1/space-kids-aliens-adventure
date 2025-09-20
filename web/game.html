@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Kids & Aliens Adventure - Web Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Arial', sans-serif;
+            color: #4a9eff;
+            overflow: hidden;
+        }
+        
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            border: 2px solid #4a9eff;
+            box-shadow: 0 0 30px rgba(74, 158, 255, 0.3);
+        }
+        
+        .game-ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #4a9eff;
+        }
+        
+        .health-bar, .energy-bar {
+            width: 200px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #4a9eff;
+            border-radius: 10px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a9eff, #6bb6ff);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #4a9eff;
+            font-size: 14px;
+        }
+        
+        .control-key {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        .alien {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    
+    <div class="game-ui">
+        <h3 style="margin-top: 0; color: #ffd700;">🚀 Space Explorer</h3>
+        <div>
+            <div>Health:</div>
+            <div class="health-bar">
+                <div class="health-fill" id="healthFill"></div>
+            </div>
+        </div>
+        <div>
+            <div>Energy:</div>
+            <div class="energy-bar">
+                <div class="energy-fill" id="energyFill"></div>
+            </div>
+        </div>
+        <div style="margin-top: 10px;">
+            <div>Level: <span id="level">1</span></div>
+            <div>Score: <span id="score">0</span></div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div><span class="control-key">Arrow Keys:</span> Move</div>
+        <div><span class="control-key">Space:</span> Jump/Jetpack</div>
+        <div><span class="control-key">Click:</span> Interact</div>
+    </div>
+
+    <script>
+        // Game variables
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let player = {
+            x: 400,
+            y: 300,
+            width: 30,
+            height: 40,
+            vx: 0,
+            vy: 0,
+            health: 100,
+            energy: 100,
+            level: 1,
+            score: 0,
+            onGround: false
+        };
+        
+        let aliens = [];
+        let planets = [];
+        let keys = {};
+        let gameRunning = true;
+        
+        // Create stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Create aliens
+        function createAliens() {
+            for (let i = 0; i < 5; i++) {
+                aliens.push({
+                    x: Math.random() * (canvas.width - 20),
+                    y: Math.random() * (canvas.height - 20),
+                    width: 20,
+                    height: 20,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    color: `hsl(${Math.random() * 360}, 70%, 60%)`
+                });
+            }
+        }
+        
+        // Create planets
+        function createPlanets() {
+            for (let i = 0; i < 3; i++) {
+                planets.push({
+                    x: Math.random() * (canvas.width - 60),
+                    y: Math.random() * (canvas.height - 60),
+                    width: 60,
+                    height: 60,
+                    color: `hsl(${Math.random() * 60 + 200}, 70%, 50%)`
+                });
+            }
+        }
+        
+        // Input handling
+        document.addEventListener('keydown', (e) => {
+            keys[e.code] = true;
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            keys[e.code] = false;
+        });
+        
+        // Mouse interaction
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            
+            // Check if clicked on alien
+            aliens.forEach((alien, index) => {
+                if (clickX >= alien.x && clickX <= alien.x + alien.width &&
+                    clickY >= alien.y && clickY <= alien.y + alien.height) {
+                    aliens.splice(index, 1);
+                    player.score += 10;
+                    player.energy = Math.min(100, player.energy + 5);
+                }
+            });
+            
+            // Check if clicked on planet
+            planets.forEach((planet, index) => {
+                if (clickX >= planet.x && clickX <= planet.x + planet.width &&
+                    clickY >= planet.y && clickY <= planet.y + planet.height) {
+                    player.score += 50;
+                    player.health = Math.min(100, player.health + 20);
+                }
+            });
+        });
+        
+        // Update game state
+        function update() {
+            if (!gameRunning) return;
+            
+            // Player movement
+            if (keys['ArrowLeft']) {
+                player.vx = -3;
+            } else if (keys['ArrowRight']) {
+                player.vx = 3;
+            } else {
+                player.vx *= 0.8; // Friction
+            }
+            
+            if (keys['ArrowUp'] && player.onGround) {
+                player.vy = -8;
+                player.onGround = false;
+            }
+            
+            if (keys['Space'] && player.energy > 0) {
+                player.vy -= 0.5;
+                player.energy -= 0.5;
+            }
+            
+            // Gravity
+            player.vy += 0.3;
+            
+            // Update player position
+            player.x += player.vx;
+            player.y += player.vy;
+            
+            // Boundary checking
+            if (player.x < 0) player.x = 0;
+            if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+            if (player.y > canvas.height - player.height) {
+                player.y = canvas.height - player.height;
+                player.vy = 0;
+                player.onGround = true;
+            }
+            
+            // Update aliens
+            aliens.forEach(alien => {
+                alien.x += alien.vx;
+                alien.y += alien.vy;
+                
+                // Bounce off walls
+                if (alien.x <= 0 || alien.x >= canvas.width - alien.width) {
+                    alien.vx *= -1;
+                }
+                if (alien.y <= 0 || alien.y >= canvas.height - alien.height) {
+                    alien.vy *= -1;
+                }
+                
+                // Keep aliens in bounds
+                alien.x = Math.max(0, Math.min(canvas.width - alien.width, alien.x));
+                alien.y = Math.max(0, Math.min(canvas.height - alien.height, alien.y));
+            });
+            
+            // Regenerate energy slowly
+            if (player.energy < 100) {
+                player.energy += 0.1;
+            }
+            
+            // Level up
+            if (player.score > player.level * 100) {
+                player.level++;
+                player.health = 100;
+                player.energy = 100;
+                createAliens(); // Add more aliens
+            }
+            
+            // Update UI
+            document.getElementById('healthFill').style.width = player.health + '%';
+            document.getElementById('energyFill').style.width = player.energy + '%';
+            document.getElementById('level').textContent = player.level;
+            document.getElementById('score').textContent = player.score;
+            
+            // Game over check
+            if (player.health <= 0) {
+                gameRunning = false;
+                alert('Game Over! Final Score: ' + player.score);
+            }
+        }
+        
+        // Render game
+        function render() {
+            // Clear canvas
+            ctx.fillStyle = 'rgba(12, 12, 12, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw planets
+            planets.forEach(planet => {
+                ctx.fillStyle = planet.color;
+                ctx.beginPath();
+                ctx.arc(planet.x + planet.width/2, planet.y + planet.height/2, planet.width/2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Planet glow
+                ctx.shadowColor = planet.color;
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.arc(planet.x + planet.width/2, planet.y + planet.height/2, planet.width/2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+            
+            // Draw aliens
+            aliens.forEach(alien => {
+                ctx.fillStyle = alien.color;
+                ctx.beginPath();
+                ctx.arc(alien.x + alien.width/2, alien.y + alien.height/2, alien.width/2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Alien glow
+                ctx.shadowColor = alien.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(alien.x + alien.width/2, alien.y + alien.height/2, alien.width/2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+            
+            // Draw player
+            ctx.fillStyle = '#4a9eff';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            
+            // Player glow
+            ctx.shadowColor = '#4a9eff';
+            ctx.shadowBlur = 15;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.shadowBlur = 0;
+            
+            // Draw jetpack trail if using jetpack
+            if (keys['Space'] && player.energy > 0) {
+                ctx.fillStyle = '#ffd700';
+                ctx.fillRect(player.x + player.width/2 - 2, player.y + player.height, 4, 10);
+            }
+        }
+        
+        // Game loop
+        function gameLoop() {
+            update();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Initialize game
+        function init() {
+            createStars();
+            createAliens();
+            createPlanets();
+            gameLoop();
+        }
+        
+        // Start the game
+        init();
+    </script>
+</body>
+</html>
