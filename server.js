@@ -41,3 +41,4 @@ app.listen(PORT, () => {
     console.log(`🌐 Game available at: http://localhost:${PORT}`);
     console.log(`🎮 Direct game link: http://localhost:${PORT}/game`);
 });
+

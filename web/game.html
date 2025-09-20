@@ -1222,14 +1222,14 @@
             }
             
             drawStarfield() {
-                // Optimized animated starfield - reduced particles for performance
+                // Ultra-optimized animated starfield - minimal particles for maximum stability
                 const time = Date.now() * 0.001;
                 
-                for (let i = 0; i < 50; i++) { // Reduced from 200 to 50
+                for (let i = 0; i < 20; i++) { // Reduced from 50 to 20 for maximum stability
                     const x = (Math.sin(i * 0.1 + time) * this.canvas.width / 2) + this.canvas.width / 2;
                     const y = (Math.cos(i * 0.1 + time * 0.5) * this.canvas.height / 2) + this.canvas.height / 2;
-                    const size = Math.sin(i * 0.2 + time) * 1.5 + 0.5; // Reduced size
-                    const opacity = Math.sin(i * 0.3 + time) * 0.3 + 0.4; // Reduced opacity
+                    const size = Math.sin(i * 0.2 + time) * 1 + 0.5; // Reduced size
+                    const opacity = Math.sin(i * 0.3 + time) * 0.2 + 0.3; // Reduced opacity
                     
                     this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
                     this.ctx.beginPath();
@@ -1239,14 +1239,14 @@
             }
             
             drawParticleEffects() {
-                // Optimized floating particles - reduced count for performance
+                // Ultra-optimized floating particles - minimal count for maximum stability
                 const time = Date.now() * 0.001;
                 
-                for (let i = 0; i < 20; i++) { // Reduced from 50 to 20
+                for (let i = 0; i < 10; i++) { // Reduced from 20 to 10 for maximum stability
                     const x = (Math.sin(i * 0.2 + time) * this.canvas.width) + this.canvas.width / 2;
                     const y = (Math.cos(i * 0.15 + time * 0.8) * this.canvas.height) + this.canvas.height / 2;
-                    const size = Math.sin(i * 0.3 + time) * 2 + 1; // Reduced size
-                    const opacity = Math.sin(i * 0.4 + time) * 0.2 + 0.1; // Reduced opacity
+                    const size = Math.sin(i * 0.3 + time) * 1.5 + 0.5; // Reduced size
+                    const opacity = Math.sin(i * 0.4 + time) * 0.15 + 0.1; // Reduced opacity
                     
                     this.ctx.fillStyle = `rgba(74, 158, 255, ${opacity})`;
                     this.ctx.beginPath();
@@ -2109,14 +2109,15 @@
             gameLoop() {
                 const now = Date.now();
                 
-                // Limit to 60 FPS to prevent freezing
-                if (now - this.lastFrameTime >= 16) { // 16ms = ~60 FPS
+                // Limit to 30 FPS for better stability and prevent freezing
+                if (now - this.lastFrameTime >= 33) { // 33ms = ~30 FPS
                     this.update();
                     this.render();
                     this.lastFrameTime = now;
                 }
                 
-                requestAnimationFrame(() => this.gameLoop());
+                // Use setTimeout instead of requestAnimationFrame for better stability
+                setTimeout(() => this.gameLoop(), 16);
             }
             
             // ===== REALISTIC SPACE ENVIRONMENT METHODS =====
