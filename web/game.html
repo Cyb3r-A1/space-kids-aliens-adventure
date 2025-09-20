@@ -596,7 +596,7 @@
                 
                 <div style="background: rgba(255, 215, 0, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0; border: 1px solid #ffd700;">
                     <strong>⚡ Performance Optimized!</strong><br>
-                    The game has been optimized for smooth gameplay. If you experience any lag, try refreshing the page or using a different browser.
+                    The game has been optimized for smooth gameplay with realistic planets, moons, asteroids, and nebula. If you experience any lag, try refreshing the page or using a different browser.
                 </div>
                 
                 <p>Get ready for an adventure like no other! The galaxy is waiting for you to explore, collect, trade, and battle!</p>
@@ -914,14 +914,14 @@
                     planet.x = Math.cos(planet.orbitAngle) * planet.orbitRadius;
                     planet.z = Math.sin(planet.orbitAngle) * planet.orbitRadius;
                     
-                    // Add realistic moons
-                    const moonCount = Math.floor(Math.random() * 3) + 1;
+                    // Add realistic moons (reduced for performance)
+                    const moonCount = Math.floor(Math.random() * 2) + 1; // Max 2 moons instead of 3
                     for (let m = 0; m < moonCount; m++) {
                         planet.moons.push({
-                            size: 15 + Math.random() * 10,
+                            size: 12 + Math.random() * 8, // Reduced size
                             color: '#C0C0C0',
-                            orbitRadius: planet.size + 30 + m * 20,
-                            orbitSpeed: planet.orbitSpeed * (2 + Math.random()),
+                            orbitRadius: planet.size + 25 + m * 15, // Reduced orbit
+                            orbitSpeed: planet.orbitSpeed * (1.5 + Math.random() * 0.5), // Reduced speed
                             angle: Math.random() * Math.PI * 2
                         });
                     }
@@ -1285,9 +1285,9 @@
                 this.ctx.arc(projectedX, projectedY, projectedSize, 0, Math.PI * 2);
                 this.ctx.fill();
                 
-                // 2. Planet Surface Details
+                // 2. Planet Surface Details (simplified for performance)
                 this.ctx.fillStyle = this.darkenColor(planet.color, 0.3);
-                for (let i = 0; i < planet.surface.length; i++) {
+                for (let i = 0; i < 2; i++) { // Reduced from planet.surface.length to 2
                     const detailX = projectedX + (Math.sin(i * 1.2 + planet.angle) * projectedSize * 0.6);
                     const detailY = projectedY + (Math.cos(i * 1.2 + planet.angle) * projectedSize * 0.6);
                     const detailSize = projectedSize * 0.15;
@@ -2123,24 +2123,24 @@
             
             createNebulaEffects() {
                 this.world.nebulas = [];
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i < 1; i++) { // Reduced from 3 to 1 for performance
                     this.world.nebulas.push({
                         x: (Math.random() - 0.5) * 2000,
                         y: (Math.random() - 0.5) * 1000,
                         z: (Math.random() - 0.5) * 2000,
-                        width: 300 + Math.random() * 200,
-                        height: 200 + Math.random() * 100,
+                        width: 200 + Math.random() * 100, // Reduced size
+                        height: 150 + Math.random() * 50,
                         color: `hsl(${Math.random() * 60 + 200}, 70%, 50%)`,
-                        opacity: 0.1 + Math.random() * 0.2,
+                        opacity: 0.05 + Math.random() * 0.1, // Reduced opacity
                         animationFrame: 0,
-                        animationSpeed: 0.01
+                        animationSpeed: 0.005 // Reduced speed
                     });
                 }
             }
             
             createAsteroidFields() {
                 this.world.asteroids = [];
-                for (let i = 0; i < 50; i++) {
+                for (let i = 0; i < 15; i++) { // Reduced from 50 to 15 for performance
                     this.world.asteroids.push({
                         x: (Math.random() - 0.5) * 1500,
                         y: (Math.random() - 0.5) * 500,
@@ -2148,10 +2148,10 @@
                         size: 5 + Math.random() * 15,
                         color: '#8B4513',
                         rotation: Math.random() * Math.PI * 2,
-                        rotationSpeed: (Math.random() - 0.5) * 0.1,
-                        vx: (Math.random() - 0.5) * 0.5,
-                        vy: (Math.random() - 0.5) * 0.5,
-                        vz: (Math.random() - 0.5) * 0.5
+                        rotationSpeed: (Math.random() - 0.5) * 0.05, // Reduced speed
+                        vx: (Math.random() - 0.5) * 0.2, // Reduced speed
+                        vy: (Math.random() - 0.5) * 0.2,
+                        vz: (Math.random() - 0.5) * 0.2
                     });
                 }
             }
