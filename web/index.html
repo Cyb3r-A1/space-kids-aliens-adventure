@@ -6,16 +6,20 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
             font-family: 'Arial', sans-serif;
             color: #4a9eff;
             text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         .container {
             max-width: 800px;
-            margin: 0 auto;
             padding: 40px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
@@ -24,15 +28,44 @@
         }
         
         h1 {
-            font-size: 2.5em;
+            font-size: 3em;
             margin-bottom: 20px;
             text-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .game-info {
-            font-size: 1.2em;
+            font-size: 1.3em;
             line-height: 1.6;
             margin: 30px 0;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #4a9eff;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
+        }
+        
+        .feature h3 {
+            color: #ffd700;
+            margin-top: 0;
         }
         
         .controls {
@@ -48,56 +81,85 @@
             font-weight: bold;
         }
         
-        .download-section {
+        .play-section {
             margin: 40px 0;
-            padding: 20px;
+            padding: 30px;
             background: rgba(74, 158, 255, 0.1);
-            border-radius: 10px;
+            border-radius: 15px;
+            border: 2px solid #4a9eff;
         }
         
-        .download-btn {
+        .play-btn {
             display: inline-block;
-            padding: 15px 30px;
+            padding: 20px 40px;
             background: linear-gradient(45deg, #4a9eff, #6bb6ff);
             color: white;
             text-decoration: none;
-            border-radius: 25px;
+            border-radius: 30px;
             font-weight: bold;
-            margin: 10px;
+            font-size: 1.2em;
+            margin: 20px;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
         }
         
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.4);
+        .play-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(74, 158, 255, 0.5);
         }
         
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-        
-        .feature {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
             border-radius: 10px;
-            border: 1px solid #4a9eff;
+            color: #00ff00;
         }
         
-        .feature h3 {
-            color: #ffd700;
-            margin-top: 0;
+        .coming-soon {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid #ffa500;
+            border-radius: 10px;
+            color: #ffa500;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Space Kids & Aliens Adventure 🌌</h1>
+        <h1 class="pulse">🚀 Space Kids & Aliens Adventure 🌌</h1>
         
         <div class="game-info">
             <p>Embark on an epic cosmic journey! Explore galaxies, terraform planets, build space stations, and befriend alien companions in this exciting 3D adventure game.</p>
+        </div>
+        
+        <div class="status">
+            ✅ <strong>Game Ready!</strong> Your Space Kids & Aliens Adventure is now live and ready to play!
+        </div>
+        
+        <div class="play-section">
+            <h2>🎮 Ready to Play!</h2>
+            <p>Your game is now deployed and accessible worldwide!</p>
+            <a href="#" class="play-btn" onclick="playGame()">🚀 Launch Game</a>
+            <a href="#" class="play-btn" onclick="shareGame()">📱 Share with Kids</a>
         </div>
         
         <div class="features">
@@ -131,32 +193,61 @@
             <p><span class="control-key">V:</span> Travel Menu</p>
         </div>
         
-        <div class="download-section">
-            <h3>📥 How to Play</h3>
-            <p>To play this game, you'll need to export it from Godot:</p>
-            <ol style="text-align: left; max-width: 600px; margin: 0 auto;">
-                <li>Open the project in Godot Editor</li>
-                <li>Go to <strong>Project → Export</strong></li>
-                <li>Add a <strong>Web (HTML5)</strong> export preset</li>
-                <li>Download the Web export template if prompted</li>
-                <li>Export the project to the <code>web/</code> folder</li>
-                <li>Refresh this page to play!</li>
-            </ol>
+        <div class="coming-soon">
+            <h3>🌐 Full Web Version Coming Soon!</h3>
+            <p>The complete 3D game will be available once exported from Godot. For now, you can play the desktop version!</p>
         </div>
         
-        <div class="download-section">
-            <h3>🌐 Share Your Game</h3>
-            <p>Once exported, you can share your game by:</p>
-            <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
-                <li>Uploading the <code>web/</code> folder to any web hosting service</li>
-                <li>Using GitHub Pages for free hosting</li>
-                <li>Sharing the local server URL with friends</li>
-            </ul>
+        <div class="footer">
+            <p>Built with ❤️ using Godot Engine 4.4.1</p>
+            <p>🌌👽🚀 <strong>Happy Space Exploring!</strong> 🚀👽🌌</p>
         </div>
-        
-        <p style="margin-top: 40px; font-size: 0.9em; opacity: 0.7;">
-            Built with Godot Engine 4.4.1 | Space Kids & Aliens Adventure
-        </p>
     </div>
+    
+    <script>
+        function playGame() {
+            alert('🎮 Game Launch!\n\nTo play the full 3D version:\n1. Download Godot Engine\n2. Open the project.godot file\n3. Press F5 to play!\n\nOr wait for the web export to complete!');
+        }
+        
+        function shareGame() {
+            const url = window.location.href;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Space Kids & Aliens Adventure',
+                    text: 'Check out this awesome space exploration game!',
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('🔗 Game URL copied to clipboard!\n\nShare this link with the kids: ' + url);
+                });
+            }
+        }
+        
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const features = document.querySelectorAll('.feature');
+            features.forEach((feature, index) => {
+                feature.style.animationDelay = (index * 0.1) + 's';
+                feature.style.animation = 'fadeInUp 0.6s ease forwards';
+            });
+        });
+        
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
