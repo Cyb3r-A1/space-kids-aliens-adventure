@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launching Space Kids & Aliens Adventure...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Arial', sans-serif;
+            color: #4a9eff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        
+        .launcher {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #4a9eff;
+            box-shadow: 0 0 30px rgba(74, 158, 255, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .loading {
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(74, 158, 255, 0.3);
+            border-top: 4px solid #4a9eff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .launch-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
+        }
+        
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 158, 255, 0.5);
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 107, 107, 0.8);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 107, 107, 1);
+        }
+    </style>
+</head>
+<body>
+    <div class="launcher">
+        <h1>🚀 Space Kids & Aliens Adventure 🌌</h1>
+        
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Preparing your cosmic adventure...</p>
+        </div>
+        
+        <div id="launch-section" style="display: none;">
+            <h2>🎮 Ready to Launch!</h2>
+            <p>Your space adventure is ready to begin!</p>
+            <a href="game.html" class="launch-btn" id="game-link">🚀 Launch Game</a>
+            <br>
+            <a href="index.html" class="back-btn">← Back to Main</a>
+        </div>
+        
+        <div id="error-section" style="display: none;">
+            <h2>⚠️ Launch Issue</h2>
+            <p>Having trouble launching? Try these options:</p>
+            <a href="game.html" class="launch-btn">🚀 Direct Game Link</a>
+            <br>
+            <a href="index.html" class="back-btn">← Back to Main</a>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-launch after a short delay
+        setTimeout(() => {
+            document.getElementById('launch-section').style.display = 'block';
+            document.querySelector('.loading').style.display = 'none';
+            
+            // Auto-click the launch button after another short delay
+            setTimeout(() => {
+                document.getElementById('game-link').click();
+            }, 1000);
+        }, 2000);
+        
+        // Fallback if auto-launch fails
+        setTimeout(() => {
+            if (document.getElementById('launch-section').style.display === 'none') {
+                document.getElementById('error-section').style.display = 'block';
+                document.querySelector('.loading').style.display = 'none';
+            }
+        }, 5000);
+        
+        // Force refresh the game page if there are issues
+        document.getElementById('game-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'game.html?' + Date.now();
+        });
+    </script>
+</body>
+</html>
