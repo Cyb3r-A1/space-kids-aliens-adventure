@@ -3,37 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Kids & Aliens Adventure - Web Demo</title>
+    <title>Space Kids & Aliens Adventure - Epic 3D Edition</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0c0c0c 100%);
             font-family: 'Arial', sans-serif;
             color: #4a9eff;
             overflow: hidden;
+            height: 100vh;
         }
         
         #gameCanvas {
             display: block;
             margin: 0 auto;
             border: 2px solid #4a9eff;
-            box-shadow: 0 0 30px rgba(74, 158, 255, 0.3);
+            box-shadow: 0 0 50px rgba(74, 158, 255, 0.5);
+            background: radial-gradient(ellipse at center, #16213e 0%, #0c0c0c 100%);
         }
         
         .game-ui {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #4a9eff;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #4a9eff;
+            backdrop-filter: blur(10px);
+            min-width: 250px;
         }
         
-        .health-bar, .energy-bar {
+        .character-info {
+            margin-bottom: 15px;
+        }
+        
+        .character-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+        
+        .character-level {
+            font-size: 14px;
+            color: #6bb6ff;
+        }
+        
+        .stats-bar {
             width: 200px;
-            height: 20px;
+            height: 8px;
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid #4a9eff;
             border-radius: 10px;
@@ -55,15 +79,63 @@
             transition: width 0.3s ease;
         }
         
+        .fuel-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .mission-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #ffd700;
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+        }
+        
+        .mission-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        
+        .mission-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        
+        .mission-progress {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
         .controls {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #4a9eff;
-            font-size: 14px;
+            border-radius: 15px;
+            border: 2px solid #4a9eff;
+            backdrop-filter: blur(10px);
+            font-size: 12px;
         }
         
         .control-key {
@@ -71,11 +143,68 @@
             font-weight: bold;
         }
         
+        .mobile-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+        }
+        
+        .joystick {
+            width: 100px;
+            height: 100px;
+            background: rgba(74, 158, 255, 0.3);
+            border: 2px solid #4a9eff;
+            border-radius: 50%;
+            position: relative;
+            margin: 10px;
+        }
+        
+        .joystick-knob {
+            width: 40px;
+            height: 40px;
+            background: #4a9eff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 107, 107, 0.8);
+            border: 2px solid #ff6b6b;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 107, 107, 1);
+        }
+        
         .stars {
             position: absolute;
             width: 100%;
             height: 100%;
             pointer-events: none;
+            z-index: -1;
         }
         
         .star {
@@ -84,69 +213,211 @@
             height: 2px;
             background: white;
             border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
+            animation: twinkle 3s infinite alternate;
         }
         
         @keyframes twinkle {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
         }
         
-        .alien {
+        .planet-glow {
             position: absolute;
-            width: 20px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+        
+        .spaceship-trail {
+            position: absolute;
+            width: 4px;
             height: 20px;
-            background: #ff6b6b;
-            border-radius: 50%;
-            animation: float 3s ease-in-out infinite;
+            background: linear-gradient(to bottom, #4a9eff, transparent);
+            border-radius: 2px;
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .planet {
+        .landing-indicator {
             position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px dashed #ffd700;
             border-radius: 50%;
-            animation: rotate 10s linear infinite;
+            animation: pulse 1s infinite;
         }
         
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .story-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .story-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid #4a9eff;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+        
+        .story-title {
+            font-size: 2em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .story-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .story-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-controls {
+                display: block;
+            }
+            
+            .controls {
+                display: none;
+            }
+            
+            .game-ui, .mission-panel {
+                font-size: 12px;
+                padding: 15px;
+            }
+            
+            #gameCanvas {
+                width: 100vw;
+                height: 100vh;
+            }
         }
     </style>
 </head>
 <body>
     <div class="stars" id="stars"></div>
     
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <canvas id="gameCanvas" width="1200" height="800"></canvas>
     
     <div class="game-ui">
-        <h3 style="margin-top: 0; color: #ffd700;">🚀 Space Explorer</h3>
+        <div class="character-info">
+            <div class="character-name" id="characterName">Captain Alex</div>
+            <div class="character-level">Level <span id="characterLevel">1</span> Space Explorer</div>
+        </div>
+        
         <div>
             <div>Health:</div>
-            <div class="health-bar">
+            <div class="stats-bar">
                 <div class="health-fill" id="healthFill"></div>
             </div>
         </div>
+        
         <div>
             <div>Energy:</div>
-            <div class="energy-bar">
+            <div class="stats-bar">
                 <div class="energy-fill" id="energyFill"></div>
             </div>
         </div>
-        <div style="margin-top: 10px;">
-            <div>Level: <span id="level">1</span></div>
-            <div>Score: <span id="score">0</span></div>
+        
+        <div>
+            <div>Spaceship Fuel:</div>
+            <div class="stats-bar">
+                <div class="fuel-fill" id="fuelFill"></div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <div>Credits: <span id="credits">1000</span></div>
+            <div>Planets Visited: <span id="planetsVisited">0</span></div>
+        </div>
+    </div>
+    
+    <div class="mission-panel">
+        <div class="mission-title">🎯 Current Mission</div>
+        <div class="mission-text" id="missionText">
+            Welcome to the galaxy! Your first mission is to explore the nearby planets and establish contact with alien civilizations.
+        </div>
+        <div class="mission-progress">
+            <div class="progress-fill" id="missionProgress"></div>
+        </div>
+        <div style="margin-top: 10px; font-size: 12px;">
+            Progress: <span id="missionProgressText">0%</span>
         </div>
     </div>
     
     <div class="controls">
-        <div><span class="control-key">Arrow Keys:</span> Move</div>
-        <div><span class="control-key">Space:</span> Jump/Jetpack</div>
+        <div><span class="control-key">WASD/Arrow Keys:</span> Move Spaceship</div>
+        <div><span class="control-key">Space:</span> Boost/Jetpack</div>
+        <div><span class="control-key">E:</span> Land on Planet</div>
+        <div><span class="control-key">R:</span> Take Off</div>
         <div><span class="control-key">Click:</span> Interact</div>
+        <div><span class="control-key">M:</span> Mission Log</div>
+    </div>
+    
+    <div class="mobile-controls">
+        <div class="joystick" id="joystick">
+            <div class="joystick-knob" id="joystickKnob"></div>
+        </div>
+        <div class="action-buttons">
+            <div class="action-btn" id="boostBtn">🚀</div>
+            <div class="action-btn" id="landBtn">🛬</div>
+            <div class="action-btn" id="interactBtn">👆</div>
+        </div>
+    </div>
+    
+    <div class="story-modal" id="storyModal">
+        <div class="story-content">
+            <div class="story-title">🌌 Space Kids & Aliens Adventure</div>
+            <div class="story-text">
+                <p>Welcome, young space explorer! You are Captain Alex, a brave space kid on a mission to explore the galaxy and make friends with alien civilizations.</p>
+                
+                <p>Your spaceship, the "Stellar Explorer," is equipped with advanced technology that allows you to travel between planets, terraform hostile worlds, and communicate with alien species.</p>
+                
+                <p><strong>Your Mission:</strong></p>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>🌍 Explore 5 different planets</li>
+                    <li>👽 Befriend alien companions</li>
+                    <li>🏗️ Build space stations</li>
+                    <li>🪐 Terraform hostile worlds</li>
+                    <li>💰 Collect resources and credits</li>
+                </ul>
+                
+                <p>The galaxy is vast and full of mysteries. Some planets are friendly, others are dangerous. Use your skills and courage to become the greatest space explorer!</p>
+            </div>
+            <button class="story-btn" onclick="startGame()">🚀 Begin Adventure!</button>
+        </div>
     </div>
 
     <script>
@@ -154,67 +425,265 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
+        // Game state
+        let gameState = 'story'; // story, playing, landed
+        let currentPlanet = null;
+        let missionProgress = 0;
+        
+        // Player character
         let player = {
-            x: 400,
-            y: 300,
-            width: 30,
-            height: 40,
+            name: 'Captain Alex',
+            level: 1,
+            x: 600,
+            y: 400,
+            width: 40,
+            height: 30,
             vx: 0,
             vy: 0,
             health: 100,
             energy: 100,
-            level: 1,
-            score: 0,
-            onGround: false
+            fuel: 100,
+            credits: 1000,
+            planetsVisited: 0,
+            onPlanet: false,
+            spaceshipMode: true
         };
         
-        let aliens = [];
-        let planets = [];
-        let keys = {};
-        let gameRunning = true;
+        // Spaceship properties
+        let spaceship = {
+            width: 50,
+            height: 25,
+            trail: [],
+            boostActive: false
+        };
         
-        // Create stars
+        // Planets array
+        let planets = [];
+        let aliens = [];
+        let spaceStations = [];
+        
+        // Touch controls
+        let joystickActive = false;
+        let joystickCenter = { x: 0, y: 0 };
+        let joystickOffset = { x: 0, y: 0 };
+        
+        // Create 3D-style planets
+        function createPlanets() {
+            const planetTypes = [
+                { name: 'Terra Nova', color: '#4CAF50', size: 80, type: 'Earth-like', resources: 'Water, Oxygen' },
+                { name: 'Crimson Desert', color: '#FF5722', size: 70, type: 'Desert', resources: 'Sand Crystals' },
+                { name: 'Ice World', color: '#2196F3', size: 90, type: 'Frozen', resources: 'Ice Crystals' },
+                { name: 'Volcanic Planet', color: '#FF9800', size: 75, type: 'Volcanic', resources: 'Lava Metal' },
+                { name: 'Crystal World', color: '#9C27B0', size: 85, type: 'Crystalline', resources: 'Energy Crystals' }
+            ];
+            
+            for (let i = 0; i < planetTypes.length; i++) {
+                const planet = {
+                    ...planetTypes[i],
+                    x: 200 + (i * 200),
+                    y: 150 + Math.sin(i) * 100,
+                    angle: 0,
+                    rotationSpeed: 0.02,
+                    landingZone: { x: 0, y: 0, radius: 30 },
+                    aliens: [],
+                    buildings: [],
+                    terraformed: false,
+                    population: Math.floor(Math.random() * 1000) + 100
+                };
+                
+                // Add some aliens to each planet
+                for (let j = 0; j < 3; j++) {
+                    planet.aliens.push({
+                        x: planet.x + (Math.random() - 0.5) * 100,
+                        y: planet.y + (Math.random() - 0.5) * 100,
+                        width: 20,
+                        height: 20,
+                        color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+                        friendly: Math.random() > 0.3,
+                        name: `Alien ${j + 1}`,
+                        vx: (Math.random() - 0.5) * 1,
+                        vy: (Math.random() - 0.5) * 1
+                    });
+                }
+                
+                planets.push(planet);
+            }
+        }
+        
+        // Create space stations
+        function createSpaceStations() {
+            for (let i = 0; i < 3; i++) {
+                spaceStations.push({
+                    x: 100 + i * 400,
+                    y: 50 + Math.random() * 100,
+                    width: 60,
+                    height: 40,
+                    type: 'Trading Post',
+                    services: ['Fuel', 'Repairs', 'Trading']
+                });
+            }
+        }
+        
+        // Create stars background
         function createStars() {
             const starsContainer = document.getElementById('stars');
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 200; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.width = (Math.random() * 3 + 1) + 'px';
+                star.style.height = star.style.width;
                 starsContainer.appendChild(star);
             }
         }
         
-        // Create aliens
-        function createAliens() {
-            for (let i = 0; i < 5; i++) {
-                aliens.push({
-                    x: Math.random() * (canvas.width - 20),
-                    y: Math.random() * (canvas.height - 20),
-                    width: 20,
-                    height: 20,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: (Math.random() - 0.5) * 2,
-                    color: `hsl(${Math.random() * 360}, 70%, 60%)`
-                });
+        // 3D planet rendering
+        function draw3DPlanet(planet) {
+            const centerX = planet.x;
+            const centerY = planet.y;
+            const radius = planet.size / 2;
+            
+            // Create gradient for 3D effect
+            const gradient = ctx.createRadialGradient(
+                centerX - radius/3, centerY - radius/3, 0,
+                centerX, centerY, radius
+            );
+            gradient.addColorStop(0, lightenColor(planet.color, 0.3));
+            gradient.addColorStop(0.7, planet.color);
+            gradient.addColorStop(1, darkenColor(planet.color, 0.3));
+            
+            // Draw planet
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add planet glow
+            ctx.shadowColor = planet.color;
+            ctx.shadowBlur = 20;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // Draw planet name
+            ctx.fillStyle = '#ffd700';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(planet.name, centerX, centerY - radius - 10);
+            
+            // Draw planet type
+            ctx.fillStyle = '#6bb6ff';
+            ctx.font = '12px Arial';
+            ctx.fillText(planet.type, centerX, centerY - radius - 25);
+            
+            // Draw landing indicator if close enough
+            const distance = Math.sqrt((player.x - centerX) ** 2 + (player.y - centerY) ** 2);
+            if (distance < 150) {
+                ctx.strokeStyle = '#ffd700';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius + 20, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Landing text
+                ctx.fillStyle = '#ffd700';
+                ctx.font = '16px Arial';
+                ctx.fillText('Press E to Land', centerX, centerY + radius + 30);
             }
         }
         
-        // Create planets
-        function createPlanets() {
-            for (let i = 0; i < 3; i++) {
-                planets.push({
-                    x: Math.random() * (canvas.width - 60),
-                    y: Math.random() * (canvas.height - 60),
-                    width: 60,
-                    height: 60,
-                    color: `hsl(${Math.random() * 60 + 200}, 70%, 50%)`
-                });
+        // Draw spaceship
+        function drawSpaceship() {
+            const centerX = player.x + player.width / 2;
+            const centerY = player.y + player.height / 2;
+            
+            // Spaceship body
+            ctx.fillStyle = '#4a9eff';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            
+            // Spaceship details
+            ctx.fillStyle = '#6bb6ff';
+            ctx.fillRect(player.x + 5, player.y + 5, player.width - 10, player.height - 10);
+            
+            // Cockpit
+            ctx.fillStyle = '#ffd700';
+            ctx.fillRect(player.x + 15, player.y + 8, 10, 8);
+            
+            // Wings
+            ctx.fillStyle = '#4a9eff';
+            ctx.fillRect(player.x - 5, player.y + 5, 10, 15);
+            ctx.fillRect(player.x + player.width - 5, player.y + 5, 10, 15);
+            
+            // Boost trail
+            if (spaceship.boostActive) {
+                ctx.fillStyle = '#ffd700';
+                ctx.fillRect(player.x + player.width/2 - 2, player.y + player.height, 4, 30);
             }
+            
+            // Spaceship glow
+            ctx.shadowColor = '#4a9eff';
+            ctx.shadowBlur = 15;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.shadowBlur = 0;
+        }
+        
+        // Draw character on planet
+        function drawCharacter() {
+            const centerX = player.x + player.width / 2;
+            const centerY = player.y + player.height / 2;
+            
+            // Character body
+            ctx.fillStyle = '#4a9eff';
+            ctx.fillRect(player.x, player.y, 20, 30);
+            
+            // Character head
+            ctx.fillStyle = '#ffdbac';
+            ctx.beginPath();
+            ctx.arc(centerX, player.y - 5, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Jetpack
+            ctx.fillStyle = '#ffd700';
+            ctx.fillRect(player.x + 5, player.y + 25, 10, 15);
+            
+            // Character glow
+            ctx.shadowColor = '#4a9eff';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(player.x, player.y, 20, 30);
+            ctx.shadowBlur = 0;
+        }
+        
+        // Utility functions
+        function lightenColor(color, amount) {
+            const num = parseInt(color.replace("#", ""), 16);
+            const amt = Math.round(2.55 * amount * 100);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+        }
+        
+        function darkenColor(color, amount) {
+            const num = parseInt(color.replace("#", ""), 16);
+            const amt = Math.round(2.55 * amount * 100);
+            const R = (num >> 16) - amt;
+            const G = (num >> 8 & 0x00FF) - amt;
+            const B = (num & 0x0000FF) - amt;
+            return "#" + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
+                (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
+                (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
         }
         
         // Input handling
+        const keys = {};
+        
         document.addEventListener('keydown', (e) => {
             keys[e.code] = true;
         });
@@ -223,113 +692,208 @@
             keys[e.code] = false;
         });
         
-        // Mouse interaction
-        canvas.addEventListener('click', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-            
-            // Check if clicked on alien
-            aliens.forEach((alien, index) => {
-                if (clickX >= alien.x && clickX <= alien.x + alien.width &&
-                    clickY >= alien.y && clickY <= alien.y + alien.height) {
-                    aliens.splice(index, 1);
-                    player.score += 10;
-                    player.energy = Math.min(100, player.energy + 5);
-                }
-            });
-            
-            // Check if clicked on planet
-            planets.forEach((planet, index) => {
-                if (clickX >= planet.x && clickX <= planet.x + planet.width &&
-                    clickY >= planet.y && clickY <= planet.y + planet.height) {
-                    player.score += 50;
-                    player.health = Math.min(100, player.health + 20);
-                }
-            });
+        // Touch controls
+        const joystick = document.getElementById('joystick');
+        const joystickKnob = document.getElementById('joystickKnob');
+        
+        joystick.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            joystickActive = true;
+            const rect = joystick.getBoundingClientRect();
+            joystickCenter.x = rect.left + rect.width / 2;
+            joystickCenter.y = rect.top + rect.height / 2;
         });
         
-        // Update game state
+        joystick.addEventListener('touchmove', (e) => {
+            if (!joystickActive) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            joystickOffset.x = touch.clientX - joystickCenter.x;
+            joystickOffset.y = touch.clientY - joystickCenter.y;
+            
+            const distance = Math.sqrt(joystickOffset.x ** 2 + joystickOffset.y ** 2);
+            const maxDistance = 30;
+            
+            if (distance > maxDistance) {
+                joystickOffset.x = (joystickOffset.x / distance) * maxDistance;
+                joystickOffset.y = (joystickOffset.y / distance) * maxDistance;
+            }
+            
+            joystickKnob.style.transform = `translate(${joystickOffset.x}px, ${joystickOffset.y}px)`;
+        });
+        
+        joystick.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            joystickActive = false;
+            joystickOffset.x = 0;
+            joystickOffset.y = 0;
+            joystickKnob.style.transform = 'translate(0px, 0px)';
+        });
+        
+        // Action buttons
+        document.getElementById('boostBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            keys['Space'] = true;
+        });
+        
+        document.getElementById('boostBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            keys['Space'] = false;
+        });
+        
+        document.getElementById('landBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            keys['KeyE'] = true;
+        });
+        
+        document.getElementById('landBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            keys['KeyE'] = false;
+        });
+        
+        // Game update loop
         function update() {
-            if (!gameRunning) return;
+            if (gameState !== 'playing') return;
             
-            // Player movement
-            if (keys['ArrowLeft']) {
-                player.vx = -3;
-            } else if (keys['ArrowRight']) {
-                player.vx = 3;
+            // Handle input
+            let inputX = 0;
+            let inputY = 0;
+            
+            if (keys['ArrowLeft'] || keys['KeyA']) inputX = -1;
+            if (keys['ArrowRight'] || keys['KeyD']) inputX = 1;
+            if (keys['ArrowUp'] || keys['KeyW']) inputY = -1;
+            if (keys['ArrowDown'] || keys['KeyS']) inputY = 1;
+            
+            // Mobile joystick input
+            if (joystickActive) {
+                inputX = joystickOffset.x / 30;
+                inputY = joystickOffset.y / 30;
+            }
+            
+            // Spaceship movement
+            if (player.spaceshipMode) {
+                const speed = keys['Space'] ? 4 : 2;
+                player.vx = inputX * speed;
+                player.vy = inputY * speed;
+                
+                if (keys['Space']) {
+                    spaceship.boostActive = true;
+                    player.fuel -= 0.5;
+                    player.energy -= 0.2;
+                } else {
+                    spaceship.boostActive = false;
+                }
+                
+                // Landing
+                if (keys['KeyE']) {
+                    const nearbyPlanet = planets.find(planet => {
+                        const distance = Math.sqrt((player.x - planet.x) ** 2 + (player.y - planet.y) ** 2);
+                        return distance < planet.size / 2 + 30;
+                    });
+                    
+                    if (nearbyPlanet) {
+                        landOnPlanet(nearbyPlanet);
+                    }
+                }
             } else {
-                player.vx *= 0.8; // Friction
+                // Character movement on planet
+                const speed = 2;
+                player.vx = inputX * speed;
+                player.vy = inputY * speed;
+                
+                // Take off
+                if (keys['KeyR']) {
+                    takeOff();
+                }
             }
             
-            if (keys['ArrowUp'] && player.onGround) {
-                player.vy = -8;
-                player.onGround = false;
-            }
-            
-            if (keys['Space'] && player.energy > 0) {
-                player.vy -= 0.5;
-                player.energy -= 0.5;
-            }
-            
-            // Gravity
-            player.vy += 0.3;
-            
-            // Update player position
+            // Update position
             player.x += player.vx;
             player.y += player.vy;
             
             // Boundary checking
             if (player.x < 0) player.x = 0;
             if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
-            if (player.y > canvas.height - player.height) {
-                player.y = canvas.height - player.height;
-                player.vy = 0;
-                player.onGround = true;
-            }
+            if (player.y < 0) player.y = 0;
+            if (player.y > canvas.height - player.height) player.y = canvas.height - player.height;
             
-            // Update aliens
-            aliens.forEach(alien => {
-                alien.x += alien.vx;
-                alien.y += alien.vy;
-                
-                // Bounce off walls
-                if (alien.x <= 0 || alien.x >= canvas.width - alien.width) {
-                    alien.vx *= -1;
-                }
-                if (alien.y <= 0 || alien.y >= canvas.height - alien.height) {
-                    alien.vy *= -1;
-                }
-                
-                // Keep aliens in bounds
-                alien.x = Math.max(0, Math.min(canvas.width - alien.width, alien.x));
-                alien.y = Math.max(0, Math.min(canvas.height - alien.height, alien.y));
-            });
+            // Regenerate energy and fuel slowly
+            if (player.energy < 100) player.energy += 0.1;
+            if (player.fuel < 100) player.fuel += 0.05;
             
-            // Regenerate energy slowly
-            if (player.energy < 100) {
-                player.energy += 0.1;
-            }
-            
-            // Level up
-            if (player.score > player.level * 100) {
-                player.level++;
-                player.health = 100;
-                player.energy = 100;
-                createAliens(); // Add more aliens
-            }
+            // Update mission progress
+            updateMissionProgress();
             
             // Update UI
+            updateUI();
+        }
+        
+        // Landing on planet
+        function landOnPlanet(planet) {
+            if (player.fuel < 20) {
+                alert('Not enough fuel to land!');
+                return;
+            }
+            
+            player.onPlanet = true;
+            player.spaceshipMode = false;
+            currentPlanet = planet;
+            player.fuel -= 20;
+            
+            // Position player on planet surface
+            player.x = planet.x;
+            player.y = planet.y + planet.size / 2;
+            
+            if (!planet.visited) {
+                planet.visited = true;
+                player.planetsVisited++;
+                player.credits += 100;
+                missionProgress += 20;
+            }
+            
+            alert(`Landed on ${planet.name}!\n\nType: ${planet.type}\nResources: ${planet.resources}\nPopulation: ${planet.population}\n\nPress R to take off`);
+        }
+        
+        // Take off from planet
+        function takeOff() {
+            if (player.energy < 30) {
+                alert('Not enough energy to take off!');
+                return;
+            }
+            
+            player.onPlanet = false;
+            player.spaceshipMode = true;
+            player.energy -= 30;
+            currentPlanet = null;
+            
+            // Position player above planet
+            player.y -= 50;
+        }
+        
+        // Update mission progress
+        function updateMissionProgress() {
+            const missions = [
+                { name: 'Explore 5 Planets', target: 5, current: player.planetsVisited },
+                { name: 'Collect 1000 Credits', target: 1000, current: player.credits },
+                { name: 'Reach Level 5', target: 5, current: player.level }
+            ];
+            
+            const currentMission = missions[0];
+            const progress = Math.min(100, (currentMission.current / currentMission.target) * 100);
+            
+            document.getElementById('missionProgress').style.width = progress + '%';
+            document.getElementById('missionProgressText').textContent = Math.round(progress) + '%';
+        }
+        
+        // Update UI
+        function updateUI() {
+            document.getElementById('characterName').textContent = player.name;
+            document.getElementById('characterLevel').textContent = player.level;
             document.getElementById('healthFill').style.width = player.health + '%';
             document.getElementById('energyFill').style.width = player.energy + '%';
-            document.getElementById('level').textContent = player.level;
-            document.getElementById('score').textContent = player.score;
-            
-            // Game over check
-            if (player.health <= 0) {
-                gameRunning = false;
-                alert('Game Over! Final Score: ' + player.score);
-            }
+            document.getElementById('fuelFill').style.width = player.fuel + '%';
+            document.getElementById('credits').textContent = player.credits;
+            document.getElementById('planetsVisited').textContent = player.planetsVisited;
         }
         
         // Render game
@@ -340,50 +904,32 @@
             
             // Draw planets
             planets.forEach(planet => {
-                ctx.fillStyle = planet.color;
-                ctx.beginPath();
-                ctx.arc(planet.x + planet.width/2, planet.y + planet.height/2, planet.width/2, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Planet glow
-                ctx.shadowColor = planet.color;
-                ctx.shadowBlur = 20;
-                ctx.beginPath();
-                ctx.arc(planet.x + planet.width/2, planet.y + planet.height/2, planet.width/2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
+                draw3DPlanet(planet);
             });
             
-            // Draw aliens
-            aliens.forEach(alien => {
-                ctx.fillStyle = alien.color;
-                ctx.beginPath();
-                ctx.arc(alien.x + alien.width/2, alien.y + alien.height/2, alien.width/2, 0, Math.PI * 2);
-                ctx.fill();
+            // Draw space stations
+            spaceStations.forEach(station => {
+                ctx.fillStyle = '#ffd700';
+                ctx.fillRect(station.x, station.y, station.width, station.height);
                 
-                // Alien glow
-                ctx.shadowColor = alien.color;
+                // Station glow
+                ctx.shadowColor = '#ffd700';
                 ctx.shadowBlur = 10;
-                ctx.beginPath();
-                ctx.arc(alien.x + alien.width/2, alien.y + alien.height/2, alien.width/2, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.fillRect(station.x, station.y, station.width, station.height);
                 ctx.shadowBlur = 0;
+                
+                // Station name
+                ctx.fillStyle = '#ffd700';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(station.type, station.x + station.width/2, station.y - 10);
             });
             
             // Draw player
-            ctx.fillStyle = '#4a9eff';
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            
-            // Player glow
-            ctx.shadowColor = '#4a9eff';
-            ctx.shadowBlur = 15;
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            ctx.shadowBlur = 0;
-            
-            // Draw jetpack trail if using jetpack
-            if (keys['Space'] && player.energy > 0) {
-                ctx.fillStyle = '#ffd700';
-                ctx.fillRect(player.x + player.width/2 - 2, player.y + player.height, 4, 10);
+            if (player.spaceshipMode) {
+                drawSpaceship();
+            } else {
+                drawCharacter();
             }
         }
         
@@ -394,16 +940,18 @@
             requestAnimationFrame(gameLoop);
         }
         
-        // Initialize game
-        function init() {
-            createStars();
-            createAliens();
+        // Start game
+        function startGame() {
+            document.getElementById('storyModal').style.display = 'none';
+            gameState = 'playing';
             createPlanets();
+            createSpaceStations();
+            createStars();
             gameLoop();
         }
         
-        // Start the game
-        init();
+        // Initialize
+        createStars();
     </script>
 </body>
 </html>
