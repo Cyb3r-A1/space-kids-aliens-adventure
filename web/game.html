@@ -594,6 +594,11 @@
                     <li>Click buttons to access shops and features!</li>
                 </ul>
                 
+                <div style="background: rgba(255, 215, 0, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0; border: 1px solid #ffd700;">
+                    <strong>⚡ Performance Optimized!</strong><br>
+                    The game has been optimized for smooth gameplay. If you experience any lag, try refreshing the page or using a different browser.
+                </div>
+                
                 <p>Get ready for an adventure like no other! The galaxy is waiting for you to explore, collect, trade, and battle!</p>
             </div>
             <button class="story-btn" onclick="startGame()">🚀 Begin 3D Adventure!</button>
@@ -745,6 +750,7 @@
             
             initializeGame() {
                 this.gameState = 'loading';
+                this.lastFrameTime = 0; // For FPS limiting
                 this.player = {
                     name: 'Captain Alex',
                     level: 1,
@@ -832,8 +838,8 @@
                         aliens: []
                     };
                     
-                    // Add animated aliens to each planet
-                    for (let j = 0; j < 5; j++) {
+                    // Add animated aliens to each planet (reduced for performance)
+                    for (let j = 0; j < 2; j++) { // Reduced from 5 to 2
                         planet.aliens.push({
                             x: planet.x + (Math.random() - 0.5) * 200,
                             y: planet.y + planet.size / 2,
@@ -1075,14 +1081,14 @@
             }
             
             drawStarfield() {
-                // Create animated starfield
+                // Optimized animated starfield - reduced particles for performance
                 const time = Date.now() * 0.001;
                 
-                for (let i = 0; i < 200; i++) {
+                for (let i = 0; i < 50; i++) { // Reduced from 200 to 50
                     const x = (Math.sin(i * 0.1 + time) * this.canvas.width / 2) + this.canvas.width / 2;
                     const y = (Math.cos(i * 0.1 + time * 0.5) * this.canvas.height / 2) + this.canvas.height / 2;
-                    const size = Math.sin(i * 0.2 + time) * 2 + 1;
-                    const opacity = Math.sin(i * 0.3 + time) * 0.5 + 0.5;
+                    const size = Math.sin(i * 0.2 + time) * 1.5 + 0.5; // Reduced size
+                    const opacity = Math.sin(i * 0.3 + time) * 0.3 + 0.4; // Reduced opacity
                     
                     this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
                     this.ctx.beginPath();
@@ -1092,14 +1098,14 @@
             }
             
             drawParticleEffects() {
-                // Add floating particles
+                // Optimized floating particles - reduced count for performance
                 const time = Date.now() * 0.001;
                 
-                for (let i = 0; i < 50; i++) {
+                for (let i = 0; i < 20; i++) { // Reduced from 50 to 20
                     const x = (Math.sin(i * 0.2 + time) * this.canvas.width) + this.canvas.width / 2;
                     const y = (Math.cos(i * 0.15 + time * 0.8) * this.canvas.height) + this.canvas.height / 2;
-                    const size = Math.sin(i * 0.3 + time) * 3 + 2;
-                    const opacity = Math.sin(i * 0.4 + time) * 0.3 + 0.2;
+                    const size = Math.sin(i * 0.3 + time) * 2 + 1; // Reduced size
+                    const opacity = Math.sin(i * 0.4 + time) * 0.2 + 0.1; // Reduced opacity
                     
                     this.ctx.fillStyle = `rgba(74, 158, 255, ${opacity})`;
                     this.ctx.beginPath();
@@ -1933,8 +1939,15 @@
             }
             
             gameLoop() {
-                this.update();
-                this.render();
+                const now = Date.now();
+                
+                // Limit to 60 FPS to prevent freezing
+                if (now - this.lastFrameTime >= 16) { // 16ms = ~60 FPS
+                    this.update();
+                    this.render();
+                    this.lastFrameTime = now;
+                }
+                
                 requestAnimationFrame(() => this.gameLoop());
             }
             
@@ -1950,7 +1963,7 @@
                     { name: 'Quantum Phoenix', rarity: 'Mythical', color: '#E74C3C', size: 35, price: 2500 }
                 ];
                 
-                for (let i = 0; i < 20; i++) {
+                for (let i = 0; i < 10; i++) { // Reduced from 20 to 10 for performance
                     const petType = petTypes[Math.floor(Math.random() * petTypes.length)];
                     this.world.pets.push({
                         ...petType,
@@ -1976,7 +1989,7 @@
             
             createHouseSystem() {
                 // Brookhaven style house building
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 5; i++) { // Reduced from 10 to 5 for performance
                     this.world.houses.push({
                         id: `house_${i}`,
                         x: (Math.random() - 0.5) * 800,
