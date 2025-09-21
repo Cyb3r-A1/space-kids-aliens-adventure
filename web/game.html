@@ -1005,12 +1005,22 @@
                     'Creating Planets...',
                     'Spawning Aliens...',
                     'Setting up Physics...',
-                    'Preparing Animations...',
+                    'WebGL Ready!',
                     'Ready for Launch!'
                 ];
                 
                 let currentStep = 0;
                 const progressElement = document.getElementById('loadingProgress');
+                
+                // Check WebGL support immediately
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                
+                if (!gl) {
+                    progressElement.textContent = 'WebGL not supported - Using Canvas fallback';
+                    setTimeout(() => this.finishLoading(), 1000);
+                    return;
+                }
                 
                 const loadingInterval = setInterval(() => {
                     if (currentStep < loadingSteps.length) {
@@ -1020,7 +1030,7 @@
                         clearInterval(loadingInterval);
                         this.finishLoading();
                     }
-                }, 800);
+                }, 600); // Faster loading
             }
             
             finishLoading() {
