@@ -37,7 +37,7 @@ app.get('/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Space Explorer Adventure server running on port ${PORT}`);
+    console.log(`🚀 Space Kids & Aliens Adventure server running on port ${PORT}`);
     console.log(`🌐 Game available at: http://localhost:${PORT}`);
     console.log(`🎮 Direct game link: http://localhost:${PORT}/game`);
 });

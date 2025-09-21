@@ -68,7 +68,7 @@
 - **Development Velocity:** Rapid iteration capability
 
 #### **Competitive Edge:**
-- **Roblox-like features** with AAA graphics
+- **Professional game features** with AAA graphics
 - **Adopt Me-style gameplay** with professional polish
 - **Minecraft building** with advanced physics
 - **Among Us social** with 3D environments

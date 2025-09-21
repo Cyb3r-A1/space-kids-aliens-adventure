@@ -1,7 +1,7 @@
 {
   "name": "space-explorer-adventure",
   "version": "1.0.0",
-  "description": "Space Explorer Adventure - Professional 3D Browser Game",
+  "description": "Space Kids & Aliens Adventure - Playable browser game",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
