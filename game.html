@@ -1,0 +1,2507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Kids & Aliens Adventure - 3D Roblox-Style Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #000000 100%);
+            font-family: 'Arial', sans-serif;
+            color: #4a9eff;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: twinkle 4s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+        
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .game-ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 46, 0.9) 100%);
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 
+                0 0 20px rgba(74, 158, 255, 0.3),
+                inset 0 0 20px rgba(74, 158, 255, 0.1);
+            backdrop-filter: blur(15px);
+            min-width: 280px;
+            pointer-events: auto;
+            position: relative;
+        }
+        
+        .game-ui::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff, #ffd700, #4a9eff);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            z-index: -1;
+        }
+        
+        .character-info {
+            margin-bottom: 15px;
+        }
+        
+        .character-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+        
+        .character-level {
+            font-size: 14px;
+            color: #6bb6ff;
+        }
+        
+        .stats-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #4a9eff;
+            border-radius: 10px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a9eff, #6bb6ff);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .fuel-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .mission-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #ffd700;
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+            pointer-events: auto;
+        }
+        
+        .mission-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        
+        .mission-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        
+        .mission-progress {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid #4a9eff;
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+            pointer-events: auto;
+        }
+        
+        .control-key {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .mobile-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            pointer-events: auto;
+        }
+        
+        .joystick {
+            width: 100px;
+            height: 100px;
+            background: rgba(74, 158, 255, 0.3);
+            border: 2px solid #4a9eff;
+            border-radius: 50%;
+            position: relative;
+            margin: 10px;
+        }
+        
+        .joystick-knob {
+            width: 40px;
+            height: 40px;
+            background: #4a9eff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 107, 107, 0.8);
+            border: 2px solid #ff6b6b;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 107, 107, 1);
+        }
+        
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4a9eff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background: #4a9eff;
+        }
+        
+        .crosshair::before {
+            width: 2px;
+            height: 8px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .crosshair::after {
+            width: 8px;
+            height: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: #4a9eff;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(74, 158, 255, 0.3);
+            border-top: 4px solid #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .loading-progress {
+            font-size: 14px;
+            color: #6bb6ff;
+        }
+        
+        .story-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .story-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid #4a9eff;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+        
+        .story-title {
+            font-size: 2em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .story-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .story-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.4);
+        }
+        
+        .minimap {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #4a9eff;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            pointer-events: auto;
+        }
+        
+        .minimap-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffd700;
+            padding: 5px;
+            border-bottom: 1px solid #4a9eff;
+        }
+        
+        .minimap-content {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 30px);
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-controls {
+                display: block;
+            }
+            
+            .controls {
+                display: none;
+            }
+            
+            .game-ui, .mission-panel {
+                font-size: 12px;
+                padding: 15px;
+            }
+            
+            .minimap {
+                width: 150px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div class="ui-overlay">
+            <div class="crosshair"></div>
+            
+            <div class="game-ui">
+                <div class="character-info">
+                    <div class="character-name" id="characterName">Captain Alex</div>
+                    <div class="character-level">Level <span id="characterLevel">1</span> Space Explorer</div>
+                </div>
+                
+                <div>
+                    <div>Health:</div>
+                    <div class="stats-bar">
+                        <div class="health-fill" id="healthFill"></div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div>Energy:</div>
+                    <div class="stats-bar">
+                        <div class="energy-fill" id="energyFill"></div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div>Spaceship Fuel:</div>
+                    <div class="stats-bar">
+                        <div class="fuel-fill" id="fuelFill"></div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <div>💰 Coins: <span id="coins">1000</span></div>
+                    <div>💎 Gems: <span id="gems">50</span></div>
+                    <div>🏠 Houses: <span id="housesOwned">0</span></div>
+                    <div>🐾 Pets: <span id="petsOwned">0</span></div>
+                    <div>🏆 Achievements: <span id="achievementsUnlocked">0</span></div>
+                </div>
+            </div>
+            
+            <div class="mission-panel">
+                <div class="mission-title">🎯 Current Mission</div>
+                <div class="mission-text" id="missionText">
+                    Welcome to the galaxy! Your first mission is to explore the nearby planets and establish contact with alien civilizations.
+                </div>
+                <div class="mission-progress">
+                    <div class="progress-fill" id="missionProgress"></div>
+                </div>
+                <div style="margin-top: 10px; font-size: 12px;">
+                    Progress: <span id="missionProgressText">0%</span>
+                </div>
+            </div>
+            
+            <div class="minimap">
+                <div class="minimap-title">🌌 Galaxy Map</div>
+                <div class="minimap-content" id="minimapContent">
+                    <canvas id="minimapCanvas" width="196" height="120"></canvas>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div><span class="control-key">WASD:</span> Move</div>
+                <div><span class="control-key">Mouse:</span> Look Around</div>
+                <div><span class="control-key">Space:</span> Jump/Fly</div>
+                <div><span class="control-key">Shift:</span> Run</div>
+                <div><span class="control-key">E:</span> Interact</div>
+                <div><span class="control-key">R:</span> Build</div>
+                <div><span class="control-key">Tab:</span> Inventory</div>
+                
+                <div style="margin-top: 15px; border-top: 1px solid #4a9eff; padding-top: 10px;">
+                    <div style="font-weight: bold; color: #ffd700; margin-bottom: 5px;">🎮 Quick Actions:</div>
+                    <button onclick="game.showPetShop()" style="background: #FF6B6B; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer;">🐾 Pet Shop</button>
+                    <button onclick="game.showHouseShop()" style="background: #8B4513; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer;">🏠 Houses</button>
+                    <button onclick="game.showTrading()" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer;">💱 Trading</button>
+                    <button onclick="game.showBattleArena()" style="background: #E74C3C; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer;">⚔️ Battle</button>
+                    <button onclick="game.showMiniGames()" style="background: #9B59B6; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer;">🎮 Mini-Games</button>
+                </div>
+            </div>
+            
+            <div class="mobile-controls">
+                <div class="joystick" id="joystick">
+                    <div class="joystick-knob" id="joystickKnob"></div>
+                </div>
+                <div class="action-buttons">
+                    <div class="action-btn" id="jumpBtn">🚀</div>
+                    <div class="action-btn" id="interactBtn">👆</div>
+                    <div class="action-btn" id="buildBtn">🏗️</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">🚀 Loading Space Adventure...</div>
+            <div class="loading-progress" id="loadingProgress">Initializing 3D Engine...</div>
+        </div>
+    </div>
+    
+    <div class="story-modal" id="storyModal" style="display: none;">
+        <div class="story-content">
+            <div class="story-title">🌌 Space Kids & Aliens Adventure</div>
+            <div class="story-text">
+                <p>Welcome to the ultimate 3D space exploration experience! You are Captain Alex, a brave space explorer in a vast, living galaxy.</p>
+                
+                <p><strong>🌟 What makes this special:</strong></p>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>🎮 Full 3D world like Roblox</li>
+                    <li>🚀 Animated characters and spaceships</li>
+                    <li>🌍 Explore massive 3D planets</li>
+                    <li>🏗️ Build and create like Minecraft</li>
+                    <li>👽 Meet animated alien friends</li>
+                    <li>🎯 Complete epic missions</li>
+                    <li>📱 Works on phones and tablets</li>
+                </ul>
+                
+                <p><strong>🔥 NEW ADDICTIVE FEATURES:</strong></p>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>🐾 <strong>Pet System</strong> - Adopt cosmic pets like Adopt Me!</li>
+                    <li>🏠 <strong>House Building</strong> - Buy and customize houses like Brookhaven!</li>
+                    <li>💱 <strong>Trading System</strong> - Trade pets and items with other players!</li>
+                    <li>⚔️ <strong>Battle Royale</strong> - Fight in epic space battles like Fortnite!</li>
+                    <li>🎮 <strong>Mini-Games</strong> - Play fun games to earn rewards!</li>
+                    <li>🏆 <strong>Achievements</strong> - Unlock rewards and show off your progress!</li>
+                    <li>👥 <strong>Social Features</strong> - Chat and make friends like Among Us!</li>
+                </ul>
+                
+                <p><strong>🎮 Controls:</strong></p>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>WASD to move around</li>
+                    <li>Mouse to look around</li>
+                    <li>Space to jump and fly</li>
+                    <li>E to interact with objects</li>
+                    <li>R to build structures</li>
+                    <li>Click buttons to access shops and features!</li>
+                </ul>
+                
+                <div style="background: rgba(255, 215, 0, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0; border: 1px solid #ffd700;">
+                    <strong>⚡ Performance Optimized!</strong><br>
+                    The game has been optimized for smooth gameplay with realistic planets, moons, asteroids, and nebula. If you experience any lag, try refreshing the page or using a different browser.
+                </div>
+                
+                <p>Get ready for an adventure like no other! The galaxy is waiting for you to explore, collect, trade, and battle!</p>
+            </div>
+            <button class="story-btn" onclick="startGame()">🚀 Begin 3D Adventure!</button>
+        </div>
+    </div>
+
+    <script>
+        // 3D Game Engine - Part 1: Core Setup
+        class SpaceAdventure3D {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.minimapCanvas = document.getElementById('minimapCanvas');
+                this.minimapCtx = this.minimapCanvas.getContext('2d');
+                
+                this.setupCanvas();
+                this.setupInput();
+                this.setupTouchControls();
+                this.initializeGame();
+            }
+            
+            setupCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                
+                window.addEventListener('resize', () => {
+                    this.canvas.width = window.innerWidth;
+                    this.canvas.height = window.innerHeight;
+                });
+            }
+            
+            setupInput() {
+                this.keys = {};
+                this.mouse = { x: 0, y: 0, down: false };
+                this.camera = { x: 0, y: 0, angle: 0, zoom: 1 };
+                
+                document.addEventListener('keydown', (e) => {
+                    this.keys[e.code] = true;
+                });
+                
+                document.addEventListener('keyup', (e) => {
+                    this.keys[e.code] = false;
+                });
+                
+                this.canvas.addEventListener('mousemove', (e) => {
+                    this.mouse.x = e.clientX;
+                    this.mouse.y = e.clientY;
+                    this.updateCamera();
+                });
+                
+                this.canvas.addEventListener('mousedown', (e) => {
+                    this.mouse.down = true;
+                });
+                
+                this.canvas.addEventListener('mouseup', (e) => {
+                    this.mouse.down = false;
+                });
+                
+                this.canvas.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                });
+            }
+            
+            setupTouchControls() {
+                this.joystickActive = false;
+                this.joystickCenter = { x: 0, y: 0 };
+                this.joystickOffset = { x: 0, y: 0 };
+                
+                const joystick = document.getElementById('joystick');
+                const joystickKnob = document.getElementById('joystickKnob');
+                
+                joystick.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.joystickActive = true;
+                    const rect = joystick.getBoundingClientRect();
+                    this.joystickCenter.x = rect.left + rect.width / 2;
+                    this.joystickCenter.y = rect.top + rect.height / 2;
+                });
+                
+                joystick.addEventListener('touchmove', (e) => {
+                    if (!this.joystickActive) return;
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    this.joystickOffset.x = touch.clientX - this.joystickCenter.x;
+                    this.joystickOffset.y = touch.clientY - this.joystickCenter.y;
+                    
+                    const distance = Math.sqrt(this.joystickOffset.x ** 2 + this.joystickOffset.y ** 2);
+                    const maxDistance = 30;
+                    
+                    if (distance > maxDistance) {
+                        this.joystickOffset.x = (this.joystickOffset.x / distance) * maxDistance;
+                        this.joystickOffset.y = (this.joystickOffset.y / distance) * maxDistance;
+                    }
+                    
+                    joystickKnob.style.transform = `translate(${this.joystickOffset.x}px, ${this.joystickOffset.y}px)`;
+                });
+                
+                joystick.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.joystickActive = false;
+                    this.joystickOffset.x = 0;
+                    this.joystickOffset.y = 0;
+                    joystickKnob.style.transform = 'translate(0px, 0px)';
+                });
+                
+                // Action buttons
+                document.getElementById('jumpBtn').addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.keys['Space'] = true;
+                });
+                
+                document.getElementById('jumpBtn').addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.keys['Space'] = false;
+                });
+                
+                document.getElementById('interactBtn').addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.keys['KeyE'] = true;
+                });
+                
+                document.getElementById('interactBtn').addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.keys['KeyE'] = false;
+                });
+                
+                document.getElementById('buildBtn').addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.keys['KeyR'] = true;
+                });
+                
+                document.getElementById('buildBtn').addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.keys['KeyR'] = false;
+                });
+            }
+            
+            updateCamera() {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                
+                const deltaX = this.mouse.x - centerX;
+                const deltaY = this.mouse.y - centerY;
+                
+                this.camera.angle += deltaX * 0.001;
+                this.camera.x += deltaX * 0.1;
+                this.camera.y += deltaY * 0.1;
+            }
+            
+            initializeGame() {
+                this.gameState = 'loading';
+                this.lastFrameTime = 0; // For FPS limiting
+                this.player = {
+                    name: 'Captain Alex',
+                    level: 1,
+                    x: 0,
+                    y: 0,
+                    z: 0,
+                    vx: 0,
+                    vy: 0,
+                    vz: 0,
+                    width: 20,
+                    height: 30,
+                    health: 100,
+                    energy: 100,
+                    fuel: 100,
+                    credits: 1000,
+                    planetsVisited: 0,
+                    onGround: false,
+                    flying: false,
+                    animationFrame: 0,
+                    animationSpeed: 0.1,
+                    // NEW ADDICTIVE FEATURES
+                    pets: [],
+                    house: null,
+                    achievements: [],
+                    friends: [],
+                    inventory: [],
+                    currentJob: null,
+                    reputation: 0,
+                    experience: 0,
+                    coins: 1000,
+                    gems: 50,
+                    vehicles: ['Stellar Explorer'],
+                    currentVehicle: 'Stellar Explorer', // Give player a spaceship by default!
+                    chatMessages: [],
+                    isOnline: true,
+                    lastSeen: Date.now(),
+                    customization: {
+                        skin: '#4a9eff',
+                        outfit: 'space_suit',
+                        accessories: []
+                    }
+                };
+                
+                this.world = {
+                    planets: [],
+                    spaceStations: [],
+                    aliens: [],
+                    buildings: [],
+                    particles: [],
+                    // NEW WORLD FEATURES
+                    pets: [],
+                    houses: [],
+                    shops: [],
+                    events: [],
+                    miniGames: [],
+                    tradingPosts: [],
+                    battleArenas: []
+                };
+                
+                this.createWorld();
+                this.startLoading();
+            }
+            
+            createWorld() {
+                // Create realistic 3D planets with detailed characteristics
+                const planetTypes = [
+                    { 
+                        name: 'Terra Nova', 
+                        color: '#4CAF50', 
+                        size: 120, 
+                        type: 'Earth-like',
+                        atmosphere: '#87CEEB',
+                        surface: ['oceans', 'continents', 'clouds'],
+                        temperature: '22°C',
+                        gravity: '1.0g',
+                        population: '2.3 billion',
+                        resources: ['water', 'oxygen', 'minerals'],
+                        orbitRadius: 300,
+                        orbitSpeed: 0.005,
+                        rotationSpeed: 0.02
+                    },
+                    { 
+                        name: 'Crimson Desert', 
+                        color: '#FF5722', 
+                        size: 100, 
+                        type: 'Desert',
+                        atmosphere: '#FF8A65',
+                        surface: ['sand dunes', 'rock formations', 'dust storms'],
+                        temperature: '45°C',
+                        gravity: '0.8g',
+                        population: '500 million',
+                        resources: ['rare metals', 'crystals'],
+                        orbitRadius: 200,
+                        orbitSpeed: 0.008,
+                        rotationSpeed: 0.015
+                    },
+                    { 
+                        name: 'Ice World', 
+                        color: '#2196F3', 
+                        size: 140, 
+                        type: 'Frozen',
+                        atmosphere: '#B3E5FC',
+                        surface: ['ice sheets', 'glaciers', 'frozen oceans'],
+                        temperature: '-50°C',
+                        gravity: '1.2g',
+                        population: '100 million',
+                        resources: ['ice', 'frozen gases'],
+                        orbitRadius: 400,
+                        orbitSpeed: 0.003,
+                        rotationSpeed: 0.01
+                    },
+                    { 
+                        name: 'Volcanic Planet', 
+                        color: '#FF9800', 
+                        size: 110, 
+                        type: 'Volcanic',
+                        atmosphere: '#FFB74D',
+                        surface: ['lava flows', 'volcanoes', 'ash clouds'],
+                        temperature: '200°C',
+                        gravity: '1.1g',
+                        population: '50 million',
+                        resources: ['lava', 'metals', 'gases'],
+                        orbitRadius: 250,
+                        orbitSpeed: 0.006,
+                        rotationSpeed: 0.025
+                    },
+                    { 
+                        name: 'Crystal World', 
+                        color: '#9C27B0', 
+                        size: 130, 
+                        type: 'Crystalline',
+                        atmosphere: '#CE93D8',
+                        surface: ['crystal formations', 'prismatic fields', 'energy crystals'],
+                        temperature: '15°C',
+                        gravity: '0.9g',
+                        population: '800 million',
+                        resources: ['crystals', 'energy', 'rare elements'],
+                        orbitRadius: 350,
+                        orbitSpeed: 0.004,
+                        rotationSpeed: 0.018
+                    }
+                ];
+                
+                for (let i = 0; i < planetTypes.length; i++) {
+                    const planet = {
+                        ...planetTypes[i],
+                        x: 0, // Will be calculated based on orbit
+                        y: 0,
+                        z: 0,
+                        angle: i * (Math.PI * 2 / planetTypes.length), // Starting orbital position
+                        orbitAngle: i * (Math.PI * 2 / planetTypes.length),
+                        visited: false,
+                        buildings: [],
+                        aliens: [],
+                        moons: [],
+                        rings: Math.random() > 0.7, // Some planets have rings
+                        ringColor: Math.random() > 0.5 ? '#FFD700' : '#C0C0C0'
+                    };
+                    
+                    // Calculate initial orbital position
+                    planet.x = Math.cos(planet.orbitAngle) * planet.orbitRadius;
+                    planet.z = Math.sin(planet.orbitAngle) * planet.orbitRadius;
+                    
+                    // Add realistic moons (reduced for performance)
+                    const moonCount = Math.floor(Math.random() * 2) + 1; // Max 2 moons instead of 3
+                    for (let m = 0; m < moonCount; m++) {
+                        planet.moons.push({
+                            size: 12 + Math.random() * 8, // Reduced size
+                            color: '#C0C0C0',
+                            orbitRadius: planet.size + 25 + m * 15, // Reduced orbit
+                            orbitSpeed: planet.orbitSpeed * (1.5 + Math.random() * 0.5), // Reduced speed
+                            angle: Math.random() * Math.PI * 2
+                        });
+                    }
+                    
+                    // Add animated aliens to each planet (reduced for performance)
+                    for (let j = 0; j < 2; j++) { // Reduced from 5 to 2
+                        planet.aliens.push({
+                            x: planet.x + (Math.random() - 0.5) * 200,
+                            y: planet.y + planet.size / 2,
+                            z: planet.z + (Math.random() - 0.5) * 200,
+                            width: 20,
+                            height: 30,
+                            color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+                            friendly: Math.random() > 0.3,
+                            name: `Alien ${j + 1}`,
+                            vx: (Math.random() - 0.5) * 2,
+                            vy: 0,
+                            vz: (Math.random() - 0.5) * 2,
+                            animationFrame: 0,
+                            animationSpeed: 0.05 + Math.random() * 0.05
+                        });
+                    }
+                    
+                    this.world.planets.push(planet);
+                }
+                
+                // Create space stations
+                for (let i = 0; i < 3; i++) {
+                    this.world.spaceStations.push({
+                        x: (i - 1) * 400,
+                        y: 50,
+                        z: 0,
+                        width: 80,
+                        height: 60,
+                        type: 'Trading Post',
+                        services: ['Fuel', 'Repairs', 'Trading'],
+                        animationFrame: 0,
+                        animationSpeed: 0.02
+                    });
+                }
+                
+                // CREATE REALISTIC SPACE ENVIRONMENT
+                
+                // 1. Create realistic nebula and cosmic effects
+                this.createNebulaEffects();
+                
+                // 2. Create asteroid fields
+                this.createAsteroidFields();
+                
+                // 3. Create realistic space stations
+                this.createRealisticSpaceStations();
+                
+                // 4. CREATE ADDICTIVE FEATURES BASED ON MARKET RESEARCH
+                
+                // 5. PET SYSTEM (Adopt Me Style)
+                this.createPetSystem();
+                
+                // 6. HOUSE BUILDING SYSTEM (Brookhaven Style)
+                this.createHouseSystem();
+                
+                // 7. TRADING SYSTEM (Adopt Me Style)
+                this.createTradingSystem();
+                
+                // 8. BATTLE ROYALE ARENAS (Fortnite Style)
+                this.createBattleArenas();
+                
+                // 9. SOCIAL FEATURES (Among Us Style)
+                this.createSocialFeatures();
+                
+                // 10. MINI-GAMES (Roblox Style)
+                this.createMiniGames();
+                
+                // 11. ACHIEVEMENT SYSTEM (Minecraft Style)
+                this.createAchievementSystem();
+            }
+            
+            startLoading() {
+                const loadingSteps = [
+                    'Initializing 3D Engine...',
+                    'Loading Space Environment...',
+                    'Creating Planets...',
+                    'Spawning Aliens...',
+                    'Setting up Physics...',
+                    'WebGL Ready!',
+                    'Ready for Launch!'
+                ];
+                
+                let currentStep = 0;
+                const progressElement = document.getElementById('loadingProgress');
+                
+                // Check WebGL support immediately
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                
+                if (!gl) {
+                    progressElement.textContent = 'WebGL not supported - Using Canvas fallback';
+                    setTimeout(() => this.finishLoading(), 1000);
+                    return;
+                }
+                
+                const loadingInterval = setInterval(() => {
+                    if (currentStep < loadingSteps.length) {
+                        progressElement.textContent = loadingSteps[currentStep];
+                        currentStep++;
+                    } else {
+                        clearInterval(loadingInterval);
+                        this.finishLoading();
+                    }
+                }, 600); // Faster loading
+            }
+            
+            finishLoading() {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('storyModal').style.display = 'flex';
+            }
+            
+            startGame() {
+                document.getElementById('storyModal').style.display = 'none';
+                this.gameState = 'playing';
+                this.gameLoop();
+            }
+            
+            update() {
+                if (this.gameState !== 'playing') return;
+                
+                // Handle input
+                let inputX = 0;
+                let inputZ = 0;
+                
+                if (this.keys['KeyA'] || this.keys['ArrowLeft']) inputX = -1;
+                if (this.keys['KeyD'] || this.keys['ArrowRight']) inputX = 1;
+                if (this.keys['KeyW'] || this.keys['ArrowUp']) inputZ = -1;
+                if (this.keys['KeyS'] || this.keys['ArrowDown']) inputZ = 1;
+                
+                // Mobile joystick input
+                if (this.joystickActive) {
+                    inputX = this.joystickOffset.x / 30;
+                    inputZ = this.joystickOffset.y / 30;
+                }
+                
+                // Player movement
+                const speed = this.keys['ShiftLeft'] ? 4 : 2;
+                this.player.vx = inputX * speed;
+                this.player.vz = inputZ * speed;
+                
+                // Jumping/Flying
+                if (this.keys['Space'] && this.player.onGround) {
+                    this.player.vy = 8;
+                    this.player.onGround = false;
+                    this.player.flying = true;
+                }
+                
+                // Gravity
+                if (!this.player.onGround) {
+                    this.player.vy -= 0.3;
+                }
+                
+                // Update position
+                this.player.x += this.player.vx;
+                this.player.y += this.player.vy;
+                this.player.z += this.player.vz;
+                
+                // Ground collision
+                if (this.player.y <= 0) {
+                    this.player.y = 0;
+                    this.player.vy = 0;
+                    this.player.onGround = true;
+                    this.player.flying = false;
+                }
+                
+                // Update animations
+                this.player.animationFrame += this.player.animationSpeed;
+                
+                // Update planets with realistic orbital mechanics
+                this.world.planets.forEach(planet => {
+                    // Planet rotation
+                    planet.angle += planet.rotationSpeed;
+                    
+                    // Orbital mechanics - planets orbit around the center
+                    planet.orbitAngle += planet.orbitSpeed;
+                    planet.x = Math.cos(planet.orbitAngle) * planet.orbitRadius;
+                    planet.z = Math.sin(planet.orbitAngle) * planet.orbitRadius;
+                    
+                    // Update moons
+                    planet.moons.forEach(moon => {
+                        moon.angle += moon.orbitSpeed;
+                        moon.x = planet.x + Math.cos(moon.angle) * moon.orbitRadius;
+                        moon.z = planet.z + Math.sin(moon.angle) * moon.orbitRadius;
+                    });
+                    
+                    // Update planet aliens
+                    planet.aliens.forEach(alien => {
+                        alien.x += alien.vx;
+                        alien.z += alien.vz;
+                        alien.animationFrame += alien.animationSpeed;
+                        
+                        // Bounce aliens around
+                        if (alien.x < planet.x - 100) alien.vx = Math.abs(alien.vx);
+                        if (alien.x > planet.x + 100) alien.vx = -Math.abs(alien.vx);
+                        if (alien.z < planet.z - 100) alien.vz = Math.abs(alien.vz);
+                        if (alien.z > planet.z + 100) alien.vz = -Math.abs(alien.vz);
+                    });
+                });
+                
+                // Update realistic space environment
+                this.world.nebulas.forEach(nebula => {
+                    nebula.animationFrame += nebula.animationSpeed;
+                });
+                
+                this.world.asteroids.forEach(asteroid => {
+                    asteroid.rotation += asteroid.rotationSpeed;
+                    asteroid.x += asteroid.vx;
+                    asteroid.y += asteroid.vy;
+                    asteroid.z += asteroid.vz;
+                    
+                    // Wrap asteroids around
+                    if (asteroid.x > 1000) asteroid.x = -1000;
+                    if (asteroid.x < -1000) asteroid.x = 1000;
+                    if (asteroid.y > 500) asteroid.y = -500;
+                    if (asteroid.y < -500) asteroid.y = 500;
+                    if (asteroid.z > 1000) asteroid.z = -1000;
+                    if (asteroid.z < -1000) asteroid.z = 1000;
+                });
+                
+                // Update space stations
+                this.world.spaceStations.forEach(station => {
+                    station.animationFrame += station.animationSpeed;
+                });
+                
+                // Regenerate energy
+                if (this.player.energy < 100) this.player.energy += 0.1;
+                if (this.player.fuel < 100) this.player.fuel += 0.05;
+                
+                // Update UI
+                this.updateUI();
+                this.updateMinimap();
+            }
+            
+            render() {
+                if (this.gameState !== 'playing') return;
+                
+                // Create stunning starfield background
+                this.drawStarfield();
+                
+                // Clear canvas with space effect
+                this.ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Apply camera transform
+                this.ctx.save();
+                this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+                this.ctx.scale(this.camera.zoom, this.camera.zoom);
+                this.ctx.rotate(this.camera.angle);
+                this.ctx.translate(-this.player.x, -this.player.y);
+                
+                // Draw realistic space environment
+                this.world.nebulas.forEach(nebula => {
+                    this.drawNebula(nebula);
+                });
+                
+                this.world.asteroids.forEach(asteroid => {
+                    this.drawAsteroid(asteroid);
+                });
+                
+                // Draw 3D planets with realistic orbital mechanics
+                this.world.planets.forEach(planet => {
+                    this.draw3DPlanet(planet);
+                });
+                
+                // Draw realistic space stations
+                this.world.spaceStations.forEach(station => {
+                    this.drawSpaceStation(station);
+                });
+                
+                // Draw new addictive features with enhanced visuals
+                this.world.pets.forEach(pet => {
+                    this.drawPet(pet);
+                });
+                
+                this.world.houses.forEach(house => {
+                    this.drawHouse(house);
+                });
+                
+                this.world.tradingPosts.forEach(post => {
+                    this.drawTradingPost(post);
+                });
+                
+                this.world.battleArenas.forEach(arena => {
+                    this.drawBattleArena(arena);
+                });
+                
+                this.world.miniGames.forEach(game => {
+                    this.drawMiniGame(game);
+                });
+                
+                // Draw player with enhanced visibility
+                this.drawPlayer();
+                
+                // Draw spaceship if player has one
+                if (this.player.currentVehicle) {
+                    this.drawSpaceship();
+                }
+                
+                this.ctx.restore();
+                
+                // Draw particle effects
+                this.drawParticleEffects();
+            }
+            
+            drawStarfield() {
+                // Ultra-optimized animated starfield - minimal particles for maximum stability
+                const time = Date.now() * 0.001;
+                
+                for (let i = 0; i < 20; i++) { // Reduced from 50 to 20 for maximum stability
+                    const x = (Math.sin(i * 0.1 + time) * this.canvas.width / 2) + this.canvas.width / 2;
+                    const y = (Math.cos(i * 0.1 + time * 0.5) * this.canvas.height / 2) + this.canvas.height / 2;
+                    const size = Math.sin(i * 0.2 + time) * 1 + 0.5; // Reduced size
+                    const opacity = Math.sin(i * 0.3 + time) * 0.2 + 0.3; // Reduced opacity
+                    
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+            
+            drawParticleEffects() {
+                // Ultra-optimized floating particles - minimal count for maximum stability
+                const time = Date.now() * 0.001;
+                
+                for (let i = 0; i < 10; i++) { // Reduced from 20 to 10 for maximum stability
+                    const x = (Math.sin(i * 0.2 + time) * this.canvas.width) + this.canvas.width / 2;
+                    const y = (Math.cos(i * 0.15 + time * 0.8) * this.canvas.height) + this.canvas.height / 2;
+                    const size = Math.sin(i * 0.3 + time) * 1.5 + 0.5; // Reduced size
+                    const opacity = Math.sin(i * 0.4 + time) * 0.15 + 0.1; // Reduced opacity
+                    
+                    this.ctx.fillStyle = `rgba(74, 158, 255, ${opacity})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+            
+            draw3DPlanet(planet) {
+                const screenX = planet.x - this.player.x;
+                const screenY = planet.y - this.player.y;
+                const screenZ = planet.z - this.player.z;
+                
+                // 3D projection
+                const scale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedSize = planet.size * scale;
+                
+                if (projectedSize < 5) return; // Don't draw if too small
+                
+                // REALISTIC PLANET RENDERING
+                
+                // 1. Planet Shadow (dark side)
+                const shadowGradient = this.ctx.createRadialGradient(
+                    projectedX - projectedSize/2, projectedY - projectedSize/2, 0,
+                    projectedX, projectedY, projectedSize
+                );
+                shadowGradient.addColorStop(0, this.darkenColor(planet.color, 0.8));
+                shadowGradient.addColorStop(0.3, this.darkenColor(planet.color, 0.6));
+                shadowGradient.addColorStop(0.7, planet.color);
+                shadowGradient.addColorStop(1, this.lightenColor(planet.color, 0.2));
+                
+                this.ctx.fillStyle = shadowGradient;
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX, projectedY, projectedSize, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // 2. Planet Surface Details (simplified for performance)
+                this.ctx.fillStyle = this.darkenColor(planet.color, 0.3);
+                for (let i = 0; i < 2; i++) { // Reduced from planet.surface.length to 2
+                    const detailX = projectedX + (Math.sin(i * 1.2 + planet.angle) * projectedSize * 0.6);
+                    const detailY = projectedY + (Math.cos(i * 1.2 + planet.angle) * projectedSize * 0.6);
+                    const detailSize = projectedSize * 0.15;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(detailX, detailY, detailSize, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                // 3. Planet Atmosphere
+                const atmosphere = this.ctx.createRadialGradient(
+                    projectedX, projectedY, projectedSize * 0.8,
+                    projectedX, projectedY, projectedSize * 1.3
+                );
+                atmosphere.addColorStop(0, 'transparent');
+                atmosphere.addColorStop(0.3, planet.atmosphere + '30');
+                atmosphere.addColorStop(0.7, planet.atmosphere + '20');
+                atmosphere.addColorStop(1, 'transparent');
+                
+                this.ctx.fillStyle = atmosphere;
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX, projectedY, projectedSize * 1.3, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // 4. Planet Rings (if applicable)
+                if (planet.rings) {
+                    this.ctx.strokeStyle = planet.ringColor;
+                    this.ctx.lineWidth = 3 * scale;
+                    this.ctx.beginPath();
+                    this.ctx.arc(projectedX, projectedY, projectedSize * 1.5, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(projectedX, projectedY, projectedSize * 1.7, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                }
+                
+                // 5. Planet Glow Effect
+                this.ctx.shadowColor = planet.color;
+                this.ctx.shadowBlur = 40 * scale;
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX, projectedY, projectedSize, 0, Math.PI * 2);
+                this.ctx.fill();
+                this.ctx.shadowBlur = 0;
+                
+                // 6. Draw Moons
+                planet.moons.forEach(moon => {
+                    const moonScreenX = moon.x - this.player.x;
+                    const moonScreenZ = moon.z - this.player.z;
+                    const moonScale = 1 / (1 + screenZ / 1000);
+                    const moonProjectedX = moonScreenX * moonScale;
+                    const moonProjectedY = projectedY;
+                    const moonProjectedSize = moon.size * moonScale;
+                    
+                    if (moonProjectedSize > 1) {
+                        this.ctx.fillStyle = moon.color;
+                        this.ctx.beginPath();
+                        this.ctx.arc(moonProjectedX, moonProjectedY, moonProjectedSize, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        
+                        // Moon glow
+                        this.ctx.shadowColor = moon.color;
+                        this.ctx.shadowBlur = 10 * moonScale;
+                        this.ctx.beginPath();
+                        this.ctx.arc(moonProjectedX, moonProjectedY, moonProjectedSize, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        this.ctx.shadowBlur = 0;
+                    }
+                });
+                
+                // 7. Planet Information Display
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.font = `bold ${16 * scale}px Arial`;
+                this.ctx.textAlign = 'center';
+                this.ctx.strokeStyle = '#000000';
+                this.ctx.lineWidth = 3 * scale;
+                this.ctx.strokeText(planet.name, projectedX, projectedY - projectedSize - 20);
+                this.ctx.fillText(planet.name, projectedX, projectedY - projectedSize - 20);
+                
+                // Planet stats
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.font = `${10 * scale}px Arial`;
+                this.ctx.fillText(`${planet.temperature} | ${planet.gravity} | Pop: ${planet.population}`, projectedX, projectedY - projectedSize - 40);
+                
+                // Draw planet aliens
+                planet.aliens.forEach(alien => {
+                    this.drawAlien(alien, scale);
+                });
+            }
+            
+            drawAlien(alien, scale) {
+                const screenX = alien.x - this.player.x;
+                const screenY = alien.y - this.player.y;
+                const screenZ = alien.z - this.player.z;
+                
+                const alienScale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * alienScale;
+                const projectedY = screenY * alienScale;
+                const projectedSize = alien.width * alienScale;
+                
+                if (projectedSize < 2) return;
+                
+                // Enhanced animated alien body
+                const bounce = Math.sin(alien.animationFrame) * 4;
+                const wiggle = Math.sin(alien.animationFrame * 2) * 3;
+                const pulse = Math.sin(alien.animationFrame * 3) * 0.2 + 1;
+                
+                // Alien body with gradient
+                const alienGradient = this.ctx.createLinearGradient(
+                    projectedX - projectedSize/2, projectedY - projectedSize,
+                    projectedX + projectedSize/2, projectedY + projectedSize
+                );
+                alienGradient.addColorStop(0, alien.color);
+                alienGradient.addColorStop(0.5, this.lightenColor(alien.color, 0.3));
+                alienGradient.addColorStop(1, alien.color);
+                
+                this.ctx.fillStyle = alienGradient;
+                this.ctx.fillRect(
+                    projectedX - projectedSize/2 * pulse + wiggle,
+                    projectedY - projectedSize - bounce,
+                    projectedSize * pulse,
+                    projectedSize * 1.5 * pulse
+                );
+                
+                // Alien head
+                this.ctx.fillStyle = this.lightenColor(alien.color, 0.2);
+                this.ctx.beginPath();
+                this.ctx.arc(
+                    projectedX + wiggle, 
+                    projectedY - projectedSize - bounce - 8, 
+                    6 * alienScale * pulse, 
+                    0, Math.PI * 2
+                );
+                this.ctx.fill();
+                
+                // Alien eyes
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX - 2 + wiggle, projectedY - projectedSize - bounce - 10, 1.5 * alienScale * pulse, 0, Math.PI * 2);
+                this.ctx.arc(projectedX + 2 + wiggle, projectedY - projectedSize - bounce - 10, 1.5 * alienScale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Alien pupils
+                this.ctx.fillStyle = '#000000';
+                this.ctx.beginPath();
+                this.ctx.arc(projectedX - 2 + wiggle, projectedY - projectedSize - bounce - 10, 0.8 * alienScale * pulse, 0, Math.PI * 2);
+                this.ctx.arc(projectedX + 2 + wiggle, projectedY - projectedSize - bounce - 10, 0.8 * alienScale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Alien glow
+                this.ctx.shadowColor = alien.color;
+                this.ctx.shadowBlur = 15 * alienScale;
+                this.ctx.fillRect(
+                    projectedX - projectedSize/2 * pulse + wiggle,
+                    projectedY - projectedSize - bounce,
+                    projectedSize * pulse,
+                    projectedSize * 1.5 * pulse
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // Alien name if friendly
+                if (alien.friendly) {
+                    this.ctx.fillStyle = '#4CAF50';
+                    this.ctx.font = `${8 * alienScale}px Arial`;
+                    this.ctx.textAlign = 'center';
+                    this.ctx.strokeStyle = '#000000';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.strokeText(alien.name, projectedX + wiggle, projectedY - projectedSize - bounce - 20);
+                    this.ctx.fillText(alien.name, projectedX + wiggle, projectedY - projectedSize - bounce - 20);
+                }
+            }
+            
+            drawSpaceStation(station) {
+                const screenX = station.x - this.player.x;
+                const screenY = station.y - this.player.y;
+                const screenZ = station.z - this.player.z;
+                
+                const scale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedWidth = station.width * scale;
+                const projectedHeight = station.height * scale;
+                
+                if (projectedWidth < 5) return;
+                
+                // Animated station
+                const pulse = Math.sin(station.animationFrame) * 0.1 + 1;
+                
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.fillRect(
+                    projectedX - projectedWidth/2 * pulse,
+                    projectedY - projectedHeight/2 * pulse,
+                    projectedWidth * pulse,
+                    projectedHeight * pulse
+                );
+                
+                // Station glow
+                this.ctx.shadowColor = '#ffd700';
+                this.ctx.shadowBlur = 15 * scale;
+                this.ctx.fillRect(
+                    projectedX - projectedWidth/2 * pulse,
+                    projectedY - projectedHeight/2 * pulse,
+                    projectedWidth * pulse,
+                    projectedHeight * pulse
+                );
+                this.ctx.shadowBlur = 0;
+            }
+            
+            drawPlayer() {
+                const bounce = Math.sin(this.player.animationFrame) * 3;
+                const scale = this.player.flying ? 1.3 : 1;
+                const pulse = Math.sin(this.player.animationFrame * 2) * 0.1 + 1;
+                
+                // Player body with enhanced visibility
+                const gradient = this.ctx.createLinearGradient(
+                    -this.player.width/2, -this.player.height/2,
+                    this.player.width/2, this.player.height/2
+                );
+                gradient.addColorStop(0, this.player.customization.skin);
+                gradient.addColorStop(0.5, this.lightenColor(this.player.customization.skin, 0.3));
+                gradient.addColorStop(1, this.player.customization.skin);
+                
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(
+                    -this.player.width/2 * scale * pulse,
+                    -this.player.height/2 * scale * pulse - bounce,
+                    this.player.width * scale * pulse,
+                    this.player.height * scale * pulse
+                );
+                
+                // Player outline for visibility
+                this.ctx.strokeStyle = '#ffd700';
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeRect(
+                    -this.player.width/2 * scale * pulse,
+                    -this.player.height/2 * scale * pulse - bounce,
+                    this.player.width * scale * pulse,
+                    this.player.height * scale * pulse
+                );
+                
+                // Player glow effect
+                this.ctx.shadowColor = this.player.customization.skin;
+                this.ctx.shadowBlur = 25;
+                this.ctx.fillRect(
+                    -this.player.width/2 * scale * pulse,
+                    -this.player.height/2 * scale * pulse - bounce,
+                    this.player.width * scale * pulse,
+                    this.player.height * scale * pulse
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // Player head
+                this.ctx.fillStyle = this.lightenColor(this.player.customization.skin, 0.2);
+                this.ctx.beginPath();
+                this.ctx.arc(0, -this.player.height/2 * scale * pulse - bounce - 10, 8 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Player eyes
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.beginPath();
+                this.ctx.arc(-3 * scale * pulse, -this.player.height/2 * scale * pulse - bounce - 12, 2 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.arc(3 * scale * pulse, -this.player.height/2 * scale * pulse - bounce - 12, 2 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Player eye pupils
+                this.ctx.fillStyle = '#000000';
+                this.ctx.beginPath();
+                this.ctx.arc(-3 * scale * pulse, -this.player.height/2 * scale * pulse - bounce - 12, 1 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.arc(3 * scale * pulse, -this.player.height/2 * scale * pulse - bounce - 12, 1 * scale * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Jetpack trail if flying
+                if (this.player.flying) {
+                    const trailGradient = this.ctx.createLinearGradient(0, this.player.height/2, 0, this.player.height/2 + 40);
+                    trailGradient.addColorStop(0, '#ffd700');
+                    trailGradient.addColorStop(0.5, '#ff6b6b');
+                    trailGradient.addColorStop(1, 'transparent');
+                    
+                    this.ctx.fillStyle = trailGradient;
+                    this.ctx.fillRect(
+                        -3 * scale * pulse,
+                        this.player.height/2 * scale * pulse,
+                        6 * scale * pulse,
+                        40 * scale * pulse
+                    );
+                }
+                
+                // Player name tag
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.font = `bold ${12 * scale * pulse}px Arial`;
+                this.ctx.textAlign = 'center';
+                this.ctx.strokeStyle = '#000000';
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeText(this.player.name, 0, -this.player.height/2 * scale * pulse - bounce - 25);
+                this.ctx.fillText(this.player.name, 0, -this.player.height/2 * scale * pulse - bounce - 25);
+            }
+            
+            drawSpaceship() {
+                if (!this.player.currentVehicle) return;
+                
+                const shipX = this.player.x + 50;
+                const shipY = this.player.y - 20;
+                const shipWidth = 40;
+                const shipHeight = 20;
+                const pulse = Math.sin(this.player.animationFrame * 3) * 0.1 + 1;
+                
+                // Spaceship body
+                const shipGradient = this.ctx.createLinearGradient(
+                    shipX - shipWidth/2, shipY - shipHeight/2,
+                    shipX + shipWidth/2, shipY + shipHeight/2
+                );
+                shipGradient.addColorStop(0, '#4a9eff');
+                shipGradient.addColorStop(0.5, '#6bb6ff');
+                shipGradient.addColorStop(1, '#2196F3');
+                
+                this.ctx.fillStyle = shipGradient;
+                this.ctx.fillRect(
+                    shipX - shipWidth/2 * pulse,
+                    shipY - shipHeight/2 * pulse,
+                    shipWidth * pulse,
+                    shipHeight * pulse
+                );
+                
+                // Spaceship wings
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.fillRect(shipX - shipWidth/2 * pulse - 10, shipY - 5 * pulse, 10 * pulse, 10 * pulse);
+                this.ctx.fillRect(shipX + shipWidth/2 * pulse, shipY - 5 * pulse, 10 * pulse, 10 * pulse);
+                
+                // Spaceship cockpit
+                this.ctx.fillStyle = '#87CEEB';
+                this.ctx.beginPath();
+                this.ctx.arc(shipX, shipY, 8 * pulse, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Spaceship glow
+                this.ctx.shadowColor = '#4a9eff';
+                this.ctx.shadowBlur = 20;
+                this.ctx.fillRect(
+                    shipX - shipWidth/2 * pulse,
+                    shipY - shipHeight/2 * pulse,
+                    shipWidth * pulse,
+                    shipHeight * pulse
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // Engine trails
+                const engineGradient = this.ctx.createLinearGradient(0, shipY + shipHeight/2, 0, shipY + shipHeight/2 + 30);
+                engineGradient.addColorStop(0, '#ffd700');
+                engineGradient.addColorStop(0.5, '#ff6b6b');
+                engineGradient.addColorStop(1, 'transparent');
+                
+                this.ctx.fillStyle = engineGradient;
+                this.ctx.fillRect(shipX - 5 * pulse, shipY + shipHeight/2 * pulse, 4 * pulse, 30 * pulse);
+                this.ctx.fillRect(shipX + 1 * pulse, shipY + shipHeight/2 * pulse, 4 * pulse, 30 * pulse);
+            }
+            
+            // ===== DRAWING METHODS FOR ADDICTIVE FEATURES =====
+            
+            drawPet(pet) {
+                const screenX = pet.x - this.player.x;
+                const screenY = pet.y - this.player.y;
+                const screenZ = pet.z - this.player.z;
+                
+                const scale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedSize = pet.size * scale;
+                
+                if (projectedSize < 2) return;
+                
+                // Animated pet
+                const bounce = Math.sin(pet.animationFrame) * 3;
+                const wiggle = Math.sin(pet.animationFrame * 2) * 2;
+                
+                this.ctx.fillStyle = pet.color;
+                this.ctx.fillRect(
+                    projectedX - projectedSize/2 + wiggle,
+                    projectedY - projectedSize - bounce,
+                    projectedSize,
+                    projectedSize * 1.2
+                );
+                
+                // Pet glow
+                this.ctx.shadowColor = pet.color;
+                this.ctx.shadowBlur = 8 * scale;
+                this.ctx.fillRect(
+                    projectedX - projectedSize/2 + wiggle,
+                    projectedY - projectedSize - bounce,
+                    projectedSize,
+                    projectedSize * 1.2
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // Pet name if owned
+                if (pet.owner) {
+                    this.ctx.fillStyle = '#ffd700';
+                    this.ctx.font = `${10 * scale}px Arial`;
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(pet.name, projectedX, projectedY - projectedSize - 15);
+                }
+            }
+            
+            drawHouse(house) {
+                const screenX = house.x - this.player.x;
+                const screenY = house.y - this.player.y;
+                const screenZ = house.z - this.player.z;
+                
+                const scale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedWidth = house.width * scale;
+                const projectedHeight = house.height * scale;
+                
+                if (projectedWidth < 5) return;
+                
+                // House structure
+                this.ctx.fillStyle = house.customization.exterior;
+                this.ctx.fillRect(
+                    projectedX - projectedWidth/2,
+                    projectedY - projectedHeight/2,
+                    projectedWidth,
+                    projectedHeight
+                );
+                
+                // Roof
+                this.ctx.fillStyle = house.customization.roof;
+                this.ctx.beginPath();
+                this.ctx.moveTo(projectedX - projectedWidth/2, projectedY - projectedHeight/2);
+                this.ctx.lineTo(projectedX, projectedY - projectedHeight/2 - 20);
+                this.ctx.lineTo(projectedX + projectedWidth/2, projectedY - projectedHeight/2);
+                this.ctx.closePath();
+                this.ctx.fill();
+                
+                // Windows
+                this.ctx.fillStyle = house.customization.windows;
+                this.ctx.fillRect(projectedX - projectedWidth/4, projectedY - projectedHeight/4, projectedWidth/6, projectedHeight/4);
+                this.ctx.fillRect(projectedX + projectedWidth/6, projectedY - projectedHeight/4, projectedWidth/6, projectedHeight/4);
+                
+                // House glow
+                this.ctx.shadowColor = house.customization.exterior;
+                this.ctx.shadowBlur = 10 * scale;
+                this.ctx.fillRect(
+                    projectedX - projectedWidth/2,
+                    projectedY - projectedHeight/2,
+                    projectedWidth,
+                    projectedHeight
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // For sale sign
+                if (house.isForSale) {
+                    this.ctx.fillStyle = '#ffd700';
+                    this.ctx.font = `${8 * scale}px Arial`;
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText('FOR SALE', projectedX, projectedY + projectedHeight/2 + 10);
+                }
+            }
+            
+            drawTradingPost(post) {
+                const screenX = post.x - this.player.x;
+                const screenY = post.y - this.player.y;
+                const screenZ = post.z - this.player.z;
+                
+                const scale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedWidth = post.width * scale;
+                const projectedHeight = post.height * scale;
+                
+                if (projectedWidth < 5) return;
+                
+                // Trading post
+                const pulse = Math.sin(post.animationFrame) * 0.2 + 1;
+                
+                this.ctx.fillStyle = '#4CAF50';
+                this.ctx.fillRect(
+                    projectedX - projectedWidth/2 * pulse,
+                    projectedY - projectedHeight/2 * pulse,
+                    projectedWidth * pulse,
+                    projectedHeight * pulse
+                );
+                
+                // Trading post glow
+                this.ctx.shadowColor = '#4CAF50';
+                this.ctx.shadowBlur = 12 * scale;
+                this.ctx.fillRect(
+                    projectedX - projectedWidth/2 * pulse,
+                    projectedY - projectedHeight/2 * pulse,
+                    projectedWidth * pulse,
+                    projectedHeight * pulse
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // Trading sign
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.font = `${10 * scale}px Arial`;
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('💱', projectedX, projectedY);
+            }
+            
+            drawBattleArena(arena) {
+                const screenX = arena.x - this.player.x;
+                const screenY = arena.y - this.player.y;
+                const screenZ = arena.z - this.player.z;
+                
+                const scale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedWidth = arena.width * scale;
+                const projectedHeight = arena.height * scale;
+                
+                if (projectedWidth < 5) return;
+                
+                // Arena border
+                this.ctx.strokeStyle = '#E74C3C';
+                this.ctx.lineWidth = 3 * scale;
+                this.ctx.strokeRect(
+                    projectedX - projectedWidth/2,
+                    projectedY - projectedHeight/2,
+                    projectedWidth,
+                    projectedHeight
+                );
+                
+                // Arena glow
+                this.ctx.shadowColor = '#E74C3C';
+                this.ctx.shadowBlur = 15 * scale;
+                this.ctx.strokeRect(
+                    projectedX - projectedWidth/2,
+                    projectedY - projectedHeight/2,
+                    projectedWidth,
+                    projectedHeight
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // Battle icon
+                this.ctx.fillStyle = '#E74C3C';
+                this.ctx.font = `${12 * scale}px Arial`;
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('⚔️', projectedX, projectedY);
+            }
+            
+            drawMiniGame(game) {
+                const screenX = game.x - this.player.x;
+                const screenY = game.y - this.player.y;
+                const screenZ = game.z - this.player.z;
+                
+                const scale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedWidth = game.width * scale;
+                const projectedHeight = game.height * scale;
+                
+                if (projectedWidth < 5) return;
+                
+                // Mini-game platform
+                const pulse = Math.sin(game.animationFrame) * 0.15 + 1;
+                
+                this.ctx.fillStyle = '#9B59B6';
+                this.ctx.fillRect(
+                    projectedX - projectedWidth/2 * pulse,
+                    projectedY - projectedHeight/2 * pulse,
+                    projectedWidth * pulse,
+                    projectedHeight * pulse
+                );
+                
+                // Mini-game glow
+                this.ctx.shadowColor = '#9B59B6';
+                this.ctx.shadowBlur = 10 * scale;
+                this.ctx.fillRect(
+                    projectedX - projectedWidth/2 * pulse,
+                    projectedY - projectedHeight/2 * pulse,
+                    projectedWidth * pulse,
+                    projectedHeight * pulse
+                );
+                this.ctx.shadowBlur = 0;
+                
+                // Game icon
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.font = `${10 * scale}px Arial`;
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('🎮', projectedX, projectedY);
+            }
+            
+            updateMinimap() {
+                this.minimapCtx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                this.minimapCtx.fillRect(0, 0, this.minimapCanvas.width, this.minimapCanvas.height);
+                
+                const centerX = this.minimapCanvas.width / 2;
+                const centerY = this.minimapCanvas.height / 2;
+                
+                // Draw planets on minimap
+                this.world.planets.forEach(planet => {
+                    const mapX = centerX + (planet.x - this.player.x) / 20;
+                    const mapY = centerY + (planet.z - this.player.z) / 20;
+                    
+                    if (mapX >= 0 && mapX <= this.minimapCanvas.width &&
+                        mapY >= 0 && mapY <= this.minimapCanvas.height) {
+                        this.minimapCtx.fillStyle = planet.color;
+                        this.minimapCtx.beginPath();
+                        this.minimapCtx.arc(mapX, mapY, 3, 0, Math.PI * 2);
+                        this.minimapCtx.fill();
+                    }
+                });
+                
+                // Draw player on minimap
+                this.minimapCtx.fillStyle = '#4a9eff';
+                this.minimapCtx.beginPath();
+                this.minimapCtx.arc(centerX, centerY, 2, 0, Math.PI * 2);
+                this.minimapCtx.fill();
+            }
+            
+            updateUI() {
+                document.getElementById('characterName').textContent = this.player.name;
+                document.getElementById('characterLevel').textContent = this.player.level;
+                document.getElementById('healthFill').style.width = this.player.health + '%';
+                document.getElementById('energyFill').style.width = this.player.energy + '%';
+                document.getElementById('fuelFill').style.width = this.player.fuel + '%';
+                document.getElementById('coins').textContent = this.player.coins;
+                document.getElementById('gems').textContent = this.player.gems;
+                document.getElementById('housesOwned').textContent = this.player.house ? 1 : 0;
+                document.getElementById('petsOwned').textContent = this.player.pets.length;
+                document.getElementById('achievementsUnlocked').textContent = this.player.achievements.length;
+            }
+            
+            // ===== UI METHODS FOR ADDICTIVE FEATURES =====
+            
+            showPetShop() {
+                const modal = this.createModal('🐾 Pet Shop', `
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <h3 style="color: #ffd700; margin-bottom: 15px;">Available Pets</h3>
+                        ${this.world.pets.filter(pet => pet.owner === null).map(pet => `
+                            <div style="background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid ${pet.color};">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: bold; color: ${pet.color};">${pet.name}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Rarity: ${pet.rarity}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Size: ${pet.size}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="color: #ffd700; font-weight: bold;">💰 ${pet.price}</div>
+                                        <button onclick="game.adoptPet('${pet.id}')" 
+                                                style="background: ${pet.color}; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px;">
+                                            Adopt
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `);
+                document.body.appendChild(modal);
+            }
+            
+            showHouseShop() {
+                const modal = this.createModal('🏠 House Shop', `
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <h3 style="color: #ffd700; margin-bottom: 15px;">Available Houses</h3>
+                        ${this.world.houses.filter(house => house.owner === null).map(house => `
+                            <div style="background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #8B4513;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: bold; color: #8B4513;">${house.id}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Rooms: ${house.rooms.join(', ')}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Size: ${Math.round(house.width)}x${Math.round(house.height)}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="color: #ffd700; font-weight: bold;">💰 ${Math.round(house.price)}</div>
+                                        <button onclick="game.buyHouse('${house.id}')" 
+                                                style="background: #8B4513; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px;">
+                                            Buy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `);
+                document.body.appendChild(modal);
+            }
+            
+            showTrading() {
+                const modal = this.createModal('💱 Trading Center', `
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <h3 style="color: #ffd700; margin-bottom: 15px;">Trading Posts</h3>
+                        ${this.world.tradingPosts.map(post => `
+                            <div style="background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #4CAF50;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: bold; color: #4CAF50;">${post.id}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Type: ${post.type}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Items: ${post.items.join(', ')}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <button onclick="game.visitTradingPost('${post.id}')" 
+                                                style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                            Visit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `);
+                document.body.appendChild(modal);
+            }
+            
+            showBattleArena() {
+                const modal = this.createModal('⚔️ Battle Arena', `
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <h3 style="color: #ffd700; margin-bottom: 15px;">Battle Arenas</h3>
+                        ${this.world.battleArenas.map(arena => `
+                            <div style="background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #E74C3C;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: bold; color: #E74C3C;">${arena.id}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Type: ${arena.type}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Players: ${arena.currentPlayers.length}/${arena.maxPlayers}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Weapons: ${arena.weapons.join(', ')}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <button onclick="game.joinBattleArena('${arena.id}')" 
+                                                style="background: #E74C3C; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                            Join Battle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `);
+                document.body.appendChild(modal);
+            }
+            
+            showMiniGames() {
+                const modal = this.createModal('🎮 Mini-Games', `
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <h3 style="color: #ffd700; margin-bottom: 15px;">Available Mini-Games</h3>
+                        ${this.world.miniGames.map(game => `
+                            <div style="background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #9B59B6;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: bold; color: #9B59B6;">${game.name}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Type: ${game.type}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Difficulty: ${game.difficulty}</div>
+                                        <div style="font-size: 12px; color: #ccc;">Reward: ${game.reward}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="color: #ffd700; font-weight: bold;">💰 ${game.entryFee}</div>
+                                        <button onclick="game.startMiniGame('${game.id}')" 
+                                                style="background: #9B59B6; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px;">
+                                            Play
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `);
+                document.body.appendChild(modal);
+            }
+            
+            createModal(title, content) {
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 2000;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 30px; border-radius: 20px; border: 2px solid #4a9eff; max-width: 500px; max-height: 80vh; overflow-y: auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2 style="color: #ffd700; margin: 0;">${title}</h2>
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                    style="background: #E74C3C; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                ✕
+                            </button>
+                        </div>
+                        ${content}
+                    </div>
+                `;
+                
+                return modal;
+            }
+            
+            visitTradingPost(postId) {
+                this.showNotification(`🏪 Visiting ${postId}...`, 'info');
+            }
+            
+            lightenColor(color, amount) {
+                const num = parseInt(color.replace("#", ""), 16);
+                const amt = Math.round(2.55 * amount * 100);
+                const R = (num >> 16) + amt;
+                const G = (num >> 8 & 0x00FF) + amt;
+                const B = (num & 0x0000FF) + amt;
+                return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+            }
+            
+            darkenColor(color, amount) {
+                const num = parseInt(color.replace("#", ""), 16);
+                const amt = Math.round(2.55 * amount * 100);
+                const R = (num >> 16) - amt;
+                const G = (num >> 8 & 0x00FF) - amt;
+                const B = (num & 0x0000FF) - amt;
+                return "#" + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
+                    (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
+                    (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
+            }
+            
+            gameLoop() {
+                const now = Date.now();
+                
+                // Limit to 30 FPS for better stability and prevent freezing
+                if (now - this.lastFrameTime >= 33) { // 33ms = ~30 FPS
+                    this.update();
+                    this.render();
+                    this.lastFrameTime = now;
+                }
+                
+                // Use setTimeout instead of requestAnimationFrame for better stability
+                setTimeout(() => this.gameLoop(), 16);
+            }
+            
+            // ===== REALISTIC SPACE ENVIRONMENT METHODS =====
+            
+            createNebulaEffects() {
+                this.world.nebulas = [];
+                for (let i = 0; i < 1; i++) { // Reduced from 3 to 1 for performance
+                    this.world.nebulas.push({
+                        x: (Math.random() - 0.5) * 2000,
+                        y: (Math.random() - 0.5) * 1000,
+                        z: (Math.random() - 0.5) * 2000,
+                        width: 200 + Math.random() * 100, // Reduced size
+                        height: 150 + Math.random() * 50,
+                        color: `hsl(${Math.random() * 60 + 200}, 70%, 50%)`,
+                        opacity: 0.05 + Math.random() * 0.1, // Reduced opacity
+                        animationFrame: 0,
+                        animationSpeed: 0.005 // Reduced speed
+                    });
+                }
+            }
+            
+            createAsteroidFields() {
+                this.world.asteroids = [];
+                for (let i = 0; i < 15; i++) { // Reduced from 50 to 15 for performance
+                    this.world.asteroids.push({
+                        x: (Math.random() - 0.5) * 1500,
+                        y: (Math.random() - 0.5) * 500,
+                        z: (Math.random() - 0.5) * 1500,
+                        size: 5 + Math.random() * 15,
+                        color: '#8B4513',
+                        rotation: Math.random() * Math.PI * 2,
+                        rotationSpeed: (Math.random() - 0.5) * 0.05, // Reduced speed
+                        vx: (Math.random() - 0.5) * 0.2, // Reduced speed
+                        vy: (Math.random() - 0.5) * 0.2,
+                        vz: (Math.random() - 0.5) * 0.2
+                    });
+                }
+            }
+            
+            createRealisticSpaceStations() {
+                this.world.spaceStations = [];
+                const stationTypes = [
+                    { name: 'Alpha Station', type: 'Trading Hub', color: '#4CAF50', services: ['Fuel', 'Repairs', 'Trading'] },
+                    { name: 'Beta Station', type: 'Research Lab', color: '#2196F3', services: ['Research', 'Upgrades', 'Technology'] },
+                    { name: 'Gamma Station', type: 'Military Base', color: '#F44336', services: ['Weapons', 'Defense', 'Training'] }
+                ];
+                
+                for (let i = 0; i < stationTypes.length; i++) {
+                    const station = stationTypes[i];
+                    this.world.spaceStations.push({
+                        ...station,
+                        x: (i - 1) * 500,
+                        y: 50,
+                        z: 0,
+                        width: 100,
+                        height: 80,
+                        animationFrame: 0,
+                        animationSpeed: 0.02,
+                        dockingPorts: 4,
+                        currentShips: [],
+                        energyLevel: 100,
+                        shieldLevel: 100
+                    });
+                }
+            }
+            
+            drawNebula(nebula) {
+                const screenX = nebula.x - this.player.x;
+                const screenY = nebula.y - this.player.y;
+                const screenZ = nebula.z - this.player.z;
+                
+                const scale = 1 / (1 + screenZ / 2000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedWidth = nebula.width * scale;
+                const projectedHeight = nebula.height * scale;
+                
+                if (projectedWidth < 10) return;
+                
+                // Nebula gradient
+                const nebulaGradient = this.ctx.createRadialGradient(
+                    projectedX, projectedY, 0,
+                    projectedX, projectedY, projectedWidth
+                );
+                nebulaGradient.addColorStop(0, nebula.color + Math.floor(nebula.opacity * 255).toString(16).padStart(2, '0'));
+                nebulaGradient.addColorStop(0.5, nebula.color + Math.floor(nebula.opacity * 100).toString(16).padStart(2, '0'));
+                nebulaGradient.addColorStop(1, 'transparent');
+                
+                this.ctx.fillStyle = nebulaGradient;
+                this.ctx.beginPath();
+                this.ctx.ellipse(projectedX, projectedY, projectedWidth, projectedHeight, nebula.animationFrame, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+            
+            drawAsteroid(asteroid) {
+                const screenX = asteroid.x - this.player.x;
+                const screenY = asteroid.y - this.player.y;
+                const screenZ = asteroid.z - this.player.z;
+                
+                const scale = 1 / (1 + screenZ / 1000);
+                const projectedX = screenX * scale;
+                const projectedY = screenY * scale;
+                const projectedSize = asteroid.size * scale;
+                
+                if (projectedSize < 1) return;
+                
+                // Rotating asteroid
+                this.ctx.save();
+                this.ctx.translate(projectedX, projectedY);
+                this.ctx.rotate(asteroid.rotation);
+                
+                this.ctx.fillStyle = asteroid.color;
+                this.ctx.fillRect(-projectedSize/2, -projectedSize/2, projectedSize, projectedSize);
+                
+                // Asteroid details
+                this.ctx.fillStyle = this.darkenColor(asteroid.color, 0.3);
+                this.ctx.fillRect(-projectedSize/4, -projectedSize/4, projectedSize/2, projectedSize/2);
+                
+                this.ctx.restore();
+            }
+            
+            // ===== ADDICTIVE FEATURES IMPLEMENTATION =====
+            
+            createPetSystem() {
+                // Adopt Me style pet system
+                const petTypes = [
+                    { name: 'Cosmic Cat', rarity: 'Common', color: '#FF6B6B', size: 15, price: 100 },
+                    { name: 'Galaxy Dog', rarity: 'Common', color: '#4ECDC4', size: 18, price: 150 },
+                    { name: 'Stellar Dragon', rarity: 'Rare', color: '#FFD93D', size: 25, price: 500 },
+                    { name: 'Nebula Unicorn', rarity: 'Legendary', color: '#9B59B6', size: 30, price: 1000 },
+                    { name: 'Quantum Phoenix', rarity: 'Mythical', color: '#E74C3C', size: 35, price: 2500 }
+                ];
+                
+                for (let i = 0; i < 10; i++) { // Reduced from 20 to 10 for performance
+                    const petType = petTypes[Math.floor(Math.random() * petTypes.length)];
+                    this.world.pets.push({
+                        ...petType,
+                        id: `pet_${i}`,
+                        x: (Math.random() - 0.5) * 1000,
+                        y: 0,
+                        z: (Math.random() - 0.5) * 1000,
+                        owner: null,
+                        happiness: 100,
+                        hunger: 100,
+                        energy: 100,
+                        level: 1,
+                        experience: 0,
+                        animationFrame: 0,
+                        animationSpeed: 0.05 + Math.random() * 0.05,
+                        vx: (Math.random() - 0.5) * 1,
+                        vz: (Math.random() - 0.5) * 1,
+                        abilities: ['Follow', 'Play', 'Protect'],
+                        isFollowing: false
+                    });
+                }
+            }
+            
+            createHouseSystem() {
+                // Brookhaven style house building
+                for (let i = 0; i < 5; i++) { // Reduced from 10 to 5 for performance
+                    this.world.houses.push({
+                        id: `house_${i}`,
+                        x: (Math.random() - 0.5) * 800,
+                        y: 0,
+                        z: (Math.random() - 0.5) * 800,
+                        width: 60 + Math.random() * 40,
+                        height: 40 + Math.random() * 30,
+                        owner: null,
+                        rooms: ['Living Room', 'Bedroom', 'Kitchen', 'Garage'],
+                        furniture: [],
+                        decorations: [],
+                        price: 500 + Math.random() * 1000,
+                        level: 1,
+                        isForSale: true,
+                        customization: {
+                            exterior: '#8B4513',
+                            roof: '#654321',
+                            windows: '#87CEEB'
+                        }
+                    });
+                }
+            }
+            
+            createTradingSystem() {
+                // Adopt Me style trading posts
+                for (let i = 0; i < 5; i++) {
+                    this.world.tradingPosts.push({
+                        id: `trading_post_${i}`,
+                        x: (Math.random() - 0.5) * 600,
+                        y: 0,
+                        z: (Math.random() - 0.5) * 600,
+                        width: 50,
+                        height: 40,
+                        type: 'Pet Trading',
+                        items: ['Pets', 'Vehicles', 'Furniture', 'Accessories'],
+                        currentTrades: [],
+                        animationFrame: 0,
+                        animationSpeed: 0.03
+                    });
+                }
+            }
+            
+            createBattleArenas() {
+                // Fortnite style battle royale
+                for (let i = 0; i < 3; i++) {
+                    this.world.battleArenas.push({
+                        id: `arena_${i}`,
+                        x: (i - 1) * 500,
+                        y: 0,
+                        z: 0,
+                        width: 200,
+                        height: 200,
+                        type: 'Battle Royale',
+                        maxPlayers: 20,
+                        currentPlayers: [],
+                        weapons: ['Laser Gun', 'Plasma Rifle', 'Rocket Launcher'],
+                        powerUps: ['Shield', 'Speed Boost', 'Health Pack'],
+                        isActive: false,
+                        roundTime: 300, // 5 minutes
+                        safeZone: 150,
+                        animationFrame: 0,
+                        animationSpeed: 0.02
+                    });
+                }
+            }
+            
+            createSocialFeatures() {
+                // Among Us style social interaction
+                this.world.socialHub = {
+                    x: 0,
+                    y: 0,
+                    z: 0,
+                    width: 100,
+                    height: 80,
+                    type: 'Social Hub',
+                    onlinePlayers: [],
+                    chatRooms: ['General', 'Trading', 'Help', 'Events'],
+                    currentChat: 'General',
+                    messages: [],
+                    voiceChat: false,
+                    parties: [],
+                    friends: []
+                };
+            }
+            
+            createMiniGames() {
+                // Roblox style mini-games
+                const miniGameTypes = [
+                    { name: 'Space Race', type: 'Racing', reward: 'Coins', difficulty: 'Easy' },
+                    { name: 'Alien Hunt', type: 'Action', reward: 'Gems', difficulty: 'Medium' },
+                    { name: 'Pet Care', type: 'Simulation', reward: 'Pet XP', difficulty: 'Easy' },
+                    { name: 'Building Contest', type: 'Creative', reward: 'Furniture', difficulty: 'Hard' },
+                    { name: 'Space Battle', type: 'Combat', reward: 'Weapons', difficulty: 'Hard' }
+                ];
+                
+                for (let i = 0; i < miniGameTypes.length; i++) {
+                    this.world.miniGames.push({
+                        ...miniGameTypes[i],
+                        id: `minigame_${i}`,
+                        x: (i - 2) * 300,
+                        y: 0,
+                        z: 0,
+                        width: 80,
+                        height: 60,
+                        maxPlayers: 10,
+                        currentPlayers: [],
+                        isActive: false,
+                        duration: 120, // 2 minutes
+                        entryFee: 50,
+                        prizePool: 500,
+                        animationFrame: 0,
+                        animationSpeed: 0.04
+                    });
+                }
+            }
+            
+            createAchievementSystem() {
+                // Minecraft style achievements
+                this.world.achievements = [
+                    { id: 'first_planet', name: 'First Steps', description: 'Visit your first planet', reward: 100, unlocked: false },
+                    { id: 'pet_collector', name: 'Pet Collector', description: 'Adopt 5 pets', reward: 250, unlocked: false },
+                    { id: 'house_owner', name: 'Home Sweet Home', description: 'Buy your first house', reward: 500, unlocked: false },
+                    { id: 'space_explorer', name: 'Space Explorer', description: 'Visit all planets', reward: 1000, unlocked: false },
+                    { id: 'social_butterfly', name: 'Social Butterfly', description: 'Make 10 friends', reward: 300, unlocked: false },
+                    { id: 'trader', name: 'Master Trader', description: 'Complete 50 trades', reward: 750, unlocked: false },
+                    { id: 'battle_champion', name: 'Battle Champion', description: 'Win 10 battles', reward: 1000, unlocked: false },
+                    { id: 'builder', name: 'Master Builder', description: 'Build 100 structures', reward: 500, unlocked: false }
+                ];
+            }
+            
+            // ===== FEATURE INTERACTION METHODS =====
+            
+            adoptPet(petId) {
+                const pet = this.world.pets.find(p => p.id === petId);
+                if (pet && pet.owner === null && this.player.coins >= pet.price) {
+                    pet.owner = this.player.name;
+                    this.player.pets.push(pet);
+                    this.player.coins -= pet.price;
+                    this.showNotification(`🎉 Adopted ${pet.name}!`, 'success');
+                    this.checkAchievement('pet_collector');
+                }
+            }
+            
+            buyHouse(houseId) {
+                const house = this.world.houses.find(h => h.id === houseId);
+                if (house && house.owner === null && this.player.coins >= house.price) {
+                    house.owner = this.player.name;
+                    this.player.house = house;
+                    this.player.coins -= house.price;
+                    this.showNotification(`🏠 Bought ${house.id}!`, 'success');
+                    this.checkAchievement('house_owner');
+                }
+            }
+            
+            joinBattleArena(arenaId) {
+                const arena = this.world.battleArenas.find(a => a.id === arenaId);
+                if (arena && arena.currentPlayers.length < arena.maxPlayers) {
+                    arena.currentPlayers.push(this.player.name);
+                    this.showNotification(`⚔️ Joined ${arena.type}!`, 'info');
+                    this.checkAchievement('battle_champion');
+                }
+            }
+            
+            startMiniGame(gameId) {
+                const game = this.world.miniGames.find(g => g.id === gameId);
+                if (game && this.player.coins >= game.entryFee) {
+                    this.player.coins -= game.entryFee;
+                    game.currentPlayers.push(this.player.name);
+                    this.showNotification(`🎮 Joined ${game.name}!`, 'info');
+                }
+            }
+            
+            checkAchievement(achievementId) {
+                const achievement = this.world.achievements.find(a => a.id === achievementId);
+                if (achievement && !achievement.unlocked) {
+                    achievement.unlocked = true;
+                    this.player.achievements.push(achievement);
+                    this.player.coins += achievement.reward;
+                    this.showNotification(`🏆 Achievement Unlocked: ${achievement.name}!`, 'achievement');
+                }
+            }
+            
+            showNotification(message, type = 'info') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? '#4CAF50' : type === 'achievement' ? '#FFD700' : '#2196F3'};
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+        }
+        
+        // Initialize the game
+        const game = new SpaceAdventure3D();
+        
+        // Global functions for UI
+        function startGame() {
+            game.startGame();
+        }
+    </script>
+</body>
+</html>
