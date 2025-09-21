@@ -1,0 +1,10 @@
+{
+	"SourceFiles": [
+		"/Users/oltonbradly/warhammerlegends/UnrealProject/Intermediate/Source/SpaceKidsAliensAdventure.Build.cs",
+		"/Users/oltonbradly/warhammerlegends/UnrealProject/Intermediate/Source/SpaceKidsAliensAdventure.Target.cs",
+		"/Users/oltonbradly/warhammerlegends/UnrealProject/Intermediate/Source/SpaceKidsAliensAdventureClient.Target.cs",
+		"/Users/oltonbradly/warhammerlegends/UnrealProject/Intermediate/Source/SpaceKidsAliensAdventureEditor.Target.cs",
+		"/Users/oltonbradly/warhammerlegends/UnrealProject/Intermediate/Source/SpaceKidsAliensAdventureServer.Target.cs"
+	],
+	"EngineVersion": "5.6.1"
+}
