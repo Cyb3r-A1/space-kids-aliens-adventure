@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Explorer Adventure - Unreal Engine 5.6</title>
+    <title>Space Explorer Adventure - Unreal Engine 5.6 AAA</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0c0c0c 100%);
             color: #4a9eff;
             overflow: hidden;
             height: 100vh;
@@ -43,34 +43,107 @@
             left: 50%;
             transform: translateX(-50%);
             color: #ffd700;
-            font-size: 2.5em;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            font-size: 2.8em;
+            text-shadow:
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.6),
+                0 0 30px rgba(255, 215, 0, 0.4);
             font-weight: bold;
+            background: linear-gradient(45deg, #ffd700, #ff9f43, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6); }
+            100% { text-shadow: 0 0 20px rgba(255, 215, 0, 1), 0 0 40px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
+        }
+
+        .subtitle {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #6bb6ff;
+            font-size: 1.2em;
+            text-shadow: 0 0 10px rgba(107, 182, 255, 0.5);
         }
 
         .controls {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
             border: 2px solid #4a9eff;
             color: #4a9eff;
             font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(74, 158, 255, 0.3);
         }
 
-        .status-bar {
+        .controls-title {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .control-item {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 5px;
+            background: rgba(74, 158, 255, 0.1);
+        }
+
+        .game-ui {
             position: absolute;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px 20px;
-            border-radius: 25px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
             border: 2px solid #4a9eff;
             color: #4a9eff;
-            font-size: 1.1em;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(74, 158, 255, 0.3);
+        }
+
+        .ui-title {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(74, 158, 255, 0.1);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #6bb6ff;
+        }
+
+        .stat-value {
+            font-size: 1.2em;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
 
         .canvas-container {
@@ -80,16 +153,21 @@
             align-items: center;
             justify-content: center;
             background:
-                radial-gradient(ellipse at 20% 20%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(ellipse at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 20% 20%, rgba(120, 119, 198, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 119, 198, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 70%, rgba(255, 215, 0, 0.2) 0%, transparent 50%),
                 linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #000000 100%);
+            position: relative;
+            overflow: hidden;
         }
 
         canvas {
-            border: 2px solid #4a9eff;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(74, 158, 255, 0.3);
+            border: 3px solid #4a9eff;
+            border-radius: 15px;
+            box-shadow:
+                0 0 30px rgba(74, 158, 255, 0.4),
+                inset 0 0 20px rgba(0, 0, 0, 0.5);
             background: #000;
         }
 
@@ -99,36 +177,65 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #ffd700;
-            font-size: 1.5em;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            animation: loadingPulse 2s ease-in-out infinite;
         }
 
-        .game-ui {
+        @keyframes loadingPulse {
+            0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .crosshair {
             position: absolute;
-            bottom: 80px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
+
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background: #4a9eff;
+            box-shadow: 0 0 5px rgba(74, 158, 255, 0.8);
+        }
+
+        .crosshair::before {
+            width: 20px;
+            height: 2px;
+            top: 9px;
+            left: 0;
+        }
+
+        .crosshair::after {
+            width: 2px;
+            height: 20px;
+            top: 0;
+            left: 9px;
+        }
+
+        .minimap {
+            position: absolute;
+            top: 20px;
             left: 20px;
+            width: 150px;
+            height: 150px;
             background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border-radius: 10px;
             border: 2px solid #4a9eff;
-            color: #4a9eff;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
         }
 
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            color: #ffd700;
-            font-weight: bold;
+        .minimap canvas {
+            border: none;
+            border-radius: 8px;
+            box-shadow: none;
         }
     </style>
 </head>
@@ -136,73 +243,103 @@
     <div class="game-container">
         <div class="ui-overlay">
             <div class="game-title">🌟 Space Explorer Adventure 🚀</div>
+            <div class="subtitle">Unreal Engine 5.6 - AAA Graphics Experience</div>
+
             <div class="controls">
-                <div><strong>🎮 Controls:</strong></div>
-                <div>WASD - Move</div>
-                <div>Mouse - Look</div>
-                <div>Space - Jump</div>
-                <div>E - Interact</div>
+                <div class="controls-title">🎮 CONTROLS</div>
+                <div class="control-item"><strong>WASD</strong> - Move Spacecraft</div>
+                <div class="control-item"><strong>Mouse</strong> - Look Around</div>
+                <div class="control-item"><strong>Space</strong> - Boost</div>
+                <div class="control-item"><strong>E</strong> - Interact</div>
+                <div class="control-item"><strong>Shift</strong> - Sprint</div>
+                <div class="control-item"><strong>ESC</strong> - Pause</div>
             </div>
 
             <div class="game-ui">
-                <div><strong>🚀 Player Stats</strong></div>
-                <div class="stats">
+                <div class="ui-title">🚀 SPACECRAFT STATUS</div>
+                <div class="stats-grid">
                     <div class="stat">
-                        <div>Health</div>
-                        <div class="stat-value" id="health">100</div>
+                        <div class="stat-label">Hull Integrity</div>
+                        <div class="stat-value" id="hull">100%</div>
                     </div>
                     <div class="stat">
-                        <div>Energy</div>
-                        <div class="stat-value" id="energy">100</div>
+                        <div class="stat-label">Fuel</div>
+                        <div class="stat-value" id="fuel">100%</div>
                     </div>
                     <div class="stat">
-                        <div>Score</div>
-                        <div class="stat-value" id="score">0</div>
+                        <div class="stat-label">Credits</div>
+                        <div class="stat-value" id="credits">0</div>
                     </div>
                     <div class="stat">
-                        <div>Level</div>
-                        <div class="stat-value" id="level">1</div>
+                        <div class="stat-label">Exploration</div>
+                        <div class="stat-value" id="exploration">0%</div>
                     </div>
                 </div>
             </div>
 
-            <div class="status-bar">
-                <span id="status">🌟 Unreal Engine 5.6 - Professional Space Adventure</span>
+            <div class="minimap">
+                <canvas id="minimapCanvas" width="150" height="150"></canvas>
             </div>
+
+            <div class="crosshair"></div>
         </div>
 
         <div class="canvas-container">
             <canvas id="gameCanvas" width="1200" height="800"></canvas>
+            <div class="loading" id="loading">🚀 Initializing Unreal Engine 5.6...</div>
         </div>
     </div>
 
     <script>
-        // Unreal Engine 5.6 Style Space Explorer Adventure
-        class SpaceExplorerGame {
+        // Unreal Engine 5.6 Style Space Explorer Adventure - AAA Version
+        class UnrealEngineGame {
             constructor() {
                 this.canvas = document.getElementById('gameCanvas');
                 this.ctx = this.canvas.getContext('2d');
                 this.width = this.canvas.width;
                 this.height = this.canvas.height;
 
+                // Player spacecraft
                 this.player = {
                     x: this.width / 2,
                     y: this.height / 2,
-                    size: 20,
-                    speed: 5,
-                    color: '#4a9eff'
+                    vx: 0,
+                    vy: 0,
+                    angle: 0,
+                    thrust: 0,
+                    size: 25,
+                    color: '#4a9eff',
+                    hull: 100,
+                    fuel: 100,
+                    maxFuel: 100
                 };
 
+                // Game objects
                 this.planets = [];
                 this.stars = [];
+                this.asteroids = [];
                 this.particles = [];
-                this.score = 0;
-                this.health = 100;
-                this.energy = 100;
-                this.level = 1;
+                this.explosions = [];
+                this.projectiles = [];
 
+                // Game state
+                this.score = 0;
+                this.credits = 0;
+                this.exploration = 0;
                 this.keys = {};
+                this.mouse = { x: 0, y: 0 };
                 this.lastTime = 0;
+                this.camera = { x: 0, y: 0, zoom: 1 };
+
+                // Graphics settings (Unreal Engine style)
+                this.graphics = {
+                    bloom: true,
+                    shadows: true,
+                    reflections: true,
+                    particles: true,
+                    lighting: true,
+                    postProcessing: true
+                };
 
                 this.init();
             }
@@ -210,33 +347,61 @@
             init() {
                 this.createUniverse();
                 this.setupEventListeners();
+                this.setupMinimap();
+                this.hideLoading();
                 this.gameLoop();
             }
 
             createUniverse() {
-                // Create stars
-                for (let i = 0; i < 200; i++) {
+                // Create starfield
+                for (let i = 0; i < 300; i++) {
                     this.stars.push({
-                        x: Math.random() * this.width,
-                        y: Math.random() * this.height,
-                        size: Math.random() * 2 + 1,
-                        brightness: Math.random()
+                        x: Math.random() * this.width * 3,
+                        y: Math.random() * this.height * 3,
+                        size: Math.random() * 3 + 1,
+                        brightness: Math.random() * 0.8 + 0.2,
+                        twinkle: Math.random() * 0.02
                     });
                 }
 
-                // Create planets
-                const planetNames = ['Earth', 'Mars', 'Jupiter', 'Saturn', 'Neptune'];
-                const planetColors = ['#6bb6ff', '#ff6b35', '#ffd700', '#ff9f43', '#4a9eff'];
+                // Create planets with realistic properties
+                const planetData = [
+                    { name: 'Terranova', color: '#6bb6ff', size: 60, atmosphere: true, moons: 2, resources: 'Water' },
+                    { name: 'Mars Prime', color: '#ff6b35', size: 45, atmosphere: true, moons: 1, resources: 'Minerals' },
+                    { name: 'Jupiter Station', color: '#ffd700', size: 80, atmosphere: false, moons: 4, resources: 'Gas' },
+                    { name: 'Ice World', color: '#00d4ff', size: 50, atmosphere: true, moons: 3, resources: 'Crystals' },
+                    { name: 'Lava Planet', color: '#ff4757', size: 55, atmosphere: true, moons: 1, resources: 'Rare Metals' }
+                ];
 
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < planetData.length; i++) {
+                    const data = planetData[i];
                     this.planets.push({
-                        x: 100 + Math.random() * (this.width - 200),
-                        y: 100 + Math.random() * (this.height - 200),
-                        radius: 30 + Math.random() * 40,
-                        color: planetColors[i],
-                        name: planetNames[i],
+                        x: 200 + Math.random() * (this.width - 400),
+                        y: 200 + Math.random() * (this.height - 400),
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: data.size,
+                        color: data.color,
+                        name: data.name,
+                        atmosphere: data.atmosphere,
+                        moons: data.moons,
+                        resources: data.resources,
                         rotation: 0,
-                        rotationSpeed: (Math.random() - 0.5) * 0.02
+                        rotationSpeed: (Math.random() - 0.5) * 0.01,
+                        visited: false
+                    });
+                }
+
+                // Create asteroids
+                for (let i = 0; i < 20; i++) {
+                    this.asteroids.push({
+                        x: Math.random() * this.width,
+                        y: Math.random() * this.height,
+                        vx: (Math.random() - 0.5) * 2,
+                        vy: (Math.random() - 0.5) * 2,
+                        size: Math.random() * 15 + 5,
+                        rotation: 0,
+                        rotationSpeed: (Math.random() - 0.5) * 0.1
                     });
                 }
             }
@@ -244,44 +409,96 @@
             setupEventListeners() {
                 window.addEventListener('keydown', (e) => {
                     this.keys[e.code] = true;
+                    if (e.code === 'Space') e.preventDefault();
                 });
 
                 window.addEventListener('keyup', (e) => {
                     this.keys[e.code] = false;
                 });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouse.x = e.clientX - rect.left;
+                    this.mouse.y = e.clientY - rect.top;
+                });
+
+                this.canvas.addEventListener('click', (e) => {
+                    this.fireProjectile();
+                });
+            }
+
+            setupMinimap() {
+                this.minimapCanvas = document.getElementById('minimapCanvas');
+                this.minimapCtx = this.minimapCanvas.getContext('2d');
+            }
+
+            hideLoading() {
+                setTimeout(() => {
+                    const loading = document.getElementById('loading');
+                    if (loading) loading.style.display = 'none';
+                }, 2000);
             }
 
             update(deltaTime) {
                 // Player movement
+                let thrust = 0;
+                let turn = 0;
+
                 if (this.keys['KeyW'] || this.keys['ArrowUp']) {
-                    this.player.y -= this.player.speed;
-                    this.energy = Math.max(0, this.energy - 0.5);
+                    thrust = 0.3;
+                    this.player.fuel = Math.max(0, this.player.fuel - 0.2);
                 }
                 if (this.keys['KeyS'] || this.keys['ArrowDown']) {
-                    this.player.y += this.player.speed;
-                    this.energy = Math.max(0, this.energy - 0.5);
+                    thrust = -0.2;
                 }
                 if (this.keys['KeyA'] || this.keys['ArrowLeft']) {
-                    this.player.x -= this.player.speed;
-                    this.energy = Math.max(0, this.energy - 0.5);
+                    turn = 0.1;
                 }
                 if (this.keys['KeyD'] || this.keys['ArrowRight']) {
-                    this.player.x += this.player.speed;
-                    this.energy = Math.max(0, this.energy - 0.5);
+                    turn = -0.1;
                 }
 
-                // Keep player in bounds
-                this.player.x = Math.max(this.player.size, Math.min(this.width - this.player.size, this.player.x));
-                this.player.y = Math.max(this.player.size, Math.min(this.height - this.player.size, this.player.y));
+                // Boost
+                if (this.keys['ShiftLeft'] && this.player.fuel > 10) {
+                    thrust *= 2;
+                    this.player.fuel = Math.max(0, this.player.fuel - 1);
+                }
 
-                // Regenerate energy
-                if (this.energy < 100) {
-                    this.energy = Math.min(100, this.energy + 0.3);
+                // Update player
+                this.player.angle += turn;
+                this.player.vx += Math.cos(this.player.angle) * thrust;
+                this.player.vy += Math.sin(this.player.angle) * thrust;
+
+                // Apply friction
+                this.player.vx *= 0.98;
+                this.player.vy *= 0.98;
+
+                // Update position
+                this.player.x += this.player.vx;
+                this.player.y += this.player.vy;
+
+                // Update camera to follow player
+                this.camera.x = this.player.x - this.width / 2;
+                this.camera.y = this.player.y - this.height / 2;
+
+                // Regenerate fuel
+                if (this.player.fuel < this.player.maxFuel) {
+                    this.player.fuel = Math.min(this.player.maxFuel, this.player.fuel + 0.5);
                 }
 
                 // Update planets
                 this.planets.forEach(planet => {
                     planet.rotation += planet.rotationSpeed;
+
+                    // Planet movement
+                    planet.x += planet.vx;
+                    planet.y += planet.vy;
+
+                    // Wrap around screen
+                    if (planet.x < -100) planet.x = this.width + 100;
+                    if (planet.x > this.width + 100) planet.x = -100;
+                    if (planet.y < -100) planet.y = this.height + 100;
+                    if (planet.y > this.height + 100) planet.y = -100;
 
                     // Check collision with player
                     const distance = Math.sqrt(
@@ -290,26 +507,39 @@
                     );
 
                     if (distance < planet.radius + this.player.size) {
-                        this.score += 10;
-                        document.getElementById('score').textContent = this.score;
-
-                        // Level up check
-                        if (this.score > 0 && this.score % 100 === 0) {
-                            this.level++;
-                            document.getElementById('level').textContent = this.level;
+                        if (!planet.visited) {
+                            planet.visited = true;
+                            this.credits += 100;
+                            this.exploration += 20;
+                            document.getElementById('credits').textContent = this.credits;
+                            document.getElementById('exploration').textContent = Math.min(100, this.exploration) + '%';
                         }
                     }
                 });
 
+                // Update asteroids
+                this.asteroids.forEach(asteroid => {
+                    asteroid.rotation += asteroid.rotationSpeed;
+                    asteroid.x += asteroid.vx;
+                    asteroid.y += asteroid.vy;
+
+                    // Wrap around screen
+                    if (asteroid.x < -50) asteroid.x = this.width + 50;
+                    if (asteroid.x > this.width + 50) asteroid.x = -50;
+                    if (asteroid.y < -50) asteroid.y = this.height + 50;
+                    if (asteroid.y > this.height + 50) asteroid.y = -50;
+                });
+
                 // Create particles
-                if (Math.random() < 0.1) {
+                if (Math.random() < 0.2) {
                     this.particles.push({
-                        x: this.player.x + (Math.random() - 0.5) * 10,
-                        y: this.player.y + (Math.random() - 0.5) * 10,
+                        x: this.player.x + Math.cos(this.player.angle + Math.PI) * 30,
+                        y: this.player.y + Math.sin(this.player.angle + Math.PI) * 30,
                         vx: (Math.random() - 0.5) * 2,
                         vy: (Math.random() - 0.5) * 2,
-                        life: 30,
-                        color: '#ffd700'
+                        life: 60,
+                        color: '#ffd700',
+                        size: Math.random() * 3 + 1
                     });
                 }
 
@@ -320,112 +550,293 @@
                     particle.life--;
                     return particle.life > 0;
                 });
+
+                // Update UI
+                document.getElementById('hull').textContent = Math.max(0, Math.floor(this.player.hull)) + '%';
+                document.getElementById('fuel').textContent = Math.floor(this.player.fuel) + '%';
+            }
+
+            fireProjectile() {
+                this.projectiles.push({
+                    x: this.player.x + Math.cos(this.player.angle) * 40,
+                    y: this.player.y + Math.sin(this.player.angle) * 40,
+                    vx: Math.cos(this.player.angle) * 10,
+                    vy: Math.sin(this.player.angle) * 10,
+                    life: 120,
+                    damage: 25
+                });
             }
 
             draw() {
-                // Clear canvas
-                this.ctx.fillStyle = '#000';
+                // Clear canvas with space background
+                this.ctx.fillStyle = 'rgba(12, 12, 12, 1)';
                 this.ctx.fillRect(0, 0, this.width, this.height);
 
-                // Draw stars
+                // Draw starfield
                 this.stars.forEach(star => {
-                    this.ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
-                    this.ctx.fillRect(star.x, star.y, star.size, star.size);
+                    const screenX = star.x - this.camera.x;
+                    const screenY = star.y - this.camera.y;
+
+                    if (screenX > -10 && screenX < this.width + 10 &&
+                        screenY > -10 && screenY < this.height + 10) {
+
+                        const twinkle = Math.sin(Date.now() * star.twinkle) * 0.3 + 0.7;
+                        this.ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness * twinkle})`;
+                        this.ctx.fillRect(screenX, screenY, star.size, star.size);
+                    }
                 });
 
-                // Draw planets
+                // Draw planets with lighting and atmosphere
                 this.planets.forEach(planet => {
-                    this.ctx.save();
-                    this.ctx.translate(planet.x, planet.y);
-                    this.ctx.rotate(planet.rotation);
+                    const screenX = planet.x - this.camera.x;
+                    const screenY = planet.y - this.camera.y;
 
-                    // Planet shadow
-                    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-                    this.ctx.beginPath();
-                    this.ctx.arc(5, 5, planet.radius, 0, Math.PI * 2);
-                    this.ctx.fill();
+                    if (screenX > -planet.radius - 50 && screenX < this.width + planet.radius + 50 &&
+                        screenY > -planet.radius - 50 && screenY < this.height + planet.radius + 50) {
 
-                    // Planet body
-                    this.ctx.fillStyle = planet.color;
-                    this.ctx.beginPath();
-                    this.ctx.arc(0, 0, planet.radius, 0, Math.PI * 2);
-                    this.ctx.fill();
+                        this.ctx.save();
+                        this.ctx.translate(screenX, screenY);
+                        this.ctx.rotate(planet.rotation);
 
-                    // Planet highlight
-                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-                    this.ctx.beginPath();
-                    this.ctx.arc(-planet.radius * 0.3, -planet.radius * 0.3, planet.radius * 0.6, 0, Math.PI * 2);
-                    this.ctx.fill();
+                        // Planet shadow (realistic lighting)
+                        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                        this.ctx.beginPath();
+                        this.ctx.arc(planet.radius * 0.3, planet.radius * 0.3, planet.radius, 0, Math.PI * 2);
+                        this.ctx.fill();
 
-                    this.ctx.restore();
+                        // Planet body with gradient
+                        const gradient = this.ctx.createRadialGradient(
+                            -planet.radius * 0.3, -planet.radius * 0.3, 0,
+                            -planet.radius * 0.3, -planet.radius * 0.3, planet.radius
+                        );
+                        gradient.addColorStop(0, this.lightenColor(planet.color, 0.3));
+                        gradient.addColorStop(1, planet.color);
+                        this.ctx.fillStyle = gradient;
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, planet.radius, 0, Math.PI * 2);
+                        this.ctx.fill();
 
-                    // Planet name
-                    this.ctx.fillStyle = '#4a9eff';
-                    this.ctx.font = '12px Arial';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.fillText(planet.name, planet.x, planet.y + planet.radius + 20);
+                        // Planet highlight (specular reflection)
+                        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                        this.ctx.beginPath();
+                        this.ctx.arc(-planet.radius * 0.4, -planet.radius * 0.4, planet.radius * 0.7, 0, Math.PI * 2);
+                        this.ctx.fill();
+
+                        // Atmosphere effect
+                        if (planet.atmosphere) {
+                            this.ctx.fillStyle = 'rgba(100, 200, 255, 0.2)';
+                            this.ctx.beginPath();
+                            this.ctx.arc(0, 0, planet.radius + 10, 0, Math.PI * 2);
+                            this.ctx.fill();
+                        }
+
+                        this.ctx.restore();
+
+                        // Planet name and info
+                        this.ctx.fillStyle = planet.visited ? '#ffd700' : '#4a9eff';
+                        this.ctx.font = '14px Arial';
+                        this.ctx.textAlign = 'center';
+                        this.ctx.fillText(planet.name, screenX, screenY + planet.radius + 25);
+
+                        if (planet.visited) {
+                            this.ctx.fillStyle = '#6bb6ff';
+                            this.ctx.font = '10px Arial';
+                            this.ctx.fillText(planet.resources, screenX, screenY + planet.radius + 40);
+                        }
+                    }
                 });
 
-                // Draw player (spacecraft)
+                // Draw asteroids
+                this.asteroids.forEach(asteroid => {
+                    const screenX = asteroid.x - this.camera.x;
+                    const screenY = asteroid.y - this.camera.y;
+
+                    if (screenX > -50 && screenX < this.width + 50 &&
+                        screenY > -50 && screenY < this.height + 50) {
+
+                        this.ctx.save();
+                        this.ctx.translate(screenX, screenY);
+                        this.ctx.rotate(asteroid.rotation);
+
+                        // Asteroid shadow
+                        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                        this.ctx.beginPath();
+                        this.ctx.arc(2, 2, asteroid.size, 0, Math.PI * 2);
+                        this.ctx.fill();
+
+                        // Asteroid body
+                        this.ctx.fillStyle = '#8b7355';
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, asteroid.size, 0, Math.PI * 2);
+                        this.ctx.fill();
+
+                        // Asteroid texture
+                        this.ctx.strokeStyle = '#a0865c';
+                        this.ctx.lineWidth = 1;
+                        for (let i = 0; i < 8; i++) {
+                            const angle = (i / 8) * Math.PI * 2;
+                            const x = Math.cos(angle) * asteroid.size * 0.8;
+                            const y = Math.sin(angle) * asteroid.size * 0.8;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(x, y);
+                            this.ctx.lineTo(x * 0.6, y * 0.6);
+                            this.ctx.stroke();
+                        }
+
+                        this.ctx.restore();
+                    }
+                });
+
+                // Draw player spacecraft
                 this.ctx.save();
                 this.ctx.translate(this.player.x, this.player.y);
+                this.ctx.rotate(this.player.angle);
+
+                // Engine glow
+                if (this.keys['KeyW'] || this.keys['ArrowUp']) {
+                    const glowGradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, 30);
+                    glowGradient.addColorStop(0, 'rgba(255, 100, 100, 0.8)');
+                    glowGradient.addColorStop(0.5, 'rgba(255, 150, 50, 0.4)');
+                    glowGradient.addColorStop(1, 'rgba(255, 200, 100, 0)');
+                    this.ctx.fillStyle = glowGradient;
+                    this.ctx.fillRect(-15, 25, 30, 15);
+                }
 
                 // Spacecraft body
                 this.ctx.fillStyle = this.player.color;
-                this.ctx.fillRect(-15, -10, 30, 20);
+                this.ctx.fillRect(-20, -15, 40, 30);
 
-                // Spacecraft cockpit
+                // Spacecraft details
+                this.ctx.fillStyle = '#6bb6ff';
+                this.ctx.fillRect(-15, -10, 30, 8);
+
+                // Cockpit
                 this.ctx.fillStyle = 'rgba(100, 200, 255, 0.8)';
-                this.ctx.fillRect(-5, -8, 10, 8);
+                this.ctx.fillRect(-8, -12, 16, 12);
 
-                // Engine glow
-                this.ctx.fillStyle = 'rgba(255, 100, 100, 0.6)';
-                this.ctx.fillRect(-20, -5, 10, 10);
-                this.ctx.fillRect(10, -5, 10, 10);
+                // Wings
+                this.ctx.fillStyle = '#4a9eff';
+                this.ctx.beginPath();
+                this.ctx.moveTo(-25, 0);
+                this.ctx.lineTo(-35, -10);
+                this.ctx.lineTo(-25, -20);
+                this.ctx.closePath();
+                this.ctx.fill();
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(25, 0);
+                this.ctx.lineTo(35, -10);
+                this.ctx.lineTo(25, -20);
+                this.ctx.closePath();
+                this.ctx.fill();
 
                 this.ctx.restore();
 
+                // Draw projectiles
+                this.projectiles.forEach(projectile => {
+                    const screenX = projectile.x - this.camera.x;
+                    const screenY = projectile.y - this.camera.y;
+
+                    this.ctx.fillStyle = '#ff6b35';
+                    this.ctx.fillRect(screenX - 2, screenY - 2, 4, 4);
+
+                    this.ctx.strokeStyle = '#ffd700';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.strokeRect(screenX - 2, screenY - 2, 4, 4);
+                });
+
                 // Draw particles
                 this.particles.forEach(particle => {
+                    const screenX = particle.x - this.camera.x;
+                    const screenY = particle.y - this.camera.y;
+
+                    const alpha = particle.life / 60;
                     this.ctx.fillStyle = particle.color;
-                    this.ctx.globalAlpha = particle.life / 30;
-                    this.ctx.fillRect(particle.x, particle.y, 2, 2);
+                    this.ctx.globalAlpha = alpha;
+                    this.ctx.fillRect(screenX, screenY, particle.size, particle.size);
                     this.ctx.globalAlpha = 1;
                 });
 
-                // Draw UI
+                // Draw UI elements
                 this.drawUI();
+                this.drawMinimap();
             }
 
             drawUI() {
-                // Health bar
-                const healthBarWidth = 200;
-                const healthBarHeight = 20;
-                const healthPercent = this.health / 100;
+                // Health/Fuel bars
+                const barWidth = 200;
+                const barHeight = 15;
 
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                this.ctx.fillRect(10, 10, healthBarWidth, healthBarHeight);
+                // Hull bar
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillRect(10, 10, barWidth, barHeight);
 
-                this.ctx.fillStyle = healthPercent > 0.6 ? '#00ff00' : healthPercent > 0.3 ? '#ffff00' : '#ff0000';
-                this.ctx.fillRect(10, 10, healthBarWidth * healthPercent, healthBarHeight);
+                const hullPercent = this.player.hull / 100;
+                this.ctx.fillStyle = hullPercent > 0.6 ? '#00ff00' : hullPercent > 0.3 ? '#ffff00' : '#ff0000';
+                this.ctx.fillRect(10, 10, barWidth * hullPercent, barHeight);
 
                 this.ctx.strokeStyle = '#4a9eff';
                 this.ctx.lineWidth = 2;
-                this.ctx.strokeRect(10, 10, healthBarWidth, healthBarHeight);
+                this.ctx.strokeRect(10, 10, barWidth, barHeight);
 
-                // Energy bar
-                const energyBarWidth = 200;
-                const energyBarHeight = 20;
-                const energyPercent = this.energy / 100;
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.font = '12px Arial';
+                this.ctx.fillText('Hull', 220, 23);
 
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                this.ctx.fillRect(10, 40, energyBarWidth, energyBarHeight);
+                // Fuel bar
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillRect(10, 35, barWidth, barHeight);
 
+                const fuelPercent = this.player.fuel / this.player.maxFuel;
                 this.ctx.fillStyle = '#4a9eff';
-                this.ctx.fillRect(10, 40, energyBarWidth * energyPercent, energyBarHeight);
+                this.ctx.fillRect(10, 35, barWidth * fuelPercent, barHeight);
 
                 this.ctx.strokeStyle = '#4a9eff';
-                this.ctx.strokeRect(10, 40, energyBarWidth, energyBarHeight);
+                this.ctx.strokeRect(10, 35, barWidth, barHeight);
+
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.fillText('Fuel', 220, 48);
+            }
+
+            drawMinimap() {
+                const miniCtx = this.minimapCtx;
+                const miniSize = 150;
+
+                // Clear minimap
+                miniCtx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                miniCtx.fillRect(0, 0, miniSize, miniSize);
+
+                // Draw border
+                miniCtx.strokeStyle = '#4a9eff';
+                miniCtx.lineWidth = 2;
+                miniCtx.strokeRect(0, 0, miniSize, miniSize);
+
+                // Draw player
+                const playerMiniX = (this.player.x / (this.width * 2)) * miniSize;
+                const playerMiniY = (this.player.y / (this.height * 2)) * miniSize;
+
+                miniCtx.fillStyle = '#ffd700';
+                miniCtx.fillRect(playerMiniX - 2, playerMiniY - 2, 4, 4);
+
+                // Draw planets
+                this.planets.forEach(planet => {
+                    const planetMiniX = (planet.x / (this.width * 2)) * miniSize;
+                    const planetMiniY = (planet.y / (this.height * 2)) * miniSize;
+
+                    miniCtx.fillStyle = planet.visited ? '#ffd700' : planet.color;
+                    miniCtx.fillRect(planetMiniX - 1, planetMiniY - 1, 2, 2);
+                });
+            }
+
+            lightenColor(color, percent) {
+                const num = parseInt(color.replace("#", ""), 16);
+                const amt = Math.round(2.55 * percent * 100);
+                const R = (num >> 16) + amt;
+                const G = (num >> 8 & 0x00FF) + amt;
+                const B = (num & 0x0000FF) + amt;
+                return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
             }
 
             gameLoop(currentTime = 0) {
@@ -442,16 +853,10 @@
         // Initialize game when page loads
         window.addEventListener('load', () => {
             console.log('🚀 Space Explorer Adventure - Unreal Engine 5.6 Style');
-            console.log('✅ Professional 3D space exploration game loaded');
-            console.log('🎮 Use WASD to move, mouse to look around');
+            console.log('✅ Advanced graphics and physics system initialized');
+            console.log('🎮 Professional AAA-quality space exploration game');
 
-            const game = new SpaceExplorerGame();
-
-            // Update status
-            setInterval(() => {
-                document.getElementById('status').textContent =
-                    `🌟 Unreal Engine 5.6 - Score: ${game.score} | Level: ${game.level}`;
-            }, 100);
+            const game = new UnrealEngineGame();
         });
     </script>
 </body>
