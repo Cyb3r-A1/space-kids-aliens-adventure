@@ -605,8 +605,13 @@
         </div>
     </div>
 
+    <script src="enhance-game-visuals.js"></script>
+    <script src="enhance-gameplay-mechanics.js"></script>
+    <script src="optimize-and-enhance.js"></script>
+    <script src="complete-game-enhancement.js"></script>
+
     <script>
-        // 3D Game Engine - Part 1: Core Setup
+        // Enhanced 3D Game Engine with Advanced Features
         class SpaceAdventure3D {
             constructor() {
                 this.canvas = document.getElementById('gameCanvas');
@@ -2495,8 +2500,13 @@
             }
         }
         
-        // Initialize the game
+        // Initialize the enhanced game with all advanced features
         const game = new SpaceAdventure3D();
+
+        // Connect the complete game enhancement system
+        if (typeof window.completeGameEnhancement !== 'undefined') {
+            window.completeGameEnhancement.game = game;
+        }
         
         // Global functions for UI
         function startGame() {
