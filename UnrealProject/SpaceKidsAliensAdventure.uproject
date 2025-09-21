@@ -1,0 +1,19 @@
+{
+    "FileVersion": 3,
+    "EngineAssociation": "5.6.0",
+    "Category": "",
+    "Description": "Space Kids & Aliens Adventure - AAA 3D Game",
+    "Modules": [
+        {
+            "Name": "SpaceKidsAliensAdventure",
+            "Type": "Runtime",
+            "LoadingPhase": "Default"
+        }
+    ],
+    "Plugins": [
+        {
+            "Name": "WebBrowserWidget",
+            "Enabled": true
+        }
+    ]
+}

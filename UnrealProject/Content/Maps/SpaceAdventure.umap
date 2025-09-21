@@ -1,0 +1,7 @@
+{
+    "MapName": "SpaceAdventure",
+    "LevelType": "PersistentLevel",
+    "WorldSettings": {
+        "GameMode": "/Game/Blueprints/GameModes/SpaceGameMode.SpaceGameMode_C"
+    }
+}
