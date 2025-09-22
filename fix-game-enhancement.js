@@ -36,8 +36,9 @@ class GameEnhancementFix {
             // Initialize professional systems
             this.setupWeatherSystem();
             this.setupDayNightCycle();
-            this.setupNPCSystem();
-            this.setupMiniGameSystem();
+        this.setupNPCSystem();
+        this.setupMiniGameSystem();
+        this.setupEconomySystem();
 
             console.log('✅ Professional game enhancements setup complete');
         } catch (error) {
@@ -294,6 +295,9 @@ class GameEnhancementFix {
                     <div>A - Toggle Achievements</div>
                     <div>S - Show Leaderboards</div>
                     <div style="margin-top: 10px; color: #ff6b6b;">🚀 Social Features Active</div>
+                    <div>E - Open Shop / Close</div>
+                    <div>B - Black Market</div>
+                    <div style="margin-top: 10px; color: #00ffaa;">💰 Economy System Active</div>
                 </div>
             `;
             document.body.appendChild(hints);
@@ -333,6 +337,16 @@ class GameEnhancementFix {
                     break;
                 case 'KeyS':
                     this.showLeaderboard();
+                    break;
+                case 'KeyE':
+                    if (this.currentShop) {
+                        this.closeShop();
+                    } else {
+                        this.openShop('spaceStation');
+                    }
+                    break;
+                case 'KeyB':
+                    this.openShop('blackMarket');
                     break;
             }
         });
@@ -735,6 +749,229 @@ class GameEnhancementFix {
 
         this.setupSocialUI();
         this.updateSocialStats();
+    }
+
+    setupEconomySystem() {
+        this.economy = {
+            marketPrices: {
+                fuel: { base: 10, current: 10, volatility: 0.2 },
+                oxygen: { base: 15, current: 15, volatility: 0.15 },
+                food: { base: 20, current: 20, volatility: 0.1 },
+                rareMetals: { base: 100, current: 100, volatility: 0.5 },
+                alienArtifacts: { base: 500, current: 500, volatility: 0.8 },
+                energyCrystals: { base: 250, current: 250, volatility: 0.3 }
+            },
+            shops: {
+                spaceStation: {
+                    name: 'Galactic Trading Post',
+                    items: ['fuel', 'oxygen', 'food', 'rareMetals'],
+                    discounts: 0
+                },
+                blackMarket: {
+                    name: 'Shadow Market',
+                    items: ['alienArtifacts', 'energyCrystals', 'rareMetals'],
+                    discounts: 0.1 // 10% discount
+                }
+            },
+            playerInventory: {
+                fuel: 100,
+                oxygen: 50,
+                food: 30,
+                rareMetals: 5,
+                alienArtifacts: 1,
+                energyCrystals: 3
+            },
+            cargoCapacity: 200,
+            currentCargo: 0
+        };
+
+        this.setupEconomyUI();
+        this.startMarketUpdates();
+        this.setupTradingSystem();
+    }
+
+    setupEconomyUI() {
+        if (!document.getElementById('economy-ui')) {
+            const economyUI = document.createElement('div');
+            economyUI.id = 'economy-ui';
+            economyUI.innerHTML = `
+                <div id="market-prices" style="position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.8); border: 2px solid #ffd700; border-radius: 10px; padding: 15px; color: #ffd700; font-size: 0.8em; z-index: 900; max-width: 250px;">
+                    <h4 style="color: #ffd700; margin-bottom: 10px;">💰 Market Prices</h4>
+                    <div id="price-list"></div>
+                    <div style="margin-top: 10px;">
+                        <button id="open-shop" onclick="gameEnhancementFix.openShop('spaceStation')">🛒 Trade</button>
+                        <button id="open-black-market" onclick="gameEnhancementFix.openShop('blackMarket')">⚫ Black Market</button>
+                    </div>
+                </div>
+                <div id="shop-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); border: 2px solid #ffd700; border-radius: 15px; padding: 20px; color: #ffd700; max-width: 500px; z-index: 1000;">
+                    <h3 id="shop-name" style="color: #ffd700; margin-bottom: 15px;"></h3>
+                    <div id="shop-inventory"></div>
+                    <div style="margin-top: 15px;">
+                        <h4>Your Inventory:</h4>
+                        <div id="player-inventory"></div>
+                    </div>
+                    <button id="close-shop" onclick="gameEnhancementFix.closeShop()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(economyUI);
+        }
+    }
+
+    startMarketUpdates() {
+        // Update market prices every 30 seconds
+        setInterval(() => {
+            this.updateMarketPrices();
+        }, 30000);
+    }
+
+    updateMarketPrices() {
+        Object.keys(this.economy.marketPrices).forEach(item => {
+            const market = this.economy.marketPrices[item];
+            const change = (Math.random() - 0.5) * market.volatility;
+            market.current = Math.max(1, Math.round(market.base * (1 + change)));
+        });
+
+        this.updatePriceDisplay();
+    }
+
+    updatePriceDisplay() {
+        const priceList = document.getElementById('price-list');
+        if (priceList) {
+            priceList.innerHTML = Object.entries(this.economy.marketPrices)
+                .map(([item, data]) => `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>${this.formatItemName(item)}:</span>
+                        <span>${data.current} coins</span>
+                    </div>
+                `).join('');
+        }
+    }
+
+    formatItemName(item) {
+        return item.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+    }
+
+    openShop(shopType) {
+        const shop = this.economy.shops[shopType];
+        if (shop) {
+            this.currentShop = shopType;
+            this.updateShopDisplay(shop);
+            this.updatePlayerInventoryDisplay();
+
+            const modal = document.getElementById('shop-modal');
+            const shopName = document.getElementById('shop-name');
+
+            if (modal && shopName) {
+                shopName.textContent = shop.name;
+                modal.style.display = 'block';
+            }
+        }
+    }
+
+    updateShopDisplay(shop) {
+        const shopInventory = document.getElementById('shop-inventory');
+        if (shopInventory) {
+            shopInventory.innerHTML = shop.items.map(item => `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                    <div>
+                        <div style="font-weight: bold;">${this.formatItemName(item)}</div>
+                        <div>Price: ${this.economy.marketPrices[item].current} coins</div>
+                    </div>
+                    <div>
+                        <button onclick="gameEnhancementFix.buyItem('${item}')">Buy</button>
+                        <button onclick="gameEnhancementFix.sellItem('${item}')">Sell</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    updatePlayerInventoryDisplay() {
+        const playerInventory = document.getElementById('player-inventory');
+        if (playerInventory) {
+            playerInventory.innerHTML = Object.entries(this.economy.playerInventory)
+                .map(([item, amount]) => `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>${this.formatItemName(item)}:</span>
+                        <span>${amount}</span>
+                    </div>
+                `).join('');
+        }
+    }
+
+    buyItem(item) {
+        const price = this.economy.marketPrices[item].current;
+        const discount = this.currentShop === 'blackMarket' ? 0.1 : 0;
+
+        if (this.player.coins >= price && this.economy.currentCargo < this.economy.cargoCapacity) {
+            this.player.coins -= Math.floor(price * (1 - discount));
+            this.economy.playerInventory[item]++;
+            this.economy.currentCargo++;
+
+            this.showNotification(`✅ Bought ${this.formatItemName(item)} for ${Math.floor(price * (1 - discount))} coins!`, 'success');
+            this.updateShopDisplay(this.economy.shops[this.currentShop]);
+            this.updatePlayerInventoryDisplay();
+        } else if (this.player.coins < price) {
+            this.showNotification('❌ Not enough coins!', 'error');
+        } else {
+            this.showNotification('❌ Not enough cargo space!', 'error');
+        }
+    }
+
+    sellItem(item) {
+        if (this.economy.playerInventory[item] > 0) {
+            const price = Math.floor(this.economy.marketPrices[item].current * 0.8); // Sell for 80% of market price
+
+            this.player.coins += price;
+            this.economy.playerInventory[item]--;
+            this.economy.currentCargo--;
+
+            this.showNotification(`✅ Sold ${this.formatItemName(item)} for ${price} coins!`, 'success');
+            this.updateShopDisplay(this.economy.shops[this.currentShop]);
+            this.updatePlayerInventoryDisplay();
+        } else {
+            this.showNotification('❌ No items to sell!', 'error');
+        }
+    }
+
+    closeShop() {
+        const modal = document.getElementById('shop-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        this.currentShop = null;
+    }
+
+    setupTradingSystem() {
+        // Add trading NPCs
+        this.tradingNPCs = [
+            {
+                name: 'Resource Trader',
+                x: 800,
+                y: 400,
+                items: ['rareMetals', 'energyCrystals'],
+                dialogue: ['I have rare resources for trade!', 'Looking to expand my collection.', 'Got any alien artifacts?']
+            },
+            {
+                name: 'Black Market Dealer',
+                x: -800,
+                y: -400,
+                items: ['alienArtifacts'],
+                dialogue: ['Shh... looking for contraband?', 'I deal in... special items.', 'Keep this between us.']
+            }
+        ];
+
+        // Add trading NPCs to the main NPCs array
+        this.tradingNPCs.forEach(trader => {
+            this.npcs.push({
+                ...trader,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                health: 100,
+                friendship: 0,
+                type: 'trader'
+            });
+        });
     }
 
     getTotalPlayerCount() {
