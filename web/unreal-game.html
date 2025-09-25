@@ -130,6 +130,28 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
         }
+
+        /* Dynamic overlay visibility */
+        .is-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .help-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1100;
+            padding: 12px 18px;
+            border-radius: 22px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #4a9eff;
+            color: #4a9eff;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(74, 158, 255, 0.25);
+        }
     </style>
 </head>
 <body>
@@ -161,13 +183,19 @@
             <p><span class="control-key">ESC</span> - Pause menu</p>
         </div>
 
-        <a href="index.html" class="launch-btn">🏠 Back to Launchpad</a>
+        <a href="index.html" class="launch-btn" id="backLink">🏠 Back to Launchpad</a>
     </div>
+
+    <a href="#" class="help-toggle" id="helpToggle" aria-label="Toggle help (H)">❔ Help (H)</a>
 
     <script>
         function hideLoading() {
             setTimeout(() => {
                 document.getElementById('loadingScreen').style.display = 'none';
+                // Auto-hide non-game UI shortly after load
+                setTimeout(() => {
+                    setOverlayVisible(false);
+                }, 1200);
             }, 2000);
         }
 
@@ -200,6 +228,57 @@
         if (!gl) {
             progressElement.textContent = 'WebGL not supported - Using fallback renderer';
         }
+
+        // Overlay visibility management (titles, controls, back link)
+        const overlayElements = [];
+        function collectOverlayElements() {
+            if (overlayElements.length > 0) return;
+            const h1 = document.querySelector('h1');
+            const h2 = document.querySelector('h2');
+            const controls = document.querySelector('.controls');
+            const backLink = document.getElementById('backLink');
+            [h1, h2, controls, backLink].forEach(el => { if (el && !overlayElements.includes(el)) overlayElements.push(el); });
+        }
+
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', collectOverlayElements);
+        } else {
+            collectOverlayElements();
+        }
+
+        function setOverlayVisible(visible) {
+            overlayElements.forEach(el => {
+                if (!el) return;
+                if (visible) {
+                    el.classList.remove('is-hidden');
+                } else {
+                    el.classList.add('is-hidden');
+                }
+            });
+            const toggle = document.getElementById('helpToggle');
+            if (toggle) {
+                toggle.textContent = visible ? '❌ Hide Help (H)' : '❔ Help (H)';
+            }
+        }
+
+        // Help toggle button and keyboard shortcut (H)
+        const helpToggle = document.getElementById('helpToggle');
+        if (helpToggle) {
+            helpToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                collectOverlayElements();
+                const hiddenNow = overlayElements.length && overlayElements[0].classList.contains('is-hidden');
+                setOverlayVisible(hiddenNow);
+            });
+        }
+
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'h' || e.key === 'H') {
+                collectOverlayElements();
+                const hiddenNow = overlayElements.length && overlayElements[0].classList.contains('is-hidden');
+                setOverlayVisible(hiddenNow);
+            }
+        });
     </script>
 </body>
 </html>
