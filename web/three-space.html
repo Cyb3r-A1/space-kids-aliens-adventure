@@ -46,6 +46,20 @@
     </div>
     <div class="toggle"><a href="#" id="helpBtn" class="btn">❔ Help (H)</a></div>
     <div id="app"></div>
+    <div id="hudOverlay" style="position:fixed;inset:0;pointer-events:none;z-index:9;">
+        <div id="reticle" style="position:absolute;left:50%;top:50%;width:20px;height:20px;transform:translate(-50%,-50%);">
+            <div style="position:absolute;left:9px;top:0;width:2px;height:20px;background:#4a9eff;box-shadow:0 0 6px rgba(74,158,255,.9);"></div>
+            <div style="position:absolute;left:0;top:9px;width:20px;height:2px;background:#4a9eff;box-shadow:0 0 6px rgba(74,158,255,.9);"></div>
+        </div>
+        <div id="speedHud" style="position:absolute;right:16px;bottom:16px;background:rgba(0,0,0,.6);border:1px solid #4a9eff;border-radius:10px;padding:8px 12px;color:#9fd0ff;font:12px/1.4 Arial,sans-serif;">
+            <div>Speed: <span id="speedValue">0</span></div>
+            <div>Boost: <span id="boostValue">off</span></div>
+        </div>
+        <div id="missionHud" style="position:absolute;right:16px;top:16px;background:rgba(0,0,0,.7);border:1px solid #ffd700;border-radius:10px;padding:10px 12px;color:#cfe6ff;font:12px/1.4 Arial,sans-serif;display:none;max-width:320px;">
+            <div style="color:#ffd700;font-weight:bold;margin-bottom:4px;">🎯 Mission</div>
+            <div id="missionText"></div>
+        </div>
+    </div>
 
     <script type="module">
         import * as THREE from 'https://esm.sh/three@0.160.0';
@@ -203,7 +217,7 @@
         // Simple Spaceship (procedural) with emissive thrusters
         function makeShip() {
             const group = new THREE.Group();
-            const hullMat = new THREE.MeshPhysicalMaterial({ color: 0x9aa3ad, metalness: 0.8, roughness: 0.25, clearcoat: 0.6, clearcoatRoughness: 0.2 });
+            const hullMat = new THREE.MeshPhysicalMaterial({ color: 0x9aa3ad, metalness: 0.85, roughness: 0.22, clearcoat: 0.7, clearcoatRoughness: 0.18 });
             const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x223344, metalness: 0.0, roughness: 0.05, transmission: 0.7, thickness: 0.2, transparent: true });
             const glowMat = new THREE.MeshBasicMaterial({ color: 0x66ccff });
 
@@ -219,7 +233,7 @@
             group.add(canopy);
 
             // Wings
-            const wingGeo = new THREE.BoxGeometry(10, 0.3, 3);
+            const wingGeo = new THREE.BoxGeometry(12, 0.3, 3.6);
             const leftWing = new THREE.Mesh(wingGeo, hullMat);
             leftWing.position.set(0, -1.2, -3.2);
             const rightWing = leftWing.clone();
@@ -241,9 +255,24 @@
             const flame2 = flame1.clone(); flame2.position.z = 1.8;
             group.add(flame1, flame2);
 
+            // Nacelles and gun pods
+            const nacelleGeo = new THREE.CylinderGeometry(0.4, 0.6, 3.5, 12);
+            const nacelleL = new THREE.Mesh(nacelleGeo, hullMat);
+            nacelleL.rotation.z = Math.PI / 2;
+            nacelleL.position.set(2.5, -1.0, -3.8);
+            const nacelleR = nacelleL.clone(); nacelleR.position.z = 3.8;
+            group.add(nacelleL, nacelleR);
+
+            const gunGeo = new THREE.CylinderGeometry(0.18, 0.18, 2.2, 12);
+            const gunL = new THREE.Mesh(gunGeo, new THREE.MeshStandardMaterial({ color: 0x88909a, metalness: 0.9, roughness: 0.2 }));
+            gunL.rotation.z = Math.PI / 2;
+            gunL.position.set(6.5, -1.0, -2.6);
+            const gunR = gunL.clone(); gunR.position.z = 2.6;
+            group.add(gunL, gunR);
+
             group.position.set(0, 0, 0);
             scene.add(group);
-            return { group, flames: [flame1, flame2] };
+            return { group, flames: [flame1, flame2], guns: [gunL, gunR] };
         }
 
         const ship = makeShip();
@@ -255,7 +284,7 @@
         rig.add(camera);
 
         // Controls (Pointer lock style flight)
-        const keys = { w: false, a: false, s: false, d: false, q: false, e: false, shift: false };
+        const keys = { w: false, a: false, s: false, d: false, q: false, e: false, shift: false, mouseDown: false };
         window.addEventListener('keydown', (e) => {
             if (e.key === 'h' || e.key === 'H') toggleHUD();
             if (e.key === 'w' || e.key === 'W') keys.w = true;
@@ -281,7 +310,9 @@
             if (!pointerLocked) {
                 renderer.domElement.requestPointerLock();
             }
+            keys.mouseDown = true;
         });
+        window.addEventListener('mouseup', () => { keys.mouseDown = false; });
         document.addEventListener('pointerlockchange', () => {
             pointerLocked = document.pointerLockElement === renderer.domElement;
         });
@@ -299,6 +330,10 @@
         const rollSpeed = 1.6;
         const mouseSensitivity = 0.0024;
         let velocity = new THREE.Vector3();
+        const projectiles = [];
+        let fireCooldown = 0;
+        const projectileSpeed = 220;
+        const projectileLifetime = 2.2;
 
         // Resize
         window.addEventListener('resize', () => {
@@ -311,10 +346,84 @@
         // HUD
         const hud = document.getElementById('hud');
         const helpBtn = document.getElementById('helpBtn');
+        const speedValue = document.getElementById('speedValue');
+        const boostValue = document.getElementById('boostValue');
+        const missionHud = document.getElementById('missionHud');
+        const missionText = document.getElementById('missionText');
         function toggleHUD() {
             hud.classList.toggle('is-hidden');
         }
         helpBtn.addEventListener('click', (e) => { e.preventDefault(); toggleHUD(); });
+
+        // Asteroid field
+        function createAsteroids(count = 120) {
+            const asteroids = [];
+            const geom = new THREE.IcosahedronGeometry(1.5, 1);
+            for (let i = 0; i < count; i++) {
+                const scale = 2 + Math.random() * 6;
+                const mesh = new THREE.Mesh(geom.clone(), new THREE.MeshStandardMaterial({ color: 0x777777, roughness: 1.0, metalness: 0.0 }));
+                mesh.scale.set(scale, scale * (0.7 + Math.random()*0.6), scale);
+                mesh.position.set((Math.random()-0.5)*1200, (Math.random()-0.5)*800, (Math.random()-0.5)*1200);
+                mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+                mesh.userData.rot = new THREE.Vector3(Math.random()*0.6, Math.random()*0.6, Math.random()*0.6);
+                scene.add(mesh);
+                asteroids.push(mesh);
+            }
+            return asteroids;
+        }
+        const asteroids = createAsteroids();
+
+        // Mission integration
+        let mission = null;
+        let missionBeacon = null;
+        async function loadMission() {
+            try {
+                const res = await fetch('/api/mission');
+                const m = await res.json();
+                mission = m;
+                missionHud.style.display = 'block';
+                missionText.textContent = `${m.planet} (${m.biome}) • ${m.objective} • ${m.difficulty} • ${m.reward} • ${m.timeLimit}`;
+                // Place a beacon
+                if (missionBeacon) scene.remove(missionBeacon);
+                const geo = new THREE.ConeGeometry(4, 14, 12);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xffd700, emissive: 0x553300, emissiveIntensity: 0.8 });
+                missionBeacon = new THREE.Mesh(geo, mat);
+                missionBeacon.position.set(600, 60, -300);
+                missionBeacon.rotation.x = Math.PI;
+                scene.add(missionBeacon);
+            } catch (e) {
+                missionHud.style.display = 'block';
+                missionText.textContent = 'Mission system offline (using local flight only)';
+            }
+        }
+        loadMission();
+
+        function fireProjectiles(dt) {
+            fireCooldown -= dt;
+            const wantFire = keys.mouseDown;
+            if (wantFire && fireCooldown <= 0) {
+                fireCooldown = 0.12; // 8+ shots/sec
+                ship.guns.forEach((gun) => {
+                    const proj = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 12), new THREE.MeshBasicMaterial({ color: 0x66ccff }));
+                    proj.position.copy(gun.getWorldPosition(new THREE.Vector3()));
+                    const dir = new THREE.Vector3(1,0,0).applyQuaternion(ship.group.quaternion).normalize();
+                    proj.userData.vel = dir.multiplyScalar(projectileSpeed);
+                    proj.userData.time = 0;
+                    scene.add(proj);
+                    projectiles.push(proj);
+                });
+            }
+            // Update and cull
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const p = projectiles[i];
+                p.userData.time += dt;
+                p.position.add(p.userData.vel.clone().multiplyScalar(dt));
+                if (p.userData.time > projectileLifetime) {
+                    scene.remove(p);
+                    projectiles.splice(i, 1);
+                }
+            }
+        }
 
         // Animation loop
         const clock = new THREE.Clock();
@@ -348,6 +457,28 @@
             velocity.add(accel.multiplyScalar(dt));
             velocity.multiplyScalar(0.98);
             ship.group.position.add(velocity.clone().multiplyScalar(dt));
+
+            // Update HUD
+            const spd = velocity.length();
+            speedValue.textContent = spd.toFixed(1);
+            boostValue.textContent = keys.shift ? 'on' : 'off';
+
+            // Fire projectiles
+            fireProjectiles(dt);
+
+            // Asteroids rotation and simple collision proximity (feedback only)
+            const shipPos = ship.group.position;
+            for (let i = 0; i < asteroids.length; i++) {
+                const a = asteroids[i];
+                a.rotation.x += a.userData.rot.x * dt * 0.2;
+                a.rotation.y += a.userData.rot.y * dt * 0.2;
+                a.rotation.z += a.userData.rot.z * dt * 0.2;
+                const d2 = a.position.distanceToSquared(shipPos);
+                if (d2 < 900) { // ~30 units
+                    errEl.textContent = '⚠️ Proximity alert: asteroid field';
+                    errEl.style.display = 'block';
+                }
+            }
 
             // Animate details
             clouds.rotation.y += 0.01 * dt;
