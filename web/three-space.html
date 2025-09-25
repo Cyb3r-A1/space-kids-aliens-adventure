@@ -49,9 +49,15 @@
 
     <script type="module">
         import * as THREE from 'https://esm.sh/three@0.160.0';
-        import { EffectComposer } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
-        import { UnrealBloomPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+        import { EffectComposer } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js?deps=three@0.160.0';
+        import { RenderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/RenderPass.js?deps=three@0.160.0';
+        import { UnrealBloomPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js?deps=three@0.160.0';
+
+        // Error display helper
+        const errEl = document.createElement('div');
+        errEl.style.cssText = 'position:fixed;top:0;left:0;right:0;background:rgba(0,0,0,.8);color:#ff8080;padding:8px 12px;font:12px/1.4 monospace;z-index:9999;display:none;';
+        document.body.appendChild(errEl);
+        window.addEventListener('error', (e) => { errEl.textContent = 'Error: ' + (e.message || 'Unknown'); errEl.style.display = 'block'; });
 
         // Renderer
         const canvasParent = document.getElementById('app');
@@ -70,11 +76,20 @@
         const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 50000);
         camera.position.set(0, 10, 60);
 
-        // Postprocessing
-        const composer = new EffectComposer(renderer);
-        composer.addPass(new RenderPass(scene, camera));
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.8, 0.9, 0.2);
-        composer.addPass(bloomPass);
+        // Postprocessing with safe fallback
+        let composer = null;
+        let useComposer = false;
+        try {
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.8, 0.9, 0.2);
+            composer.addPass(bloomPass);
+            useComposer = true;
+        } catch (e) {
+            console.warn('Postprocessing unavailable, falling back to direct render:', e);
+            errEl.textContent = 'Note: running without postprocessing (fallback).';
+            errEl.style.display = 'block';
+        }
 
         // Starfield (Points)
         function createStarfield(count = 4000, radius = 4000) {
@@ -103,7 +118,7 @@
         const sun = new THREE.DirectionalLight(0xffffff, 2.2);
         sun.position.set(300, 200, 100);
         scene.add(sun);
-        const ambient = new THREE.AmbientLight(0x223355, 0.6);
+        const ambient = new THREE.AmbientLight(0x223355, 0.75);
         scene.add(ambient);
 
         // Textures
@@ -179,6 +194,11 @@
         const { earth, clouds } = makeEarth();
         const mars = makeMars();
         const jupiter = makeJupiter();
+
+        // Sanity cube near the ship to prove rendering even without textures
+        const sanity = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshStandardMaterial({ color: 0x4a9eff, emissive: 0x0b2a66, roughness: 0.4 }));
+        sanity.position.set(8, 2.5, 0);
+        scene.add(sanity);
 
         // Simple Spaceship (procedural) with emissive thrusters
         function makeShip() {
@@ -285,7 +305,7 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
+            if (composer) composer.setSize(window.innerWidth, window.innerHeight);
         });
 
         // HUD
@@ -340,7 +360,11 @@
             const pulse = 0.85 + Math.sin(t) * 0.15;
             ship.flames.forEach(f => { f.scale.set(pulse, pulse, pulse); });
 
-            composer.render();
+            if (useComposer && composer) {
+                composer.render();
+            } else {
+                renderer.render(scene, camera);
+            }
             requestAnimationFrame(animate);
         }
         animate();
