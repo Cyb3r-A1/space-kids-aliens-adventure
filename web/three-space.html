@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Explorer Adventure - Three.js 3D Space</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #000;
+            color: #cfe6ff;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #app { position: fixed; inset: 0; }
+        .hud {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #4a9eff;
+            border-radius: 10px;
+            padding: 12px 14px;
+            z-index: 10;
+        }
+        .hud h3 { margin: 0 0 6px 0; color: #ffd700; }
+        .hud .key { color: #ffd700; font-weight: bold; }
+        .hud .hint { color: #9fd0ff; font-size: 12px; opacity: 0.9; }
+        .toggle { position: fixed; right: 16px; bottom: 16px; z-index: 11; }
+        .btn {
+            display: inline-block; padding: 10px 14px; border-radius: 20px; border: 1px solid #4a9eff;
+            background: rgba(0,0,0,0.6); color: #4a9eff; text-decoration: none; font-weight: bold;
+        }
+        .is-hidden { opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+    </style>
+</head>
+<body>
+    <div class="hud" id="hud">
+        <h3>🚀 3D Space Flight</h3>
+        <div><span class="key">Click</span> to lock mouse • <span class="key">ESC</span> to release</div>
+        <div><span class="key">W/S</span> thrust • <span class="key">A/D</span> strafe • <span class="key">Q/E</span> roll</div>
+        <div><span class="key">Shift</span> boost • <span class="key">H</span> toggle help</div>
+        <div class="hint">Planets: Earth (clouds), Mars, Jupiter • Sunlight with bloom</div>
+    </div>
+    <div class="toggle"><a href="#" id="helpBtn" class="btn">❔ Help (H)</a></div>
+    <div id="app"></div>
+
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+        import { EffectComposer } from 'https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+        // Renderer
+        const canvasParent = document.getElementById('app');
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.shadowMap.enabled = false;
+        canvasParent.appendChild(renderer.domElement);
+
+        // Scene & Camera
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 50000);
+        camera.position.set(0, 10, 60);
+
+        // Postprocessing
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.8, 0.9, 0.2);
+        composer.addPass(bloomPass);
+
+        // Starfield (Points)
+        function createStarfield(count = 4000, radius = 4000) {
+            const geom = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            for (let i = 0; i < count; i++) {
+                const r = radius * (0.4 + Math.random() * 0.6);
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+                const x = r * Math.sin(phi) * Math.cos(theta);
+                const y = r * Math.sin(phi) * Math.sin(theta);
+                const z = r * Math.cos(phi);
+                positions[i * 3 + 0] = x;
+                positions[i * 3 + 1] = y;
+                positions[i * 3 + 2] = z;
+            }
+            geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const mat = new THREE.PointsMaterial({ color: 0x99bbff, size: 1.2, sizeAttenuation: true });
+            const points = new THREE.Points(geom, mat);
+            points.renderOrder = -1000;
+            scene.add(points);
+        }
+        createStarfield();
+
+        // Lighting (Sun)
+        const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+        sun.position.set(300, 200, 100);
+        scene.add(sun);
+        const ambient = new THREE.AmbientLight(0x223355, 0.6);
+        scene.add(ambient);
+
+        // Textures
+        const loader = new THREE.TextureLoader();
+        loader.setCrossOrigin('anonymous');
+        const PLANET_URL = 'https://threejs.org/examples/textures/planets/';
+        const tex = {
+            earth: loader.load(PLANET_URL + 'earth_atmos_2048.jpg'),
+            earthSpec: loader.load(PLANET_URL + 'earth_specular_2048.jpg'),
+            earthNormal: loader.load(PLANET_URL + 'earth_normal_2048.jpg'),
+            earthClouds: loader.load(PLANET_URL + 'earth_clouds_1024.png'),
+            mars: loader.load(PLANET_URL + 'mars_1k_color.jpg'),
+            jupiter: loader.load(PLANET_URL + 'jupiter2_1024.jpg')
+        };
+        tex.earth.colorSpace = THREE.SRGBColorSpace;
+        tex.mars.colorSpace = THREE.SRGBColorSpace;
+        tex.jupiter.colorSpace = THREE.SRGBColorSpace;
+
+        // Planets
+        function makeEarth() {
+            const geo = new THREE.SphereGeometry(10, 64, 64);
+            const mat = new THREE.MeshPhysicalMaterial({
+                map: tex.earth,
+                normalMap: tex.earthNormal,
+                roughness: 0.9,
+                metalness: 0.0,
+                clearcoat: 0.2,
+                envMapIntensity: 0.4
+            });
+            const earth = new THREE.Mesh(geo, mat);
+            earth.position.set(-80, 0, -40);
+
+            // Specular highlight via second material layer (approx)
+            const spec = new THREE.MeshPhongMaterial({ map: tex.earthSpec, color: 0xffffff, transparent: true, opacity: 0.25 });
+            const earthSpecMesh = new THREE.Mesh(geo.clone(), spec);
+            earth.add(earthSpecMesh);
+
+            // Clouds
+            const cloudsGeo = new THREE.SphereGeometry(10.15, 64, 64);
+            const cloudsMat = new THREE.MeshLambertMaterial({ map: tex.earthClouds, transparent: true, opacity: 0.6, depthWrite: false });
+            const clouds = new THREE.Mesh(cloudsGeo, cloudsMat);
+            earth.add(clouds);
+
+            scene.add(earth);
+            return { earth, clouds };
+        }
+
+        function makeMars() {
+            const geo = new THREE.SphereGeometry(6, 64, 64);
+            const mat = new THREE.MeshStandardMaterial({ map: tex.mars, roughness: 1.0, metalness: 0.0 });
+            const mars = new THREE.Mesh(geo, mat);
+            mars.position.set(70, -8, -20);
+            scene.add(mars);
+            return mars;
+        }
+
+        function makeJupiter() {
+            const geo = new THREE.SphereGeometry(18, 64, 64);
+            const mat = new THREE.MeshStandardMaterial({ map: tex.jupiter, roughness: 1.0, metalness: 0.0 });
+            const jupiter = new THREE.Mesh(geo, mat);
+            jupiter.position.set(140, 20, -120);
+            scene.add(jupiter);
+            return jupiter;
+        }
+
+        const { earth, clouds } = makeEarth();
+        const mars = makeMars();
+        const jupiter = makeJupiter();
+
+        // Simple Spaceship (procedural) with emissive thrusters
+        function makeShip() {
+            const group = new THREE.Group();
+            const hullMat = new THREE.MeshPhysicalMaterial({ color: 0x9aa3ad, metalness: 0.8, roughness: 0.25, clearcoat: 0.6, clearcoatRoughness: 0.2 });
+            const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x223344, metalness: 0.0, roughness: 0.05, transmission: 0.7, thickness: 0.2, transparent: true });
+            const glowMat = new THREE.MeshBasicMaterial({ color: 0x66ccff });
+
+            // Fuselage
+            const fuselage = new THREE.Mesh(new THREE.CapsuleGeometry(4, 14, 8, 16), hullMat);
+            fuselage.rotation.z = Math.PI / 2;
+            group.add(fuselage);
+
+            // Cockpit canopy
+            const canopy = new THREE.Mesh(new THREE.SphereGeometry(3, 24, 24), glassMat);
+            canopy.scale.set(1.2, 0.7, 0.9);
+            canopy.position.set(0, 1.5, 0);
+            group.add(canopy);
+
+            // Wings
+            const wingGeo = new THREE.BoxGeometry(10, 0.3, 3);
+            const leftWing = new THREE.Mesh(wingGeo, hullMat);
+            leftWing.position.set(0, -1.2, -3.2);
+            const rightWing = leftWing.clone();
+            rightWing.position.z = 3.2;
+            group.add(leftWing, rightWing);
+
+            // Thrusters
+            const thrusterGeo = new THREE.CylinderGeometry(0.9, 1.2, 2.5, 16);
+            const thruster1 = new THREE.Mesh(thrusterGeo, hullMat);
+            thruster1.rotation.z = Math.PI / 2;
+            thruster1.position.set(-9, -0.6, -1.8);
+            const thruster2 = thruster1.clone(); thruster2.position.z = 1.8;
+            group.add(thruster1, thruster2);
+
+            const flameGeo = new THREE.ConeGeometry(0.9, 3.2, 16);
+            const flame1 = new THREE.Mesh(flameGeo, glowMat);
+            flame1.rotation.z = -Math.PI / 2;
+            flame1.position.set(-10.4, -0.6, -1.8);
+            const flame2 = flame1.clone(); flame2.position.z = 1.8;
+            group.add(flame1, flame2);
+
+            group.position.set(0, 0, 0);
+            scene.add(group);
+            return { group, flames: [flame1, flame2] };
+        }
+
+        const ship = makeShip();
+
+        // Camera rig follows ship
+        const rig = new THREE.Group();
+        ship.group.add(rig);
+        camera.position.set(18, 5, 0);
+        rig.add(camera);
+
+        // Controls (Pointer lock style flight)
+        const keys = { w: false, a: false, s: false, d: false, q: false, e: false, shift: false };
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'h' || e.key === 'H') toggleHUD();
+            if (e.key === 'w' || e.key === 'W') keys.w = true;
+            if (e.key === 's' || e.key === 'S') keys.s = true;
+            if (e.key === 'a' || e.key === 'A') keys.a = true;
+            if (e.key === 'd' || e.key === 'D') keys.d = true;
+            if (e.key === 'q' || e.key === 'Q') keys.q = true;
+            if (e.key === 'e' || e.key === 'E') keys.e = true;
+            if (e.key === 'Shift') keys.shift = true;
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'w' || e.key === 'W') keys.w = false;
+            if (e.key === 's' || e.key === 'S') keys.s = false;
+            if (e.key === 'a' || e.key === 'A') keys.a = false;
+            if (e.key === 'd' || e.key === 'D') keys.d = false;
+            if (e.key === 'q' || e.key === 'Q') keys.q = false;
+            if (e.key === 'e' || e.key === 'E') keys.e = false;
+            if (e.key === 'Shift') keys.shift = false;
+        });
+
+        let pointerLocked = false;
+        renderer.domElement.addEventListener('click', () => {
+            if (!pointerLocked) {
+                renderer.domElement.requestPointerLock();
+            }
+        });
+        document.addEventListener('pointerlockchange', () => {
+            pointerLocked = document.pointerLockElement === renderer.domElement;
+        });
+        const mouse = { dx: 0, dy: 0 };
+        document.addEventListener('mousemove', (e) => {
+            if (!pointerLocked) return;
+            mouse.dx += e.movementX || 0;
+            mouse.dy += e.movementY || 0;
+        });
+
+        // Simulation params
+        const thrustBase = 12.0;
+        const boostMultiplier = 2.4;
+        const strafeSpeed = 9.0;
+        const rollSpeed = 1.6;
+        const mouseSensitivity = 0.0024;
+        let velocity = new THREE.Vector3();
+
+        // Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // HUD
+        const hud = document.getElementById('hud');
+        const helpBtn = document.getElementById('helpBtn');
+        function toggleHUD() {
+            hud.classList.toggle('is-hidden');
+        }
+        helpBtn.addEventListener('click', (e) => { e.preventDefault(); toggleHUD(); });
+
+        // Animation loop
+        const clock = new THREE.Clock();
+        function animate() {
+            const dt = Math.min(clock.getDelta(), 0.05);
+
+            // Mouse look
+            if (pointerLocked) {
+                const yaw = -mouse.dx * mouseSensitivity;
+                const pitch = -mouse.dy * mouseSensitivity;
+                ship.group.rotation.y += yaw;
+                ship.group.rotation.x += pitch;
+                mouse.dx = 0; mouse.dy = 0;
+            }
+
+            // Keyboard movement in ship local space
+            const forward = new THREE.Vector3(1, 0, 0).applyQuaternion(ship.group.quaternion);
+            const up = new THREE.Vector3(0, 1, 0).applyQuaternion(ship.group.quaternion);
+            const right = new THREE.Vector3(0, 0, 1).applyQuaternion(ship.group.quaternion);
+
+            const accel = new THREE.Vector3();
+            if (keys.w) accel.add(forward.clone().multiplyScalar(thrustBase));
+            if (keys.s) accel.add(forward.clone().multiplyScalar(-thrustBase * 0.8));
+            if (keys.a) accel.add(right.clone().multiplyScalar(-strafeSpeed));
+            if (keys.d) accel.add(right.clone().multiplyScalar(strafeSpeed));
+            if (keys.q) ship.group.rotation.z += rollSpeed * dt;
+            if (keys.e) ship.group.rotation.z -= rollSpeed * dt;
+            if (keys.shift) accel.multiplyScalar(boostMultiplier);
+
+            // Integrate velocity with some damping
+            velocity.add(accel.multiplyScalar(dt));
+            velocity.multiplyScalar(0.98);
+            ship.group.position.add(velocity.clone().multiplyScalar(dt));
+
+            // Animate details
+            clouds.rotation.y += 0.01 * dt;
+            earth.rotation.y += 0.04 * dt;
+            mars.rotation.y += 0.03 * dt;
+            jupiter.rotation.y += 0.02 * dt;
+
+            // Thruster pulsate
+            const t = performance.now() * 0.003;
+            const pulse = 0.85 + Math.sin(t) * 0.15;
+            ship.flames.forEach(f => { f.scale.set(pulse, pulse, pulse); });
+
+            composer.render();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
+
+
