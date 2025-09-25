@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Explorer Adventure - Plotly 3D Galaxy</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0c0c0c 0%, #000000 100%);
+            color: #4a9eff;
+            font-family: 'Arial', sans-serif;
+        }
+        #plotlyRoot {
+            width: 100%;
+            height: 100vh;
+        }
+        .hud {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #4a9eff;
+            border-radius: 12px;
+            padding: 14px 16px;
+            z-index: 1000;
+            box-shadow: 0 0 18px rgba(74, 158, 255, 0.25);
+        }
+        .hud h3 {
+            margin: 0 0 8px 0;
+            color: #ffd700;
+        }
+        .hud .sub { color: #6bb6ff; font-size: 12px; }
+        .btn {
+            display: inline-block;
+            padding: 10px 14px;
+            margin-right: 8px;
+            border-radius: 20px;
+            background: linear-gradient(45deg, #4a9eff, #6bb6ff);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        .panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 320px;
+            background: rgba(0,0,0,0.85);
+            border: 2px solid #4a9eff;
+            border-radius: 12px;
+            padding: 14px 16px;
+            z-index: 1000;
+            color: #cfe6ff;
+            max-height: 60vh;
+            overflow: auto;
+        }
+        .panel h4 { margin: 0 0 8px 0; color: #ffd700; }
+        .row { margin: 6px 0; }
+        .value { color: #ffd700; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; background: #143356; color: #9fd0ff; font-size: 11px; }
+        .legend { position: fixed; bottom: 16px; left: 20px; color: #6bb6ff; font-size: 12px; opacity: 0.85; }
+    </style>
+</head>
+<body>
+    <div class="hud">
+        <h3>🌌 Plotly 3D Galaxy</h3>
+        <div class="sub">Drag to orbit • Scroll to zoom • Double-click to reset</div>
+        <div style="margin-top:10px;">
+            <button class="btn" id="btnMission">🎯 Generate Mission</button>
+            <button class="btn" id="btnFocus">🔭 Focus Selected</button>
+        </div>
+    </div>
+    <div class="panel" id="missionPanel">
+        <h4>🎯 AI Mission</h4>
+        <div class="row">Planet: <span class="value" id="mPlanet">—</span> <span class="badge" id="mBiome">—</span></div>
+        <div class="row">Objective: <span class="value" id="mObjective">—</span></div>
+        <div class="row">Difficulty: <span class="value" id="mDifficulty">—</span></div>
+        <div class="row">Reward: <span class="value" id="mReward">—</span></div>
+        <div class="row">Time Limit: <span class="value" id="mTime">—</span></div>
+        <div class="row">Briefing: <div id="mBrief" style="margin-top:6px; color:#9fd0ff;"></div></div>
+    </div>
+    <div id="plotlyRoot"></div>
+    <div class="legend">Click planets to select. Use buttons to generate and focus missions.</div>
+
+    <script>
+        // Utility: seeded RNG for deterministic "AI"
+        function mulberry32(seed) {
+            let t = seed >>> 0;
+            return function() {
+                t += 0x6D2B79F5;
+                let r = Math.imul(t ^ t >>> 15, 1 | t);
+                r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+                return ((r ^ r >>> 14) >>> 0) / 4294967296;
+            }
+        }
+
+        // Generate starfield
+        function generateStars(n, rng) {
+            const x = [], y = [], z = [], s = [];
+            for (let i = 0; i < n; i++) {
+                x.push((rng() - 0.5) * 800);
+                y.push((rng() - 0.5) * 800);
+                z.push((rng() - 0.5) * 800);
+                s.push(2 + rng() * 2);
+            }
+            return {
+                type: 'scatter3d',
+                mode: 'markers',
+                x, y, z,
+                marker: { size: s, color: '#89b7ff', opacity: 0.8 },
+                hoverinfo: 'skip'
+            };
+        }
+
+        // Generate sphere (planet) mesh
+        function generateSphere(cx, cy, cz, r, color) {
+            const phi = [], theta = [], R = [], G = [], B = [];
+            const N = 32;
+            for (let i = 0; i < N; i++) {
+                const rowPhi = [], rowTheta = [];
+                for (let j = 0; j < N; j++) {
+                    rowPhi.push(i / (N - 1) * Math.PI);
+                    rowTheta.push(j / (N - 1) * 2 * Math.PI);
+                }
+                phi.push(rowPhi);
+                theta.push(rowTheta);
+            }
+            const x = [], y = [], z = [];
+            for (let i = 0; i < N; i++) {
+                const rx = [], ry = [], rz = [];
+                for (let j = 0; j < N; j++) {
+                    rx.push(cx + r * Math.sin(phi[i][j]) * Math.cos(theta[i][j]));
+                    ry.push(cy + r * Math.sin(phi[i][j]) * Math.sin(theta[i][j]));
+                    rz.push(cz + r * Math.cos(phi[i][j]));
+                }
+                x.push(rx); y.push(ry); z.push(rz);
+            }
+            return {
+                type: 'surface',
+                x, y, z,
+                opacity: 0.98,
+                colorscale: [ [0, color], [1, color] ],
+                showscale: false,
+                hoverinfo: 'skip'
+            };
+        }
+
+        // Build planet catalog
+        const planetCatalog = [
+            { name: 'Terranova', color: '#6bb6ff', r: 30, biome: 'Oceanic' },
+            { name: 'Mars Prime', color: '#ff6b35', r: 24, biome: 'Arid' },
+            { name: 'Jupiter Station', color: '#ffd700', r: 38, biome: 'Gas Giant' },
+            { name: 'Ice World', color: '#00d4ff', r: 28, biome: 'Frozen' },
+            { name: 'Lava Planet', color: '#ff4757', r: 26, biome: 'Volcanic' }
+        ];
+
+        // Position planets in orbit ring
+        function placePlanets(rng) {
+            const radius = 220;
+            return planetCatalog.map((p, idx) => {
+                const a = (idx / planetCatalog.length) * Math.PI * 2;
+                const px = Math.cos(a) * radius;
+                const py = Math.sin(a) * radius;
+                const pz = (rng() - 0.5) * 40;
+                return { ...p, cx: px, cy: py, cz: pz };
+            });
+        }
+
+        // Create label points for planets
+        function planetLabels(planets) {
+            return {
+                type: 'scatter3d',
+                mode: 'markers+text',
+                x: planets.map(p => p.cx),
+                y: planets.map(p => p.cy),
+                z: planets.map(p => p.cz + p.r + 6),
+                text: planets.map(p => p.name),
+                textposition: 'top center',
+                marker: { size: 6, color: '#ffffff' },
+                textfont: { color: '#cfe6ff' },
+                hoverinfo: 'text'
+            };
+        }
+
+        // AI Mission Generator (client-side)
+        function generateMission(planet, seed) {
+            const rng = mulberry32(seed || Math.floor(Math.random() * 1e9));
+            const objectives = [
+                'Scan anomalies', 'Collect rare minerals', 'Rescue stranded probe',
+                'Map subterranean caverns', 'Stabilize climate outpost', 'Neutralize pirate beacon'
+            ];
+            const rewards = ['500 credits', 'Prototype thrusters', 'Alien artifact', 'Rare blueprint', 'Ancient coordinates', 'Cosmic shard'];
+            const difficulties = ['Easy', 'Normal', 'Hard', 'Elite'];
+            const times = ['5 min', '10 min', '15 min', '20 min'];
+            const obj = objectives[Math.floor(rng() * objectives.length)];
+            const rew = rewards[Math.floor(rng() * rewards.length)];
+            const diff = difficulties[Math.floor(rng() * difficulties.length)];
+            const time = times[Math.floor(rng() * times.length)];
+            const brief = `Intel suggests ${planet.name} (${planet.biome}) shows signs of ${obj.toLowerCase()}. Navigate to the mission zone, complete objectives, and extract safely.`;
+            return { planet: planet.name, biome: planet.biome, objective: obj, reward: rew, difficulty: diff, timeLimit: time, briefing: brief };
+        }
+
+        // Render scene
+        (function init() {
+            const rng = mulberry32(1337);
+            const planets = placePlanets(rng);
+            const data = [];
+            data.push(generateStars(1600, rng));
+            planets.forEach(p => data.push(generateSphere(p.cx, p.cy, p.cz, p.r, p.color)));
+            data.push(planetLabels(planets));
+
+            const layout = {
+                scene: {
+                    xaxis: { visible: false },
+                    yaxis: { visible: false },
+                    zaxis: { visible: false },
+                    aspectmode: 'cube',
+                    bgcolor: 'rgba(0,0,0,1)'
+                },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                margin: { l: 0, r: 0, t: 0, b: 0 }
+            };
+
+            const config = { displayModeBar: false, responsive: true };
+            const root = document.getElementById('plotlyRoot');
+            Plotly.newPlot(root, data, layout, config);
+
+            let selectedPlanet = null;
+            root.on('plotly_click', (ev) => {
+                const pt = ev.points && ev.points[0];
+                if (!pt) return;
+                // Try to match nearest planet by distance to clicked point
+                let best = null, bestD = Infinity;
+                planets.forEach(p => {
+                    const dx = p.cx - pt.x, dy = p.cy - pt.y, dz = p.cz - pt.z;
+                    const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                    if (d < bestD) { bestD = d; best = p; }
+                });
+                if (best) {
+                    selectedPlanet = best;
+                    const m = generateMission(best);
+                    updateMissionPanel(m);
+                }
+            });
+
+            document.getElementById('btnMission').addEventListener('click', function() {
+                const p = selectedPlanet || planets[Math.floor(Math.random() * planets.length)];
+                const m = generateMission(p);
+                updateMissionPanel(m);
+            });
+
+            document.getElementById('btnFocus').addEventListener('click', function() {
+                const p = selectedPlanet || planets[0];
+                const eye = { x: p.cx + 160, y: p.cy + 160, z: p.cz + 120 };
+                const center = { x: p.cx, y: p.cy, z: p.cz };
+                Plotly.relayout(root, { 'scene.camera': { eye, center } });
+            });
+
+            function updateMissionPanel(m) {
+                document.getElementById('mPlanet').textContent = m.planet;
+                document.getElementById('mBiome').textContent = m.biome;
+                document.getElementById('mObjective').textContent = m.objective;
+                document.getElementById('mDifficulty').textContent = m.difficulty;
+                document.getElementById('mReward').textContent = m.reward;
+                document.getElementById('mTime').textContent = m.timeLimit;
+                document.getElementById('mBrief').textContent = m.briefing;
+            }
+
+            // Gentle auto camera drift
+            let t = 0;
+            setInterval(() => {
+                t += 0.005;
+                const eye = { x: 350 * Math.cos(t), y: 350 * Math.sin(t), z: 180 + 40 * Math.sin(t*0.7) };
+                Plotly.relayout(root, { 'scene.camera.eye': eye });
+            }, 40);
+        })();
+    </script>
+</body>
+</html>
+
+

@@ -36,6 +36,34 @@ app.get('/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Simple AI mission endpoint (deterministic pseudo-AI)
+app.get('/api/mission', (req, res) => {
+    const planets = [
+        { name: 'Terranova', biome: 'Oceanic' },
+        { name: 'Mars Prime', biome: 'Arid' },
+        { name: 'Jupiter Station', biome: 'Gas Giant' },
+        { name: 'Ice World', biome: 'Frozen' },
+        { name: 'Lava Planet', biome: 'Volcanic' }
+    ];
+    const objectives = [
+        'Scan anomalies', 'Collect rare minerals', 'Rescue stranded probe',
+        'Map subterranean caverns', 'Stabilize climate outpost', 'Neutralize pirate beacon'
+    ];
+    const rewards = ['500 credits', 'Prototype thrusters', 'Alien artifact', 'Rare blueprint', 'Ancient coordinates', 'Cosmic shard'];
+    const difficulties = ['Easy', 'Normal', 'Hard', 'Elite'];
+    const times = ['5 min', '10 min', '15 min', '20 min'];
+
+    function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+    const planet = pick(planets);
+    const objective = pick(objectives);
+    const reward = pick(rewards);
+    const difficulty = pick(difficulties);
+    const timeLimit = pick(times);
+    const briefing = `Intel suggests ${planet.name} (${planet.biome}) shows signs of ${objective.toLowerCase()}. Navigate to the mission zone, complete objectives, and extract safely.`;
+
+    res.json({ planet: planet.name, biome: planet.biome, objective, reward, difficulty, timeLimit, briefing });
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Space Explorer Adventure server running on port ${PORT}`);
     console.log(`🌐 Game available at: http://localhost:${PORT}`);
