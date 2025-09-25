@@ -28,14 +28,11 @@
 ## 🏆 **YOUR COMPLETE PROFESSIONAL GAME IS NOW LIVE:**
 
 ### **🎯 Main Game Access:**
-- **Professional Game:** https://cyb3r-a1.github.io/space-kids-aliens-adventure/
-  - Launches complete SpaceAdventure3D with all advanced features
+- **Unreal Engine WebGL Build:** https://cyb3r-a1.github.io/space-kids-aliens-adventure/unreal-game.html
+  - Full Unreal Engine 5.6 experience with all 50+ features
 
-- **Advanced Version:** https://cyb3r-a1.github.io/space-kids-aliens-adventure/game.html
-  - Full Unreal Engine-style experience with all 50+ features
-
-- **Original Version:** https://cyb3r-a1.github.io/space-kids-aliens-adventure/unreal-game.html
-  - Professional presentation with advanced graphics
+- **Launchpad:** https://cyb3r-a1.github.io/space-kids-aliens-adventure/
+  - Marketing landing page that routes players to the Unreal build
 
 ---
 

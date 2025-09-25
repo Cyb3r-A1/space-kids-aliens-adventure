@@ -11,9 +11,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'web', 'index.html'));
 });
 
-// Game route - serve the playable game
+// Game route - serve the Unreal WebGL build
 app.get('/game', (req, res) => {
-    res.sendFile(path.join(__dirname, 'web', 'game.html'));
+    res.redirect('/unreal-game.html');
 });
 
 // API endpoint for game data (for future enhancements)
