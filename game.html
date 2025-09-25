@@ -274,6 +274,695 @@
             transform: scale(0.9);
             background: rgba(255, 107, 107, 1);
         }
+
+        /* Inventory UI Styles */
+        .inventory-ui {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            max-height: 600px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #4a9eff;
+            border-radius: 10px;
+            z-index: 2000;
+            overflow: hidden;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .inventory-header {
+            background: #4a9eff;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inventory-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .close-inventory {
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .inventory-categories {
+            background: #333;
+            padding: 10px;
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+        }
+
+        .category-tab {
+            padding: 8px 12px;
+            background: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 12px;
+        }
+
+        .category-tab.active {
+            background: #4a9eff;
+        }
+
+        .inventory-items {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .inventory-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .inventory-item:hover {
+            background: #444;
+        }
+
+        .item-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .item-quantity {
+            color: #4a9eff;
+            font-size: 12px;
+        }
+
+        .empty-inventory {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+        }
+
+        .modal-content {
+            background: #222;
+            border-radius: 10px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .item-icon-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 20px;
+        }
+
+        .item-stats {
+            margin: 20px 0;
+        }
+
+        .stat-row {
+            margin: 10px 0;
+            color: white;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #4a9eff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+
+        /* Quest System Styles */
+        .quest-modal .modal-content {
+            width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .quest-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+
+        .quest-tab {
+            padding: 10px 15px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .quest-tab.active {
+            background: #4a9eff;
+        }
+
+        .quest-tab:hover {
+            background: #555;
+        }
+
+        .quest-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .quest-item {
+            background: #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4a9eff;
+        }
+
+        .quest-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .quest-header h4 {
+            margin: 0;
+            color: white;
+        }
+
+        .quest-type {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .quest-type.exploration {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .quest-type.collection {
+            background: #FF9800;
+            color: white;
+        }
+
+        .quest-type.combat {
+            background: #F44336;
+            color: white;
+        }
+
+        .quest-description {
+            color: #ccc;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .quest-objectives {
+            margin-bottom: 15px;
+        }
+
+        .objective {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 5px 0;
+            padding: 5px;
+            background: #444;
+            border-radius: 4px;
+        }
+
+        .objective.completed {
+            background: #2E7D32;
+            color: white;
+        }
+
+        .objective-text {
+            flex: 1;
+        }
+
+        .objective-progress {
+            font-weight: bold;
+            color: #4a9eff;
+        }
+
+        .quest-rewards {
+            background: #222;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #FFD700;
+        }
+
+        .no-quests {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+            font-style: italic;
+        }
+
+        /* Multiplayer UI Styles */
+        .chat-ui {
+            display: none;
+        }
+
+        .chat-header {
+            background: #4a9eff;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .chat-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            max-height: 300px;
+        }
+
+        .chat-message {
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .chat-message.system {
+            background: #333;
+            color: #FFD700;
+            text-align: center;
+        }
+
+        .chat-message.player {
+            background: #444;
+            color: white;
+        }
+
+        .chat-sender {
+            font-weight: bold;
+            color: #4a9eff;
+            margin-right: 8px;
+        }
+
+        .chat-text {
+            color: #ccc;
+        }
+
+        .chat-time {
+            font-size: 10px;
+            color: #888;
+            margin-left: 10px;
+        }
+
+        .chat-input-area {
+            padding: 10px;
+            border-top: 1px solid #444;
+            display: flex;
+            gap: 5px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background: #333;
+            color: white;
+            font-size: 12px;
+        }
+
+        .chat-input-area button {
+            padding: 8px 12px;
+            background: #4a9eff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .trading-modal .modal-content {
+            width: 500px;
+        }
+
+        .trading-reputation {
+            background: #333;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+            color: #FFD700;
+        }
+
+        .trading-offers h4 {
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .trade-offer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #333;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .trade-offer span {
+            color: white;
+            font-size: 12px;
+        }
+
+        .trade-btn {
+            padding: 5px 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .coop-modal .modal-content {
+            width: 600px;
+        }
+
+        .coop-missions {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .coop-mission {
+            background: #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4a9eff;
+        }
+
+        .coop-mission.completed {
+            opacity: 0.6;
+            border-left-color: #4CAF50;
+        }
+
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .mission-difficulty {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .mission-difficulty.easy {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .mission-difficulty.medium {
+            background: #FF9800;
+            color: white;
+        }
+
+        .mission-difficulty.hard {
+            background: #F44336;
+            color: white;
+        }
+
+        .mission-description {
+            color: #ccc;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .mission-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #4a9eff;
+        }
+
+        .mission-rewards {
+            background: #222;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .coop-btn {
+            padding: 8px 16px;
+            background: #4a9eff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .coop-btn.disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        /* Combat System Styles */
+        .combat-ui {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .combat-header {
+            background: #F44336;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .combat-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .combat-header button {
+            background: #E53935;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .combat-stats {
+            display: flex;
+            flex: 1;
+            padding: 15px;
+            gap: 20px;
+        }
+
+        .player-stats, .target-stats {
+            flex: 1;
+        }
+
+        .player-stats h4, .target-stats h4 {
+            margin: 0 0 15px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .stat-bar span:first-child {
+            width: 60px;
+            color: white;
+            font-size: 12px;
+        }
+
+        .stat-bar span:last-child {
+            width: 50px;
+            color: white;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .health-bar, .shield-bar, .energy-bar {
+            flex: 1;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #F44336, #E53935);
+            width: 100%;
+            transition: width 0.3s;
+        }
+
+        .shield-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2196F3, #1976D2);
+            width: 100%;
+            transition: width 0.3s;
+        }
+
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #388E3C);
+            width: 100%;
+            transition: width 0.3s;
+        }
+
+        .combat-controls {
+            display: flex;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .weapon-selection, .skill-selection {
+            flex: 1;
+        }
+
+        .weapon-selection h4, .skill-selection h4 {
+            margin: 0 0 10px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .weapon-btn, .skill-btn {
+            width: 100%;
+            padding: 8px;
+            margin: 3px 0;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .weapon-btn:hover, .skill-btn:hover:not(:disabled) {
+            background: #444;
+        }
+
+        .weapon-btn.active {
+            background: #F44336;
+            border-color: #E53935;
+        }
+
+        .skill-btn:disabled {
+            background: #222;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        .combat-log {
+            max-height: 100px;
+            overflow-y: auto;
+            background: #111;
+            padding: 10px;
+            border-top: 1px solid #333;
+        }
+
+        .log-entry {
+            font-size: 10px;
+            color: #ccc;
+            margin: 2px 0;
+            padding: 2px;
+            border-bottom: 1px solid #222;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
         
         .crosshair {
             position: absolute;
@@ -550,11 +1239,29 @@
                     <div class="action-btn" id="jumpBtn">🚀</div>
                     <div class="action-btn" id="interactBtn">👆</div>
                     <div class="action-btn" id="buildBtn">🏗️</div>
+                    <div class="action-btn" id="inventoryBtn">🎒</div>
+                    <div class="action-btn" id="questBtn">📋</div>
+                    <div class="action-btn" id="tradeBtn">💱</div>
+                    <div class="action-btn" id="coopBtn">🤝</div>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Inventory UI -->
+    <div class="inventory-ui" id="inventoryUI" style="display: none;">
+        <div class="inventory-header">
+            <h3>🎒 Inventory</h3>
+            <span class="close-inventory">&times;</span>
+        </div>
+        <div class="inventory-categories">
+            <!-- Categories will be populated by JavaScript -->
+        </div>
+        <div class="inventory-items">
+            <!-- Items will be populated by JavaScript -->
+        </div>
+    </div>
+
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-content">
             <div class="loading-spinner"></div>
@@ -653,10 +1360,21 @@
                 document.addEventListener('keydown', (e) => {
                     this.keys[e.code] = true;
                 });
-                
+
                 document.addEventListener('keyup', (e) => {
                     this.keys[e.code] = false;
                 });
+
+                // Planet event system
+                this.planetEventTimer = 0;
+                this.currentPlanetEvents = new Map();
+                this.activePlanetEvents = [];
+
+                // Quest system
+                this.initializeQuestSystem();
+
+                // Multiplayer system
+                this.initializeMultiplayerSystem();
                 
                 this.canvas.addEventListener('mousemove', (e) => {
                     this.mouse.x = e.clientX;
@@ -718,6 +1436,2076 @@
                     this.joystickOffset.y = 0;
                     joystickKnob.style.transform = 'translate(0px, 0px)';
                 });
+
+                // Planet event system initialization
+                this.initializePlanetEvents();
+            }
+
+            initializePlanetEvents() {
+                // Initialize planet-specific events and systems
+                this.world.planets.forEach((planet, index) => {
+                    planet.eventTimer = Math.random() * 1000; // Random start time
+                    planet.currentEvent = null;
+                    planet.eventDuration = 0;
+                    planet.eventCooldown = 0;
+                    planet.discoveredBiomes = new Set();
+                    planet.exploredEvents = new Set();
+                });
+            }
+
+            updatePlanetEvents() {
+                this.planetEventTimer++;
+
+                this.world.planets.forEach((planet, planetIndex) => {
+                    // Update event timers
+                    if (planet.eventCooldown > 0) {
+                        planet.eventCooldown--;
+                        return;
+                    }
+
+                    planet.eventTimer++;
+
+                    // Check if we should trigger a new event (every 5-15 seconds)
+                    if (planet.eventTimer > 300 + Math.random() * 600) {
+                        this.triggerPlanetEvent(planet, planetIndex);
+                    }
+
+                    // Update active events
+                    if (planet.currentEvent) {
+                        planet.eventDuration++;
+                        if (planet.eventDuration > 200) { // Event lasts ~3 seconds
+                            this.endPlanetEvent(planet, planetIndex);
+                        }
+                    }
+                });
+            }
+
+            triggerPlanetEvent(planet, planetIndex) {
+                if (planet.currentEvent) return;
+
+                const eventType = Math.random();
+                let eventData;
+
+                if (eventType < 0.7) {
+                    // Regular event
+                    const events = planet.events || ['Standard Exploration Event'];
+                    eventData = {
+                        type: 'regular',
+                        name: events[Math.floor(Math.random() * events.length)],
+                        effects: this.getEventEffects(planet, 'regular'),
+                        planetIndex: planetIndex
+                    };
+                } else {
+                    // Special event (rarer)
+                    const specialEvents = planet.specialEvents || ['Mysterious Discovery'];
+                    eventData = {
+                        type: 'special',
+                        name: specialEvents[Math.floor(Math.random() * specialEvents.length)],
+                        effects: this.getEventEffects(planet, 'special'),
+                        planetIndex: planetIndex,
+                        rewards: this.generateEventRewards(planet)
+                    };
+                }
+
+                planet.currentEvent = eventData;
+                planet.eventDuration = 0;
+
+                // Show event notification
+                this.showPlanetEventNotification(planet, eventData);
+            }
+
+            endPlanetEvent(planet, planetIndex) {
+                if (!planet.currentEvent) return;
+
+                planet.currentEvent = null;
+                planet.eventCooldown = 100 + Math.random() * 200; // 2-5 second cooldown
+                planet.eventTimer = 0;
+
+                // Apply event effects
+                if (planet.currentEvent.rewards) {
+                    this.applyEventRewards(planet, planet.currentEvent.rewards);
+                }
+
+                // Hide event notification
+                this.hidePlanetEventNotification();
+            }
+
+            getEventEffects(planet, type) {
+                const effects = {
+                    'Wildlife Migration': { description: 'Animals are migrating across the surface', visual: 'animal_movement' },
+                    'Weather Storm': { description: 'A massive storm is brewing', visual: 'storm_effects' },
+                    'Resource Discovery': { description: 'New resource deposits detected', visual: 'resource_glow' },
+                    'Corporate Takeover': { description: 'Corporate forces are taking control', visual: 'corporate_activity' },
+                    'Volcanic Eruption': { description: 'Volcanic activity is increasing', visual: 'lava_flow' },
+                    'Sandstorm': { description: 'A massive sandstorm approaches', visual: 'dust_storm' }
+                };
+                return effects[planet.currentEvent?.name] || { description: 'Mysterious activity detected', visual: 'mystery_glow' };
+            }
+
+            generateEventRewards(planet) {
+                const rewards = {
+                    credits: Math.floor(Math.random() * 500) + 100,
+                    experience: Math.floor(Math.random() * 200) + 50,
+                    resources: []
+                };
+
+                // Add random resources based on planet type
+                const resourceCount = Math.floor(Math.random() * 3) + 1;
+                for (let i = 0; i < resourceCount; i++) {
+                    rewards.resources.push({
+                        name: planet.resources[Math.floor(Math.random() * planet.resources.length)],
+                        amount: Math.floor(Math.random() * 10) + 1
+                    });
+                }
+
+                return rewards;
+            }
+
+            applyEventRewards(planet, rewards) {
+                // Add credits and experience
+                this.player.credits += rewards.credits;
+                this.player.experience += rewards.experience;
+
+                // Add resources to inventory
+                rewards.resources.forEach(resource => {
+                    this.addResourceToInventory(resource.name, resource.amount);
+                });
+
+                // Show reward notification
+                this.showNotification(`Event completed! +${rewards.credits} credits, +${rewards.experience} XP`, 'success');
+            }
+
+            addResourceToInventory(resourceName, amount) {
+                // Add resource to player inventory system
+                if (!this.player.inventory) {
+                    this.player.inventory = new Map();
+                    this.initializePlayerInventory();
+                }
+
+                const currentAmount = this.player.inventory.get(resourceName) || 0;
+                this.player.inventory.set(resourceName, currentAmount + amount);
+
+                // Update inventory UI if visible
+                this.updateInventoryUI();
+            }
+
+            initializePlayerInventory() {
+                // Initialize inventory categories and metadata
+                this.player.inventoryCategories = ['Resources', 'Equipment', 'Consumables', 'Artifacts', 'Collectibles'];
+                this.player.activeInventoryCategory = 'Resources';
+
+                // Initialize category inventories
+                this.player.inventoryCategories.forEach(category => {
+                    this.player.inventory.set(category, new Map());
+                });
+
+                // Add starting items
+                this.addItemToInventory('Resources', 'Credits', 1000, { rarity: 'common', description: 'Universal currency for trading' });
+                this.addItemToInventory('Resources', 'Fuel Cell', 5, { rarity: 'common', description: 'Basic fuel for spaceship' });
+                this.addItemToInventory('Equipment', 'Scanner Module', 1, { rarity: 'common', description: 'Basic planetary scanner' });
+                this.addItemToInventory('Equipment', 'Environmental Suit', 1, { rarity: 'uncommon', description: 'Protects from harsh environments' });
+            }
+
+            addItemToInventory(category, itemName, quantity, metadata = {}) {
+                if (!this.player.inventory.has(category)) {
+                    this.player.inventory.set(category, new Map());
+                }
+
+                const categoryInventory = this.player.inventory.get(category);
+                const currentItem = categoryInventory.get(itemName);
+
+                if (currentItem) {
+                    currentItem.quantity += quantity;
+                } else {
+                    categoryInventory.set(itemName, {
+                        quantity: quantity,
+                        category: category,
+                        rarity: metadata.rarity || 'common',
+                        description: metadata.description || 'No description available',
+                        value: metadata.value || 10,
+                        stackable: metadata.stackable !== false,
+                        maxStack: metadata.maxStack || 99
+                    });
+                }
+
+                // Update inventory UI
+                this.updateInventoryUI();
+            }
+
+            removeItemFromInventory(category, itemName, quantity = 1) {
+                if (!this.player.inventory.has(category)) return false;
+
+                const categoryInventory = this.player.inventory.get(category);
+                const currentItem = categoryInventory.get(itemName);
+
+                if (!currentItem || currentItem.quantity < quantity) return false;
+
+                currentItem.quantity -= quantity;
+                if (currentItem.quantity <= 0) {
+                    categoryInventory.delete(itemName);
+                }
+
+                this.updateInventoryUI();
+                return true;
+            }
+
+            getItemRarityColor(rarity) {
+                const colors = {
+                    'common': '#9E9E9E',
+                    'uncommon': '#4CAF50',
+                    'rare': '#2196F3',
+                    'epic': '#9C27B0',
+                    'legendary': '#FF9800',
+                    'mythic': '#E91E63'
+                };
+                return colors[rarity] || colors.common;
+            }
+
+            showInventoryTooltip(itemName, itemData, x, y) {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'inventory-tooltip';
+                tooltip.innerHTML = `
+                    <div class="tooltip-title" style="color: ${this.getItemRarityColor(itemData.rarity)}">${itemName}</div>
+                    <div class="tooltip-rarity">${itemData.rarity.toUpperCase()}</div>
+                    <div class="tooltip-description">${itemData.description}</div>
+                    <div class="tooltip-quantity">Quantity: ${itemData.quantity}</div>
+                    <div class="tooltip-value">Value: ${itemData.value} credits each</div>
+                `;
+
+                tooltip.style.cssText = `
+                    position: fixed;
+                    left: ${x + 10}px;
+                    top: ${y + 10}px;
+                    background: rgba(0, 0, 0, 0.95);
+                    color: white;
+                    padding: 12px;
+                    border-radius: 8px;
+                    border: 2px solid ${this.getItemRarityColor(itemData.rarity)};
+                    z-index: 2000;
+                    min-width: 200px;
+                    font-size: 12px;
+                    pointer-events: none;
+                `;
+
+                document.body.appendChild(tooltip);
+                this.currentTooltip = tooltip;
+
+                // Auto-remove after 3 seconds
+                setTimeout(() => {
+                    if (this.currentTooltip) {
+                        this.currentTooltip.remove();
+                        this.currentTooltip = null;
+                    }
+                }, 3000);
+            }
+
+            hideInventoryTooltip() {
+                if (this.currentTooltip) {
+                    this.currentTooltip.remove();
+                    this.currentTooltip = null;
+                }
+            }
+
+            updateInventoryUI() {
+                if (!this.inventoryUI || !this.inventoryUI.style.display || this.inventoryUI.style.display === 'none') return;
+
+                const category = this.player.activeInventoryCategory;
+                const categoryInventory = this.player.inventory.get(category);
+
+                if (!categoryInventory) return;
+
+                // Update inventory items display
+                this.updateInventoryItemsDisplay(categoryInventory);
+            }
+
+            updateInventoryItemsDisplay(categoryInventory) {
+                const container = this.inventoryUI.querySelector('.inventory-items');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                if (categoryInventory.size === 0) {
+                    container.innerHTML = '<div class="empty-inventory">No items in this category</div>';
+                    return;
+                }
+
+                categoryInventory.forEach((itemData, itemName) => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = `inventory-item ${itemData.rarity}`;
+                    itemElement.innerHTML = `
+                        <div class="item-icon" style="background-color: ${this.getItemRarityColor(itemData.rarity)}">
+                            ${this.getItemIcon(itemName)}
+                        </div>
+                        <div class="item-info">
+                            <div class="item-name">${itemName}</div>
+                            <div class="item-quantity">x${itemData.quantity}</div>
+                        </div>
+                    `;
+
+                    itemElement.addEventListener('mouseenter', (e) => {
+                        this.showInventoryTooltip(itemName, itemData, e.clientX, e.clientY);
+                    });
+
+                    itemElement.addEventListener('mouseleave', () => {
+                        this.hideInventoryTooltip();
+                    });
+
+                    itemElement.addEventListener('click', () => {
+                        this.onInventoryItemClick(itemName, itemData);
+                    });
+
+                    container.appendChild(itemElement);
+                });
+            }
+
+            getItemIcon(itemName) {
+                const icons = {
+                    'Credits': '💰',
+                    'Fuel Cell': '⚡',
+                    'Scanner Module': '🔍',
+                    'Environmental Suit': '👨‍🚀',
+                    'Crystals': '💎',
+                    'Energy': '⚡',
+                    'Rare Elements': '🌟',
+                    'Technology': '🔬',
+                    'Rare Metals': '⚙️',
+                    'Energy Crystals': '💎',
+                    'Helium-3': '☢️',
+                    'Rare Gases': '💨',
+                    'Atmospheric Minerals': '🌪️',
+                    'Water': '💧',
+                    'Oxygen': '💨',
+                    'Minerals': '⛰️',
+                    'Biomass': '🌱',
+                    'Rare Metals': '⚙️',
+                    'Solar Energy': '☀️',
+                    'Deep Sea Minerals': '🔷',
+                    'Marine Life': '🐟',
+                    'Thermal Vents': '🌋',
+                    'Ice': '🧊',
+                    'Frozen Gases': '💨',
+                    'Rare Minerals': '💎',
+                    'Lava': '🌋',
+                    'Metals': '⚙️',
+                    'Gases': '💨',
+                    'Rare Earth Elements': '🌍',
+                    'Quantum Particles': '⚛️',
+                    'Dimensional Crystals': '🔮',
+                    'Energy Matrices': '🔋',
+                    'Organic Compounds': '🧬',
+                    'Neural Tissue': '🧠',
+                    'Bio-Energy': '⚡'
+                };
+                return icons[itemName] || '📦';
+            }
+
+            onInventoryItemClick(itemName, itemData) {
+                // Handle item click - could be for using, selling, or inspecting
+                if (itemData.category === 'Consumables') {
+                    this.useConsumableItem(itemName, itemData);
+                } else if (itemData.category === 'Equipment') {
+                    this.equipItem(itemName, itemData);
+                } else {
+                    this.showItemDetails(itemName, itemData);
+                }
+            }
+
+            useConsumableItem(itemName, itemData) {
+                if (itemData.quantity <= 0) return;
+
+                // Apply consumable effects
+                switch (itemName) {
+                    case 'Fuel Cell':
+                        this.player.fuel = Math.min(100, this.player.fuel + 20);
+                        this.showNotification('Fuel Cell used! +20 fuel', 'success');
+                        break;
+                    case 'Health Pack':
+                        this.player.energy = Math.min(100, this.player.energy + 30);
+                        this.showNotification('Health Pack used! +30 energy', 'success');
+                        break;
+                    default:
+                        this.showNotification(`Used ${itemName}`, 'info');
+                }
+
+                this.removeItemFromInventory(itemData.category, itemName, 1);
+            }
+
+            equipItem(itemName, itemData) {
+                // Handle equipment (for now just show equipped message)
+                this.showNotification(`${itemName} equipped!`, 'success');
+
+                // Could add equipment bonuses here
+                if (itemName === 'Environmental Suit') {
+                    this.player.environmentalProtection = true;
+                    this.showNotification('Environmental protection activated!', 'success');
+                }
+            }
+
+            showItemDetails(itemName, itemData) {
+                const modal = document.createElement('div');
+                modal.className = 'item-details-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 style="color: ${this.getItemRarityColor(itemData.rarity)}">${itemName}</h3>
+                            <span class="close-btn">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="item-icon-large" style="background-color: ${this.getItemRarityColor(itemData.rarity)}">
+                                ${this.getItemIcon(itemName)}
+                            </div>
+                            <div class="item-stats">
+                                <div class="stat-row"><strong>Rarity:</strong> ${itemData.rarity.toUpperCase()}</div>
+                                <div class="stat-row"><strong>Category:</strong> ${itemData.category}</div>
+                                <div class="stat-row"><strong>Quantity:</strong> ${itemData.quantity}</div>
+                                <div class="stat-row"><strong>Value:</strong> ${itemData.value} credits each</div>
+                                <div class="stat-row"><strong>Description:</strong> ${itemData.description}</div>
+                            </div>
+                            <div class="modal-actions">
+                                <button class="btn btn-primary" id="sellItemBtn">Sell Item</button>
+                                <button class="btn btn-secondary" id="closeModalBtn">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 3000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+
+                document.body.appendChild(modal);
+
+                // Event listeners
+                modal.querySelector('.close-btn').addEventListener('click', () => modal.remove());
+                modal.querySelector('#closeModalBtn').addEventListener('click', () => modal.remove());
+                modal.querySelector('#sellItemBtn').addEventListener('click', () => {
+                    this.sellItem(itemName, itemData);
+                    modal.remove();
+                });
+
+                this.currentItemModal = modal;
+            }
+
+            sellItem(itemName, itemData) {
+                const sellPrice = itemData.value * itemData.quantity;
+                this.player.credits += sellPrice;
+                this.removeItemFromInventory(itemData.category, itemName, itemData.quantity);
+                this.showNotification(`Sold ${itemName} for ${sellPrice} credits!`, 'success');
+            }
+
+            updatePlanetInteractions() {
+                // Check if player is near any planets for landing/quest updates
+                this.world.planets.forEach((planet, index) => {
+                    const distance = Math.sqrt(
+                        Math.pow(this.player.x - planet.x, 2) +
+                        Math.pow(this.player.y - planet.y, 2) +
+                        Math.pow(this.player.z - planet.z, 2)
+                    );
+
+                    // If player is close to planet surface (landed)
+                    if (distance < planet.size + 20 && this.player.onGround) {
+                        // Mark planet as visited for quest progress
+                        if (!planet.visited) {
+                            planet.visited = true;
+                            this.player.planetsVisited++;
+
+                            // Update quest progress for planet visits
+                            this.updateQuestProgress('first_exploration', 'visit_planet', 1);
+
+                            // Check for specific planet visits
+                            if (planet.name === 'Terra Nova') {
+                                this.updateQuestProgress('planetary_explorer', 'visit_terra_nova', 1);
+                            } else if (planet.name === 'Crimson Desert') {
+                                this.updateQuestProgress('planetary_explorer', 'visit_crimson_desert', 1);
+                            } else if (planet.name === 'Ice World') {
+                                this.updateQuestProgress('planetary_explorer', 'visit_ice_world', 1);
+                            }
+
+                            this.showNotification(`🌌 Landed on ${planet.name}! Planet visited!`, 'success');
+                        }
+
+                        // Allow resource collection when on planet surface
+                        if (this.keys['KeyE']) {
+                            this.collectPlanetResources(planet);
+                        }
+                    }
+                });
+            }
+
+            collectPlanetResources(planet) {
+                if (planet.resourcesCollectedCooldown && planet.resourcesCollectedCooldown > 0) {
+                    planet.resourcesCollectedCooldown--;
+                    return;
+                }
+
+                // Collect random resource from planet
+                const resourceIndex = Math.floor(Math.random() * planet.resources.length);
+                const resourceName = planet.resources[resourceIndex];
+
+                // Add resource to inventory
+                this.addResourceToInventory(resourceName, 1);
+
+                // Update quest progress for resource collection
+                this.updateQuestProgress('resource_hunter', 'collect_resources', 1);
+
+                this.showNotification(`🌍 Collected: ${resourceName}`, 'success');
+
+                // Set cooldown to prevent spam collection
+                planet.resourcesCollectedCooldown = 60; // 2 seconds cooldown
+            }
+
+            initializeMultiplayerSystem() {
+                // Initialize multiplayer features
+                this.multiplayer = {
+                    players: new Map(),
+                    chatMessages: [],
+                    tradingPosts: [],
+                    cooperativeMissions: [],
+                    onlineStatus: 'online',
+                    playerId: this.generatePlayerId(),
+                    globalStats: {
+                        totalPlayers: Math.floor(Math.random() * 1000) + 500,
+                        activeMissions: 0,
+                        totalTrades: 0
+                    }
+                };
+
+                // Simulate other players
+                this.createSimulatedPlayers();
+
+                // Initialize chat system
+                this.initializeChatSystem();
+
+                // Initialize trading system
+                this.initializeTradingSystem();
+
+                // Initialize cooperative missions
+                this.initializeCooperativeMissions();
+
+                // Initialize combat system
+                this.initializeCombatSystem();
+            }
+
+            generatePlayerId() {
+                return 'player_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            createSimulatedPlayers() {
+                const playerNames = [
+                    'StarCommander', 'GalacticExplorer', 'SpacePirate', 'AlienHunter',
+                    'CosmicTrader', 'NebulaNavigator', 'QuantumPilot', 'VoidWalker'
+                ];
+
+                const playerCount = Math.floor(Math.random() * 8) + 3; // 3-10 players
+
+                for (let i = 0; i < playerCount; i++) {
+                    const playerName = playerNames[Math.floor(Math.random() * playerNames.length)];
+                    const player = {
+                        id: 'sim_' + i,
+                        name: playerName,
+                        level: Math.floor(Math.random() * 50) + 1,
+                        position: {
+                            x: (Math.random() - 0.5) * 2000,
+                            y: Math.random() * 100,
+                            z: (Math.random() - 0.5) * 2000
+                        },
+                        currentPlanet: this.world.planets[Math.floor(Math.random() * this.world.planets.length)],
+                        status: Math.random() > 0.3 ? 'exploring' : 'trading',
+                        isOnline: Math.random() > 0.1,
+                        lastSeen: Date.now() - Math.random() * 3600000 // Within last hour
+                    };
+
+                    this.multiplayer.players.set(player.id, player);
+                }
+            }
+
+            initializeChatSystem() {
+                // Create chat UI
+                this.createChatUI();
+
+                // Add initial chat messages
+                this.addChatMessage('System', 'Welcome to the galactic community!', 'system');
+                this.addChatMessage('System', `${this.multiplayer.globalStats.totalPlayers} explorers are currently online`, 'system');
+                this.addChatMessage('StarCommander', 'Anyone up for a cooperative mission?', 'player');
+                this.addChatMessage('GalacticExplorer', 'Just discovered rare crystals on Terra Nova!', 'player');
+            }
+
+            createChatUI() {
+                const chatUI = document.createElement('div');
+                chatUI.className = 'chat-ui';
+                chatUI.innerHTML = `
+                    <div class="chat-header">
+                        <h4>🌌 Galactic Chat</h4>
+                        <span class="chat-status">Online: ${this.multiplayer.globalStats.totalPlayers}</span>
+                    </div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Type a message..." maxlength="100">
+                        <button id="sendChatBtn">Send</button>
+                    </div>
+                `;
+
+                chatUI.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 300px;
+                    height: 400px;
+                    background: rgba(0, 0, 0, 0.95);
+                    border: 2px solid #4a9eff;
+                    border-radius: 10px;
+                    z-index: 1000;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                `;
+
+                document.body.appendChild(chatUI);
+                this.chatUI = chatUI;
+
+                // Setup chat event listeners
+                this.setupChatEventListeners();
+            }
+
+            setupChatEventListeners() {
+                const chatInput = document.getElementById('chatInput');
+                const sendBtn = document.getElementById('sendChatBtn');
+
+                sendBtn.addEventListener('click', () => this.sendChatMessage());
+
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendChatMessage();
+                    }
+                });
+
+                // Toggle chat visibility
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !chatInput.matches(':focus')) {
+                        this.toggleChat();
+                    }
+                });
+            }
+
+            toggleChat() {
+                if (this.chatUI.style.display === 'none') {
+                    this.chatUI.style.display = 'flex';
+                    document.getElementById('chatInput').focus();
+                } else {
+                    this.chatUI.style.display = 'none';
+                }
+            }
+
+            sendChatMessage() {
+                const chatInput = document.getElementById('chatInput');
+                const message = chatInput.value.trim();
+
+                if (message) {
+                    this.addChatMessage('You', message, 'player');
+                    chatInput.value = '';
+
+                    // Simulate responses from other players
+                    setTimeout(() => {
+                        this.simulateChatResponse(message);
+                    }, Math.random() * 3000 + 1000);
+                }
+            }
+
+            addChatMessage(sender, message, type) {
+                const chatMessage = {
+                    id: Date.now() + Math.random(),
+                    sender: sender,
+                    message: message,
+                    type: type,
+                    timestamp: new Date().toLocaleTimeString()
+                };
+
+                this.multiplayer.chatMessages.push(chatMessage);
+
+                // Keep only last 50 messages
+                if (this.multiplayer.chatMessages.length > 50) {
+                    this.multiplayer.chatMessages.shift();
+                }
+
+                this.updateChatDisplay();
+            }
+
+            updateChatDisplay() {
+                const messagesContainer = document.getElementById('chatMessages');
+                if (!messagesContainer) return;
+
+                messagesContainer.innerHTML = '';
+
+                this.multiplayer.chatMessages.forEach(msg => {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = `chat-message ${msg.type}`;
+                    messageElement.innerHTML = `
+                        <span class="chat-sender">${msg.sender}:</span>
+                        <span class="chat-text">${msg.message}</span>
+                        <span class="chat-time">${msg.timestamp}</span>
+                    `;
+                    messagesContainer.appendChild(messageElement);
+                });
+
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            simulateChatResponse(userMessage) {
+                const responses = [
+                    'Interesting discovery!',
+                    'Thanks for sharing!',
+                    'Anyone else see that?',
+                    'Cool! I\'ll check it out.',
+                    'Nice find!',
+                    'That\'s awesome!',
+                    'Good luck on your quest!',
+                    'Stay safe out there!',
+                    'What planet are you on?',
+                    'I\'m heading that way too!'
+                ];
+
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                const randomPlayer = Array.from(this.multiplayer.players.values())
+                    .filter(p => p.isOnline)[Math.floor(Math.random() * 3)];
+
+                if (randomPlayer) {
+                    this.addChatMessage(randomPlayer.name, randomResponse, 'player');
+                }
+            }
+
+            initializeTradingSystem() {
+                // Create trading posts on various planets
+                this.world.planets.forEach((planet, index) => {
+                    if (Math.random() > 0.5) { // 50% chance of trading post
+                        const tradingPost = {
+                            id: `trade_${index}`,
+                            planetName: planet.name,
+                            location: {
+                                x: planet.x + (Math.random() - 0.5) * 100,
+                                y: planet.y,
+                                z: planet.z + (Math.random() - 0.5) * 100
+                            },
+                            availableTrades: this.generateTradingOffers(planet),
+                            reputation: Math.floor(Math.random() * 1000)
+                        };
+
+                        this.multiplayer.tradingPosts.push(tradingPost);
+                    }
+                });
+            }
+
+            generateTradingOffers(planet) {
+                const offers = [];
+                const tradeTypes = ['buy', 'sell', 'exchange'];
+
+                planet.resources.forEach(resource => {
+                    if (Math.random() > 0.7) { // 30% chance per resource
+                        const tradeType = tradeTypes[Math.floor(Math.random() * tradeTypes.length)];
+                        const basePrice = Math.floor(Math.random() * 50) + 10;
+
+                        offers.push({
+                            resource: resource,
+                            type: tradeType,
+                            price: tradeType === 'buy' ? basePrice * 1.5 : basePrice * 0.8,
+                            quantity: Math.floor(Math.random() * 20) + 5
+                        });
+                    }
+                });
+
+                return offers;
+            }
+
+            initializeCooperativeMissions() {
+                const missionTemplates = [
+                    {
+                        id: 'resource_gathering',
+                        title: 'Resource Gathering Operation',
+                        description: 'Help collect rare resources from dangerous planets',
+                        type: 'collection',
+                        difficulty: 'medium',
+                        maxPlayers: 4,
+                        rewards: {
+                            credits: 2000,
+                            experience: 500,
+                            items: ['Advanced Scanner', 'Environmental Suit']
+                        }
+                    },
+                    {
+                        id: 'exploration_expedition',
+                        title: 'Deep Space Exploration',
+                        description: 'Explore uncharted sectors and map new planets',
+                        type: 'exploration',
+                        difficulty: 'hard',
+                        maxPlayers: 6,
+                        rewards: {
+                            credits: 5000,
+                            experience: 1000,
+                            items: ['Quantum Scanner', 'Elite Suit']
+                        }
+                    },
+                    {
+                        id: 'diplomatic_mission',
+                        title: 'Alien Diplomacy',
+                        description: 'Establish diplomatic relations with alien civilizations',
+                        type: 'social',
+                        difficulty: 'easy',
+                        maxPlayers: 3,
+                        rewards: {
+                            credits: 1500,
+                            experience: 300,
+                            items: ['Translator Device']
+                        }
+                    }
+                ];
+
+                missionTemplates.forEach((template, index) => {
+                    if (Math.random() > 0.6) { // 40% chance for each mission type
+                        const mission = {
+                            ...template,
+                            id: `coop_${index}`,
+                            currentPlayers: Math.floor(Math.random() * template.maxPlayers) + 1,
+                            status: Math.random() > 0.8 ? 'completed' : 'active',
+                            progress: Math.floor(Math.random() * 100)
+                        };
+
+                        this.multiplayer.cooperativeMissions.push(mission);
+                    }
+                });
+            }
+
+            showTradingInterface() {
+                // Find nearest trading post
+                const nearestPost = this.findNearestTradingPost();
+                if (!nearestPost) {
+                    this.showNotification('No trading posts nearby!', 'warning');
+                    return;
+                }
+
+                const modal = document.createElement('div');
+                modal.className = 'trading-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>🏪 ${nearestPost.planetName} Trading Post</h3>
+                            <span class="close-btn">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="trading-reputation">Reputation: ${nearestPost.reputation} ⭐</div>
+                            <div class="trading-offers">
+                                <h4>Available Trades:</h4>
+                                ${nearestPost.availableTrades.map(offer => `
+                                    <div class="trade-offer">
+                                        <span>${offer.resource}</span>
+                                        <span>${offer.type.toUpperCase()}</span>
+                                        <span>${offer.quantity} units</span>
+                                        <span>${offer.price} credits</span>
+                                        <button class="trade-btn" data-offer='${JSON.stringify(offer)}'>
+                                            ${offer.type === 'buy' ? 'Sell' : 'Buy'}
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 3000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+
+                document.body.appendChild(modal);
+
+                // Setup event listeners
+                modal.querySelector('.close-btn').addEventListener('click', () => modal.remove());
+                modal.querySelectorAll('.trade-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const offer = JSON.parse(btn.dataset.offer);
+                        this.executeTrade(offer, nearestPost);
+                        modal.remove();
+                    });
+                });
+            }
+
+            findNearestTradingPost() {
+                let nearestPost = null;
+                let nearestDistance = Infinity;
+
+                this.multiplayer.tradingPosts.forEach(post => {
+                    const distance = Math.sqrt(
+                        Math.pow(this.player.x - post.location.x, 2) +
+                        Math.pow(this.player.y - post.location.y, 2) +
+                        Math.pow(this.player.z - post.location.z, 2)
+                    );
+
+                    if (distance < nearestDistance && distance < 200) {
+                        nearestDistance = distance;
+                        nearestPost = post;
+                    }
+                });
+
+                return nearestPost;
+            }
+
+            executeTrade(offer, tradingPost) {
+                if (offer.type === 'buy') {
+                    // Buying from trading post
+                    if (this.player.credits >= offer.price) {
+                        this.player.credits -= offer.price;
+                        this.addItemToInventory('Resources', offer.resource, offer.quantity, {
+                            rarity: 'common',
+                            description: `Purchased from ${tradingPost.planetName}`
+                        });
+                        this.showNotification(`Bought ${offer.quantity} ${offer.resource} for ${offer.price} credits!`, 'success');
+                        tradingPost.reputation += 10;
+                    } else {
+                        this.showNotification('Not enough credits!', 'error');
+                    }
+                } else {
+                    // Selling to trading post
+                    if (this.removeItemFromInventory('Resources', offer.resource, offer.quantity)) {
+                        this.player.credits += offer.price;
+                        this.showNotification(`Sold ${offer.quantity} ${offer.resource} for ${offer.price} credits!`, 'success');
+                        tradingPost.reputation += 5;
+                    } else {
+                        this.showNotification('Not enough resources!', 'error');
+                    }
+                }
+            }
+
+            showCooperativeMissions() {
+                const modal = document.createElement('div');
+                modal.className = 'coop-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>🤝 Cooperative Missions</h3>
+                            <span class="close-btn">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="coop-missions">
+                                ${this.multiplayer.cooperativeMissions.map(mission => `
+                                    <div class="coop-mission ${mission.status}">
+                                        <div class="mission-header">
+                                            <h4>${mission.title}</h4>
+                                            <span class="mission-difficulty">${mission.difficulty}</span>
+                                        </div>
+                                        <div class="mission-description">${mission.description}</div>
+                                        <div class="mission-progress">
+                                            <span>Progress: ${mission.progress}%</span>
+                                            <span>Players: ${mission.currentPlayers}/${mission.maxPlayers}</span>
+                                        </div>
+                                        <div class="mission-rewards">
+                                            <strong>Rewards:</strong> 💰 ${mission.rewards.credits} | ⭐ ${mission.rewards.experience}
+                                        </div>
+                                        <button class="coop-btn ${mission.status === 'completed' ? 'disabled' : ''}"
+                                                ${mission.status === 'completed' ? 'disabled' : ''}
+                                                data-mission="${mission.id}">
+                                            ${mission.status === 'completed' ? 'Completed' : 'Join Mission'}
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 3000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+
+                document.body.appendChild(modal);
+
+                // Setup event listeners
+                modal.querySelector('.close-btn').addEventListener('click', () => modal.remove());
+                modal.querySelectorAll('.coop-btn:not(.disabled)').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const missionId = btn.dataset.mission;
+                        this.joinCooperativeMission(missionId);
+                        modal.remove();
+                    });
+                });
+            }
+
+            joinCooperativeMission(missionId) {
+                const mission = this.multiplayer.cooperativeMissions.find(m => m.id === missionId);
+                if (!mission || mission.currentPlayers >= mission.maxPlayers) {
+                    this.showNotification('Mission is full!', 'error');
+                    return;
+                }
+
+                mission.currentPlayers++;
+                this.showNotification(`Joined ${mission.title}!`, 'success');
+
+                // Add cooperative quest
+                this.addQuest({
+                    id: `coop_${missionId}`,
+                    title: mission.title,
+                    description: mission.description,
+                    type: 'cooperative',
+                    objectives: [
+                        { id: 'contribute_mission', description: 'Contribute to mission objectives', completed: false, progress: 0, target: 100 }
+                    ],
+                    rewards: mission.rewards,
+                    prerequisites: []
+                });
+            }
+
+            initializeCombatSystem() {
+                this.combat = {
+                    enemies: [],
+                    activeEnemies: new Set(),
+                    playerCombatStats: {
+                        health: 100,
+                        maxHealth: 100,
+                        shield: 0,
+                        maxShield: 50,
+                        energy: 100,
+                        maxEnergy: 100,
+                        weapons: [],
+                        skills: [],
+                        experience: 0,
+                        level: 1
+                    },
+                    combatMode: false,
+                    currentTarget: null,
+                    combatLog: [],
+                    bossBattles: []
+                };
+
+                // Initialize player weapons
+                this.initializePlayerWeapons();
+
+                // Initialize player skills
+                this.initializePlayerSkills();
+
+                // Create combat zones
+                this.createCombatZones();
+
+                // Initialize boss battles
+                this.initializeBossBattles();
+            }
+
+            initializePlayerWeapons() {
+                this.combat.playerCombatStats.weapons = [
+                    {
+                        id: 'laser_pistol',
+                        name: 'Laser Pistol',
+                        type: 'energy',
+                        damage: 25,
+                        fireRate: 0.5, // shots per second
+                        range: 200,
+                        energyCost: 10,
+                        ammo: 'infinite',
+                        description: 'Standard energy weapon'
+                    },
+                    {
+                        id: 'plasma_rifle',
+                        name: 'Plasma Rifle',
+                        type: 'plasma',
+                        damage: 45,
+                        fireRate: 0.3,
+                        range: 300,
+                        energyCost: 20,
+                        ammo: 50,
+                        description: 'High-damage plasma weapon'
+                    },
+                    {
+                        id: 'railgun',
+                        name: 'Railgun',
+                        type: 'kinetic',
+                        damage: 100,
+                        fireRate: 0.1,
+                        range: 500,
+                        energyCost: 40,
+                        ammo: 10,
+                        description: 'Extremely powerful kinetic weapon'
+                    }
+                ];
+
+                this.combat.playerCombatStats.activeWeapon = this.combat.playerCombatStats.weapons[0];
+            }
+
+            initializePlayerSkills() {
+                this.combat.playerCombatStats.skills = [
+                    {
+                        id: 'shield_boost',
+                        name: 'Shield Boost',
+                        description: 'Temporarily increase shield strength',
+                        cooldown: 30,
+                        energyCost: 25,
+                        duration: 10,
+                        effect: 'shield',
+                        value: 50
+                    },
+                    {
+                        id: 'energy_surge',
+                        name: 'Energy Surge',
+                        description: 'Increase weapon damage temporarily',
+                        cooldown: 45,
+                        energyCost: 30,
+                        duration: 15,
+                        effect: 'damage',
+                        value: 1.5
+                    },
+                    {
+                        id: 'healing_wave',
+                        name: 'Healing Wave',
+                        description: 'Restore health over time',
+                        cooldown: 60,
+                        energyCost: 40,
+                        duration: 20,
+                        effect: 'healing',
+                        value: 5
+                    }
+                ];
+            }
+
+            createCombatZones() {
+                // Create combat zones on various planets
+                this.world.planets.forEach((planet, index) => {
+                    if (Math.random() > 0.7) { // 30% chance per planet
+                        const combatZone = {
+                            id: `combat_${index}`,
+                            planetName: planet.name,
+                            location: {
+                                x: planet.x + (Math.random() - 0.5) * 200,
+                                y: planet.y,
+                                z: planet.z + (Math.random() - 0.5) * 200
+                            },
+                            enemies: this.generateEnemies(planet),
+                            difficulty: this.getPlanetDifficulty(planet),
+                            rewards: this.generateCombatRewards(planet)
+                        };
+
+                        // Spawn enemies in the combat zone
+                        combatZone.enemies.forEach(enemy => {
+                            this.combat.enemies.push(enemy);
+                        });
+                    }
+                });
+            }
+
+            generateEnemies(planet) {
+                const enemyTypes = ['drone', 'soldier', 'elite', 'boss'];
+                const enemyCount = Math.floor(Math.random() * 5) + 3; // 3-7 enemies
+                const enemies = [];
+
+                for (let i = 0; i < enemyCount; i++) {
+                    const enemyType = enemyTypes[Math.min(i, enemyTypes.length - 1)]; // Ensure valid type
+                    const enemy = this.createEnemy(enemyType, planet);
+                    enemies.push(enemy);
+                }
+
+                return enemies;
+            }
+
+            createEnemy(type, planet) {
+                const enemyStats = {
+                    drone: { health: 50, damage: 10, speed: 2, reward: 100 },
+                    soldier: { health: 100, damage: 20, speed: 1.5, reward: 250 },
+                    elite: { health: 200, damage: 40, speed: 1, reward: 500 },
+                    boss: { health: 500, damage: 80, speed: 0.8, reward: 2000 }
+                };
+
+                const stats = enemyStats[type] || enemyStats.drone;
+
+                return {
+                    id: `enemy_${Date.now()}_${Math.random()}`,
+                    type: type,
+                    health: stats.health,
+                    maxHealth: stats.health,
+                    damage: stats.damage,
+                    speed: stats.speed,
+                    position: {
+                        x: planet.x + (Math.random() - 0.5) * 100,
+                        y: planet.y + planet.size / 2,
+                        z: planet.z + (Math.random() - 0.5) * 100
+                    },
+                    target: null,
+                    lastAttack: 0,
+                    attackCooldown: 2000 / stats.speed,
+                    isAlive: true,
+                    reward: stats.reward,
+                    loot: this.generateEnemyLoot(type)
+                };
+            }
+
+            generateEnemyLoot(type) {
+                const lootTables = {
+                    drone: [{ item: 'Energy Cell', chance: 0.8 }, { item: 'Scrap Metal', chance: 0.5 }],
+                    soldier: [{ item: 'Plasma Cell', chance: 0.6 }, { item: 'Armor Plate', chance: 0.4 }],
+                    elite: [{ item: 'Rare Crystal', chance: 0.7 }, { item: 'Advanced Weapon', chance: 0.3 }],
+                    boss: [{ item: 'Legendary Weapon', chance: 0.9 }, { item: 'Boss Token', chance: 0.5 }]
+                };
+
+                const loot = [];
+                const table = lootTables[type] || lootTables.drone;
+
+                table.forEach(item => {
+                    if (Math.random() < item.chance) {
+                        loot.push(item.item);
+                    }
+                });
+
+                return loot;
+            }
+
+            initializeBossBattles() {
+                const bossTemplates = [
+                    {
+                        id: 'crystal_beast',
+                        name: 'Crystal Beast',
+                        health: 1000,
+                        damage: 100,
+                        specialAbilities: ['Crystal Shield', 'Energy Blast', 'Regeneration'],
+                        loot: ['Crystal Heart', 'Legendary Crystal Weapon'],
+                        description: 'Ancient guardian of the crystal worlds'
+                    },
+                    {
+                        id: 'void_reaper',
+                        name: 'Void Reaper',
+                        health: 1500,
+                        damage: 120,
+                        specialAbilities: ['Void Rift', 'Dark Energy', 'Life Drain'],
+                        loot: ['Void Essence', 'Dark Matter Weapon'],
+                        description: 'Entity from the darkest reaches of space'
+                    },
+                    {
+                        id: 'quantum_guardian',
+                        name: 'Quantum Guardian',
+                        health: 800,
+                        damage: 150,
+                        specialAbilities: ['Time Slow', 'Quantum Shift', 'Reality Warp'],
+                        loot: ['Quantum Core', 'Temporal Weapon'],
+                        description: 'Protector of time and space'
+                    }
+                ];
+
+                bossTemplates.forEach((template, index) => {
+                    const boss = {
+                        ...template,
+                        id: `boss_${index}`,
+                        position: { x: 0, y: 0, z: 0 },
+                        isDefeated: false,
+                        spawnTrigger: 'player_level_' + (index * 10 + 10)
+                    };
+
+                    this.combat.bossBattles.push(boss);
+                });
+            }
+
+            getPlanetDifficulty(planet) {
+                const difficulties = ['easy', 'medium', 'hard', 'extreme'];
+                const sizeIndex = Math.floor((planet.size - 75) / 25);
+                return difficulties[Math.min(Math.max(sizeIndex, 0), difficulties.length - 1)];
+            }
+
+            generateCombatRewards(planet) {
+                const difficulty = this.getPlanetDifficulty(planet);
+                const rewardMultipliers = { easy: 1, medium: 1.5, hard: 2, extreme: 3 };
+
+                return {
+                    credits: Math.floor(Math.random() * 500 + 100) * rewardMultipliers[difficulty],
+                    experience: Math.floor(Math.random() * 200 + 50) * rewardMultipliers[difficulty],
+                    items: this.generateCombatLoot(difficulty)
+                };
+            }
+
+            generateCombatLoot(difficulty) {
+                const lootTables = {
+                    easy: ['Basic Weapon', 'Energy Cell', 'Scrap Metal'],
+                    medium: ['Advanced Weapon', 'Plasma Cell', 'Armor Plate'],
+                    hard: ['Rare Weapon', 'Shield Generator', 'Rare Crystal'],
+                    extreme: ['Legendary Weapon', 'Quantum Device', 'Exotic Matter']
+                };
+
+                const loot = [];
+                const table = lootTables[difficulty] || lootTables.easy;
+
+                const lootCount = Math.floor(Math.random() * 3) + 1;
+                for (let i = 0; i < lootCount; i++) {
+                    loot.push(table[Math.floor(Math.random() * table.length)]);
+                }
+
+                return loot;
+            }
+
+            enterCombatMode(target) {
+                this.combat.combatMode = true;
+                this.combat.currentTarget = target;
+                this.showCombatUI();
+
+                // Pause normal game updates during combat
+                this.combat.previousGameState = this.gameState;
+                this.gameState = 'combat';
+            }
+
+            exitCombatMode() {
+                this.combat.combatMode = false;
+                this.combat.currentTarget = null;
+                this.hideCombatUI();
+                this.gameState = this.combat.previousGameState;
+            }
+
+            showCombatUI() {
+                const combatUI = document.createElement('div');
+                combatUI.className = 'combat-ui';
+                combatUI.innerHTML = `
+                    <div class="combat-header">
+                        <h3>⚔️ Combat Mode</h3>
+                        <button id="exitCombatBtn">Exit Combat</button>
+                    </div>
+                    <div class="combat-stats">
+                        <div class="player-stats">
+                            <h4>Player Stats</h4>
+                            <div class="stat-bar">
+                                <span>Health:</span>
+                                <div class="health-bar">
+                                    <div class="health-fill" id="playerHealthFill"></div>
+                                </div>
+                                <span id="playerHealthText">100/100</span>
+                            </div>
+                            <div class="stat-bar">
+                                <span>Shield:</span>
+                                <div class="shield-bar">
+                                    <div class="shield-fill" id="playerShieldFill"></div>
+                                </div>
+                                <span id="playerShieldText">0/50</span>
+                            </div>
+                            <div class="stat-bar">
+                                <span>Energy:</span>
+                                <div class="energy-bar">
+                                    <div class="energy-fill" id="playerEnergyFill"></div>
+                                </div>
+                                <span id="playerEnergyText">100/100</span>
+                            </div>
+                        </div>
+                        <div class="target-stats">
+                            <h4 id="targetName">Target</h4>
+                            <div class="stat-bar">
+                                <span>Health:</span>
+                                <div class="health-bar">
+                                    <div class="health-fill" id="targetHealthFill"></div>
+                                </div>
+                                <span id="targetHealthText">100/100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="combat-controls">
+                        <div class="weapon-selection">
+                            <h4>Weapons</h4>
+                            <div id="weaponButtons"></div>
+                        </div>
+                        <div class="skill-selection">
+                            <h4>Skills</h4>
+                            <div id="skillButtons"></div>
+                        </div>
+                    </div>
+                    <div class="combat-log" id="combatLog"></div>
+                `;
+
+                combatUI.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 20px;
+                    width: 400px;
+                    height: 500px;
+                    background: rgba(0, 0, 0, 0.95);
+                    border: 2px solid #F44336;
+                    border-radius: 10px;
+                    z-index: 3000;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                `;
+
+                document.body.appendChild(combatUI);
+                this.combatUI = combatUI;
+
+                // Setup event listeners
+                document.getElementById('exitCombatBtn').addEventListener('click', () => this.exitCombatMode());
+                this.updateCombatUI();
+            }
+
+            hideCombatUI() {
+                if (this.combatUI) {
+                    this.combatUI.remove();
+                    this.combatUI = null;
+                }
+            }
+
+            updateCombatUI() {
+                if (!this.combatUI) return;
+
+                // Update player stats
+                const playerStats = this.combat.playerCombatStats;
+                document.getElementById('playerHealthText').textContent = `${playerStats.health}/${playerStats.maxHealth}`;
+                document.getElementById('playerHealthFill').style.width = `${(playerStats.health / playerStats.maxHealth) * 100}%`;
+                document.getElementById('playerShieldText').textContent = `${playerStats.shield}/${playerStats.maxShield}`;
+                document.getElementById('playerShieldFill').style.width = `${(playerStats.shield / playerStats.maxShield) * 100}%`;
+                document.getElementById('playerEnergyText').textContent = `${playerStats.energy}/${playerStats.maxEnergy}`;
+                document.getElementById('playerEnergyFill').style.width = `${(playerStats.energy / playerStats.maxEnergy) * 100}%`;
+
+                // Update target stats
+                if (this.combat.currentTarget) {
+                    document.getElementById('targetName').textContent = this.combat.currentTarget.type.toUpperCase();
+                    document.getElementById('targetHealthText').textContent = `${this.combat.currentTarget.health}/${this.combat.currentTarget.maxHealth}`;
+                    document.getElementById('targetHealthFill').style.width = `${(this.combat.currentTarget.health / this.combat.currentTarget.maxHealth) * 100}%`;
+                }
+
+                // Update weapon buttons
+                this.updateWeaponButtons();
+
+                // Update skill buttons
+                this.updateSkillButtons();
+
+                // Update combat log
+                this.updateCombatLog();
+            }
+
+            updateWeaponButtons() {
+                const container = document.getElementById('weaponButtons');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                this.combat.playerCombatStats.weapons.forEach(weapon => {
+                    const button = document.createElement('button');
+                    button.className = `weapon-btn ${weapon === this.combat.playerCombatStats.activeWeapon ? 'active' : ''}`;
+                    button.textContent = weapon.name;
+                    button.addEventListener('click', () => {
+                        this.switchWeapon(weapon);
+                    });
+                    container.appendChild(button);
+                });
+            }
+
+            updateSkillButtons() {
+                const container = document.getElementById('skillButtons');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                this.combat.playerCombatStats.skills.forEach(skill => {
+                    const button = document.createElement('button');
+                    button.className = 'skill-btn';
+                    button.textContent = skill.name;
+                    button.disabled = skill.cooldown > 0;
+                    button.title = skill.description;
+
+                    if (skill.cooldown > 0) {
+                        button.textContent += ` (${skill.cooldown})`;
+                    }
+
+                    button.addEventListener('click', () => {
+                        this.useSkill(skill);
+                    });
+
+                    container.appendChild(button);
+                });
+            }
+
+            switchWeapon(weapon) {
+                this.combat.playerCombatStats.activeWeapon = weapon;
+                this.updateCombatUI();
+                this.addCombatLogEntry(`Switched to ${weapon.name}`);
+            }
+
+            useSkill(skill) {
+                const playerStats = this.combat.playerCombatStats;
+
+                if (skill.cooldown > 0 || playerStats.energy < skill.energyCost) {
+                    this.addCombatLogEntry(`Cannot use ${skill.name} - insufficient energy or on cooldown`);
+                    return;
+                }
+
+                // Apply skill effect
+                playerStats.energy -= skill.energyCost;
+                skill.cooldown = skill.cooldown + 1; // Will be decremented in update loop
+
+                switch (skill.effect) {
+                    case 'shield':
+                        playerStats.shield = Math.min(playerStats.maxShield, playerStats.shield + skill.value);
+                        this.addCombatLogEntry(`Shield boosted by ${skill.value}!`);
+                        break;
+                    case 'damage':
+                        // Apply damage multiplier temporarily
+                        playerStats.damageMultiplier = skill.value;
+                        setTimeout(() => {
+                            playerStats.damageMultiplier = 1;
+                        }, skill.duration * 1000);
+                        this.addCombatLogEntry(`Damage increased by ${skill.value}x for ${skill.duration}s!`);
+                        break;
+                    case 'healing':
+                        // Start healing over time
+                        this.startHealing(skill.value, skill.duration);
+                        this.addCombatLogEntry(`Healing activated: +${skill.value} health per second for ${skill.duration}s!`);
+                        break;
+                }
+
+                this.updateCombatUI();
+            }
+
+            startHealing(healRate, duration) {
+                this.combat.healingActive = true;
+                this.combat.healRate = healRate;
+                this.combat.healDuration = duration;
+
+                const healInterval = setInterval(() => {
+                    const playerStats = this.combat.playerCombatStats;
+                    if (playerStats.health < playerStats.maxHealth) {
+                        playerStats.health = Math.min(playerStats.maxHealth, playerStats.health + this.combat.healRate);
+                        this.updateCombatUI();
+                    }
+                }, 1000);
+
+                setTimeout(() => {
+                    clearInterval(healInterval);
+                    this.combat.healingActive = false;
+                }, duration * 1000);
+            }
+
+            addCombatLogEntry(message) {
+                this.combat.combatLog.push({
+                    id: Date.now(),
+                    message: message,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+
+                // Keep only last 20 entries
+                if (this.combat.combatLog.length > 20) {
+                    this.combat.combatLog.shift();
+                }
+
+                this.updateCombatLog();
+            }
+
+            updateCombatLog() {
+                const logContainer = document.getElementById('combatLog');
+                if (!logContainer) return;
+
+                logContainer.innerHTML = '';
+
+                this.combat.combatLog.forEach(entry => {
+                    const entryElement = document.createElement('div');
+                    entryElement.className = 'log-entry';
+                    entryElement.textContent = `[${entry.timestamp}] ${entry.message}`;
+                    logContainer.appendChild(entryElement);
+                });
+
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+
+            updateCombat() {
+                if (!this.combat.combatMode) return;
+
+                // Update skill cooldowns
+                this.combat.playerCombatStats.skills.forEach(skill => {
+                    if (skill.cooldown > 0) {
+                        skill.cooldown--;
+                    }
+                });
+
+                // Handle combat mechanics
+                this.handleCombatMechanics();
+
+                // Update UI
+                this.updateCombatUI();
+            }
+
+            handleCombatMechanics() {
+                if (!this.combat.currentTarget || !this.combat.currentTarget.isAlive) {
+                    this.exitCombatMode();
+                    return;
+                }
+
+                const playerStats = this.combat.playerCombatStats;
+                const target = this.combat.currentTarget;
+                const now = Date.now();
+
+                // Player attacks
+                if (this.keys['Space'] && now - target.lastAttack > target.attackCooldown) {
+                    this.playerAttack(target);
+                    target.lastAttack = now;
+                }
+
+                // Enemy attacks
+                if (now - playerStats.lastEnemyAttack > 2000) {
+                    this.enemyAttack(target, playerStats);
+                    playerStats.lastEnemyAttack = now;
+                }
+
+                // Check for combat end
+                if (target.health <= 0) {
+                    target.isAlive = false;
+                    this.defeatEnemy(target);
+                    this.exitCombatMode();
+                }
+
+                if (playerStats.health <= 0) {
+                    this.playerDefeated();
+                    this.exitCombatMode();
+                }
+            }
+
+            playerAttack(target) {
+                const weapon = this.combat.playerCombatStats.activeWeapon;
+                const damage = weapon.damage * (this.combat.playerCombatStats.damageMultiplier || 1);
+
+                // Check if player has enough energy
+                if (this.combat.playerCombatStats.energy < weapon.energyCost) {
+                    this.addCombatLogEntry('Not enough energy to fire!');
+                    return;
+                }
+
+                // Reduce ammo if not infinite
+                if (weapon.ammo !== 'infinite') {
+                    weapon.ammo--;
+                    if (weapon.ammo <= 0) {
+                        this.addCombatLogEntry(`${weapon.name} is out of ammo!`);
+                        return;
+                    }
+                }
+
+                this.combat.playerCombatStats.energy -= weapon.energyCost;
+
+                // Apply damage
+                target.health -= damage;
+                this.addCombatLogEntry(`You hit ${target.type} with ${weapon.name} for ${damage} damage!`);
+
+                // Special weapon effects
+                if (weapon.type === 'plasma') {
+                    // Plasma has chance to cause burn damage
+                    if (Math.random() < 0.3) {
+                        this.applyBurnDamage(target, 10, 5); // 10 damage over 5 seconds
+                    }
+                }
+            }
+
+            enemyAttack(enemy, playerStats) {
+                let damage = enemy.damage;
+
+                // Shield absorbs damage first
+                if (playerStats.shield > 0) {
+                    const shieldDamage = Math.min(damage, playerStats.shield);
+                    playerStats.shield -= shieldDamage;
+                    damage -= shieldDamage;
+
+                    if (damage > 0) {
+                        playerStats.health -= damage;
+                        this.addCombatLogEntry(`${enemy.type} attacks for ${damage} damage (shield absorbed ${shieldDamage})`);
+                    } else {
+                        this.addCombatLogEntry(`${enemy.type} attacks! Shield absorbs all damage`);
+                    }
+                } else {
+                    playerStats.health -= damage;
+                    this.addCombatLogEntry(`${enemy.type} attacks for ${damage} damage!`);
+                }
+            }
+
+            applyBurnDamage(enemy, totalDamage, duration) {
+                enemy.burnDamage = (enemy.burnDamage || 0) + totalDamage;
+                enemy.burnDuration = duration;
+
+                if (!enemy.burnInterval) {
+                    enemy.burnInterval = setInterval(() => {
+                        if (enemy.burnDamage > 0) {
+                            const damageThisTick = Math.min(enemy.burnDamage, 5); // Max 5 damage per second
+                            enemy.health -= damageThisTick;
+                            enemy.burnDamage -= damageThisTick;
+                            this.addCombatLogEntry(`${enemy.type} burns for ${damageThisTick} damage!`);
+                        } else {
+                            clearInterval(enemy.burnInterval);
+                            enemy.burnInterval = null;
+                        }
+                    }, 1000);
+                }
+            }
+
+            defeatEnemy(enemy) {
+                this.addCombatLogEntry(`You defeated the ${enemy.type}!`);
+
+                // Award experience and credits
+                this.player.experience += enemy.reward;
+                this.player.credits += enemy.reward;
+
+                // Add loot to inventory
+                enemy.loot.forEach(item => {
+                    this.addItemToInventory('Artifacts', item, 1, {
+                        rarity: 'rare',
+                        description: `Loot from defeated ${enemy.type}`
+                    });
+                });
+
+                // Check for level up
+                this.checkLevelUp();
+
+                this.showNotification(`Victory! Gained ${enemy.reward} credits and experience!`, 'success');
+            }
+
+            playerDefeated() {
+                this.addCombatLogEntry('You have been defeated!');
+                this.showNotification('You were defeated in combat. Better luck next time!', 'error');
+
+                // Reset player stats
+                const playerStats = this.combat.playerCombatStats;
+                playerStats.health = playerStats.maxHealth;
+                playerStats.shield = 0;
+                playerStats.energy = playerStats.maxEnergy;
+            }
+
+            checkLevelUp() {
+                const playerStats = this.combat.playerCombatStats;
+                const newLevel = Math.floor(playerStats.experience / 1000) + 1;
+
+                if (newLevel > playerStats.level) {
+                    playerStats.level = newLevel;
+                    playerStats.maxHealth += 20;
+                    playerStats.maxShield += 10;
+                    playerStats.maxEnergy += 15;
+                    playerStats.health = playerStats.maxHealth;
+                    playerStats.shield = 0;
+                    playerStats.energy = playerStats.maxEnergy;
+
+                    this.addCombatLogEntry(`Level up! You are now level ${playerStats.level}!`);
+                    this.showNotification(`Level up! You are now level ${playerStats.level}!`, 'success');
+                }
+            }
+
+            showPlanetEventNotification(planet, eventData) {
+                const notification = document.createElement('div');
+                notification.className = 'planet-event-notification';
+                notification.innerHTML = `
+                    <div class="event-title">🌌 ${planet.name}</div>
+                    <div class="event-name">${eventData.name}</div>
+                    <div class="event-description">${eventData.effects.description}</div>
+                    ${eventData.type === 'special' ? '<div class="special-indicator">✨ SPECIAL EVENT ✨</div>' : ''}
+                `;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(0, 0, 0, 0.9);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    border: 2px solid ${planet.color};
+                    z-index: 1000;
+                    min-width: 250px;
+                    animation: slideInRight 0.3s ease-out;
+                `;
+
+                document.body.appendChild(notification);
+                this.currentEventNotification = notification;
+
+                // Auto-remove after event duration
+                setTimeout(() => {
+                    if (this.currentEventNotification) {
+                        this.currentEventNotification.remove();
+                    }
+                }, 3000);
+            }
+
+            hidePlanetEventNotification() {
+                if (this.currentEventNotification) {
+                    this.currentEventNotification.style.animation = 'slideOutRight 0.3s ease-in';
+                    setTimeout(() => {
+                        if (this.currentEventNotification) {
+                            this.currentEventNotification.remove();
+                        }
+                    }, 300);
+                }
+            }
+
+            initializeQuestSystem() {
+                this.player.quests = new Map();
+                this.player.activeQuests = new Set();
+                this.player.completedQuests = new Set();
+                this.player.questProgress = new Map();
+
+                // Add initial quests
+                this.addQuest({
+                    id: 'first_exploration',
+                    title: 'First Steps',
+                    description: 'Visit your first planet and establish contact',
+                    type: 'exploration',
+                    objectives: [
+                        { id: 'visit_planet', description: 'Visit a planet', completed: false, progress: 0, target: 1 }
+                    ],
+                    rewards: {
+                        credits: 500,
+                        experience: 100,
+                        items: ['Scanner Module']
+                    },
+                    prerequisites: []
+                });
+
+                this.addQuest({
+                    id: 'resource_hunter',
+                    title: 'Resource Hunter',
+                    description: 'Collect resources from different planets',
+                    type: 'collection',
+                    objectives: [
+                        { id: 'collect_resources', description: 'Collect 10 resources', completed: false, progress: 0, target: 10 }
+                    ],
+                    rewards: {
+                        credits: 1000,
+                        experience: 250,
+                        items: ['Environmental Suit']
+                    },
+                    prerequisites: ['first_exploration']
+                });
+
+                this.addQuest({
+                    id: 'planetary_explorer',
+                    title: 'Planetary Explorer',
+                    description: 'Visit all major planets in the system',
+                    type: 'exploration',
+                    objectives: [
+                        { id: 'visit_terra_nova', description: 'Visit Terra Nova', completed: false, progress: 0, target: 1 },
+                        { id: 'visit_crimson_desert', description: 'Visit Crimson Desert', completed: false, progress: 0, target: 1 },
+                        { id: 'visit_ice_world', description: 'Visit Ice World', completed: false, progress: 0, target: 1 }
+                    ],
+                    rewards: {
+                        credits: 2500,
+                        experience: 500,
+                        items: ['Advanced Scanner']
+                    },
+                    prerequisites: ['resource_hunter']
+                });
+            }
+
+            addQuest(questData) {
+                this.player.quests.set(questData.id, questData);
+                if (this.checkQuestPrerequisites(questData)) {
+                    this.player.activeQuests.add(questData.id);
+                }
+            }
+
+            checkQuestPrerequisites(quest) {
+                if (quest.prerequisites.length === 0) return true;
+
+                for (const prereq of quest.prerequisites) {
+                    if (!this.player.completedQuests.has(prereq)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            updateQuestProgress(questId, objectiveId, progress = 1) {
+                const quest = this.player.quests.get(questId);
+                if (!quest) return;
+
+                const objective = quest.objectives.find(obj => obj.id === objectiveId);
+                if (!objective || objective.completed) return;
+
+                objective.progress += progress;
+
+                if (objective.progress >= objective.target) {
+                    objective.completed = true;
+                    this.showNotification(`Quest objective completed: ${objective.description}`, 'success');
+                }
+
+                // Check if all objectives are completed
+                if (quest.objectives.every(obj => obj.completed)) {
+                    this.completeQuest(questId);
+                }
+            }
+
+            completeQuest(questId) {
+                const quest = this.player.quests.get(questId);
+                if (!quest) return;
+
+                this.player.activeQuests.delete(questId);
+                this.player.completedQuests.add(questId);
+
+                // Apply rewards
+                if (quest.rewards) {
+                    if (quest.rewards.credits) {
+                        this.player.credits += quest.rewards.credits;
+                    }
+                    if (quest.rewards.experience) {
+                        this.player.experience += quest.rewards.experience;
+                    }
+                    if (quest.rewards.items) {
+                        quest.rewards.items.forEach(item => {
+                            this.addItemToInventory('Equipment', item, 1, { rarity: 'uncommon', description: `Reward from ${quest.title}` });
+                        });
+                    }
+                }
+
+                this.showNotification(`Quest completed: ${quest.title}!`, 'success');
+
+                // Check for new quests that can be unlocked
+                this.unlockNewQuests();
+            }
+
+            unlockNewQuests() {
+                this.player.quests.forEach((quest, questId) => {
+                    if (!this.player.activeQuests.has(questId) &&
+                        !this.player.completedQuests.has(questId) &&
+                        this.checkQuestPrerequisites(quest)) {
+                        this.player.activeQuests.add(questId);
+                        this.showNotification(`New quest available: ${quest.title}`, 'info');
+                    }
+                });
+            }
+
+            showQuestUI() {
+                // Create quest modal
+                const modal = document.createElement('div');
+                modal.className = 'quest-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>📋 Quest Journal</h3>
+                            <span class="close-btn">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="quest-tabs">
+                                <button class="quest-tab active" data-tab="active">Active Quests</button>
+                                <button class="quest-tab" data-tab="completed">Completed Quests</button>
+                                <button class="quest-tab" data-tab="available">Available Quests</button>
+                            </div>
+                            <div class="quest-content">
+                                <!-- Content will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 3000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+
+                document.body.appendChild(modal);
+
+                // Setup event listeners
+                modal.querySelector('.close-btn').addEventListener('click', () => modal.remove());
+                this.setupQuestModalEventListeners(modal);
+
+                this.populateQuestContent(modal);
+            }
+
+            setupQuestModalEventListeners(modal) {
+                const tabs = modal.querySelectorAll('.quest-tab');
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        this.populateQuestContent(modal, tab.dataset.tab);
+                    });
+                });
+            }
+
+            populateQuestContent(modal, activeTab = 'active') {
+                const content = modal.querySelector('.quest-content');
+                content.innerHTML = '';
+
+                let questsToShow = [];
+
+                switch (activeTab) {
+                    case 'active':
+                        questsToShow = Array.from(this.player.activeQuests).map(id => this.player.quests.get(id));
+                        break;
+                    case 'completed':
+                        questsToShow = Array.from(this.player.completedQuests).map(id => this.player.quests.get(id));
+                        break;
+                    case 'available':
+                        questsToShow = Array.from(this.player.quests.values()).filter(quest =>
+                            !this.player.activeQuests.has(quest.id) &&
+                            !this.player.completedQuests.has(quest.id) &&
+                            this.checkQuestPrerequisites(quest)
+                        );
+                        break;
+                }
+
+                if (questsToShow.length === 0) {
+                    content.innerHTML = '<div class="no-quests">No quests in this category</div>';
+                    return;
+                }
+
+                questsToShow.forEach(quest => {
+                    const questElement = document.createElement('div');
+                    questElement.className = 'quest-item';
+                    questElement.innerHTML = `
+                        <div class="quest-header">
+                            <h4>${quest.title}</h4>
+                            <span class="quest-type ${quest.type}">${quest.type}</span>
+                        </div>
+                        <div class="quest-description">${quest.description}</div>
+                        <div class="quest-objectives">
+                            ${quest.objectives.map(obj => `
+                                <div class="objective ${obj.completed ? 'completed' : ''}">
+                                    <span class="objective-text">${obj.description}</span>
+                                    <span class="objective-progress">${obj.progress}/${obj.target}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${quest.rewards ? `
+                            <div class="quest-rewards">
+                                <strong>Rewards:</strong>
+                                ${quest.rewards.credits ? `💰 ${quest.rewards.credits} credits` : ''}
+                                ${quest.rewards.experience ? `⭐ ${quest.rewards.experience} XP` : ''}
+                                ${quest.rewards.items ? quest.rewards.items.map(item => `🎒 ${item}`).join(', ') : ''}
+                            </div>
+                        ` : ''}
+                        ${activeTab === 'available' ? `<button class="btn btn-primary accept-quest" data-quest="${quest.id}">Accept Quest</button>` : ''}
+                    `;
+
+                    content.appendChild(questElement);
+                });
+
+                // Add accept quest listeners
+                if (activeTab === 'available') {
+                    modal.querySelectorAll('.accept-quest').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const questId = btn.dataset.quest;
+                            this.player.activeQuests.add(questId);
+                            this.showNotification(`Quest accepted: ${this.player.quests.get(questId).title}`, 'success');
+                            this.populateQuestContent(modal, 'active');
+                        });
+                    });
+                }
+            }
                 
                 // Action buttons
                 document.getElementById('jumpBtn').addEventListener('touchstart', (e) => {
@@ -749,6 +3537,110 @@
                     e.preventDefault();
                     this.keys['KeyR'] = false;
                 });
+
+                document.getElementById('inventoryBtn').addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.toggleInventory();
+                });
+
+                document.getElementById('questBtn').addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.showQuestUI();
+                });
+
+                document.getElementById('tradeBtn').addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.showTradingInterface();
+                });
+
+                document.getElementById('coopBtn').addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.showCooperativeMissions();
+                });
+            }
+
+            toggleInventory() {
+                this.inventoryUI = document.getElementById('inventoryUI');
+                if (this.inventoryUI.style.display === 'block') {
+                    this.hideInventory();
+                } else {
+                    this.showInventory();
+                }
+            }
+
+            showInventory() {
+                this.inventoryUI = document.getElementById('inventoryUI');
+                this.inventoryUI.style.display = 'block';
+
+                // Populate inventory categories
+                this.populateInventoryCategories();
+
+                // Setup event listeners
+                this.inventoryUI.querySelector('.close-inventory').addEventListener('click', () => this.hideInventory());
+                this.setupInventoryEventListeners();
+            }
+
+            hideInventory() {
+                if (this.inventoryUI) {
+                    this.inventoryUI.style.display = 'none';
+                    this.hideInventoryTooltip();
+                }
+            }
+
+            populateInventoryCategories() {
+                const categoriesContainer = this.inventoryUI.querySelector('.inventory-categories');
+                categoriesContainer.innerHTML = '';
+
+                this.player.inventoryCategories.forEach(category => {
+                    const tab = document.createElement('button');
+                    tab.className = `category-tab ${category === this.player.activeInventoryCategory ? 'active' : ''}`;
+                    tab.textContent = category;
+                    tab.addEventListener('click', () => {
+                        this.switchInventoryCategory(category);
+                    });
+                    categoriesContainer.appendChild(tab);
+                });
+            }
+
+            switchInventoryCategory(category) {
+                this.player.activeInventoryCategory = category;
+
+                // Update active tab
+                const tabs = this.inventoryUI.querySelectorAll('.category-tab');
+                tabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.textContent === category);
+                });
+
+                // Update inventory items display
+                this.updateInventoryUI();
+            }
+
+            setupInventoryEventListeners() {
+                // Remove existing listeners to avoid duplicates
+                const oldInventory = document.getElementById('inventoryUI');
+                if (oldInventory) {
+                    oldInventory.remove();
+                }
+
+                // Create fresh inventory UI
+                const inventoryUI = document.createElement('div');
+                inventoryUI.className = 'inventory-ui';
+                inventoryUI.id = 'inventoryUI';
+                inventoryUI.innerHTML = `
+                    <div class="inventory-header">
+                        <h3>🎒 Inventory</h3>
+                        <span class="close-inventory">&times;</span>
+                    </div>
+                    <div class="inventory-categories">
+                        <!-- Categories will be populated by JavaScript -->
+                    </div>
+                    <div class="inventory-items">
+                        <!-- Items will be populated by JavaScript -->
+                    </div>
+                `;
+
+                document.body.appendChild(inventoryUI);
+                this.inventoryUI = inventoryUI;
             }
             
             updateCamera() {
@@ -832,70 +3724,190 @@
             createWorld() {
                 // Create realistic 3D planets with detailed characteristics
                 const planetTypes = [
-                    { 
-                        name: 'Terra Nova', 
-                        color: '#4CAF50', 
-                        size: 120, 
+                    {
+                        name: 'Terra Nova',
+                        color: '#4CAF50',
+                        size: 120,
                         type: 'Earth-like',
                         atmosphere: '#87CEEB',
                         surface: ['oceans', 'continents', 'clouds'],
                         temperature: '22°C',
                         gravity: '1.0g',
                         population: '2.3 billion',
-                        resources: ['water', 'oxygen', 'minerals'],
+                        resources: ['water', 'oxygen', 'minerals', 'biomass'],
                         orbitRadius: 300,
                         orbitSpeed: 0.005,
-                        rotationSpeed: 0.02
+                        rotationSpeed: 0.02,
+                        biomes: ['Tropical Rainforest', 'Temperate Forest', 'Oceanic', 'Mountainous'],
+                        events: ['Wildlife Migration', 'Weather Storm', 'Resource Discovery'],
+                        specialEvents: ['Ancient Ruins Discovery', 'Alien Artifact Found']
                     },
-                    { 
-                        name: 'Crimson Desert', 
-                        color: '#FF5722', 
-                        size: 100, 
+                    {
+                        name: 'Neo-Tokyo Prime',
+                        color: '#9C27B0',
+                        size: 95,
+                        type: 'Urban',
+                        atmosphere: '#E1BEE7',
+                        surface: ['megacities', 'industrial zones', 'transport networks'],
+                        temperature: '18°C',
+                        gravity: '1.1g',
+                        population: '15.7 billion',
+                        resources: ['technology', 'rare metals', 'energy crystals'],
+                        orbitRadius: 250,
+                        orbitSpeed: 0.007,
+                        rotationSpeed: 0.025,
+                        biomes: ['Urban Sprawl', 'Industrial District', 'Tech Hub', 'Residential Zone'],
+                        events: ['Corporate Takeover', 'Tech Revolution', 'Population Boom'],
+                        specialEvents: ['AI Rebellion', 'Quantum Computing Breakthrough']
+                    },
+                    {
+                        name: 'Aether Prime',
+                        color: '#FF9800',
+                        size: 130,
+                        type: 'Gas Giant',
+                        atmosphere: '#FFCC80',
+                        surface: ['gas layers', 'storm systems', 'floating cities'],
+                        temperature: '120°C',
+                        gravity: '2.5g',
+                        population: '5.2 billion',
+                        resources: ['helium-3', 'rare gases', 'atmospheric minerals'],
+                        orbitRadius: 500,
+                        orbitSpeed: 0.002,
+                        rotationSpeed: 0.03,
+                        biomes: ['Upper Atmosphere', 'Storm Layer', 'Gas Mining Zone', 'Habitable Band'],
+                        events: ['Atmospheric Disturbance', 'Gas Mining Rush', 'Storm Formation'],
+                        specialEvents: ['Wormhole Discovery', 'Ancient Gas Entity Encounter']
+                    },
+                    {
+                        name: 'Crimson Desert',
+                        color: '#FF5722',
+                        size: 100,
                         type: 'Desert',
                         atmosphere: '#FF8A65',
                         surface: ['sand dunes', 'rock formations', 'dust storms'],
                         temperature: '45°C',
                         gravity: '0.8g',
                         population: '500 million',
-                        resources: ['rare metals', 'crystals'],
+                        resources: ['rare metals', 'crystals', 'solar energy'],
                         orbitRadius: 200,
                         orbitSpeed: 0.008,
-                        rotationSpeed: 0.015
+                        rotationSpeed: 0.015,
+                        biomes: ['Dune Sea', 'Rocky Badlands', 'Oasis Valley', 'Crystal Caves'],
+                        events: ['Sandstorm', 'Resource Discovery', 'Nomad Migration'],
+                        specialEvents: ['Ancient Tomb Discovery', 'Buried Technology']
                     },
-                    { 
-                        name: 'Ice World', 
-                        color: '#2196F3', 
-                        size: 140, 
+                    {
+                        name: 'Nexus Station',
+                        color: '#607D8B',
+                        size: 85,
+                        type: 'Space Station',
+                        atmosphere: 'Artificial',
+                        surface: ['docking bays', 'living quarters', 'command centers'],
+                        temperature: '20°C',
+                        gravity: '0.3g',
+                        population: '250 thousand',
+                        resources: ['technology', 'fuel', 'supplies'],
+                        orbitRadius: 150,
+                        orbitSpeed: 0.01,
+                        rotationSpeed: 0.02,
+                        biomes: ['Command Deck', 'Engineering Bay', 'Living Quarters', 'Docking Ring'],
+                        events: ['Ship Arrival', 'Trade Convoy', 'Emergency Alert'],
+                        specialEvents: ['Pirate Attack', 'Diplomatic Crisis']
+                    },
+                    {
+                        name: 'Abyssal Depths',
+                        color: '#3F51B5',
+                        size: 110,
+                        type: 'Ocean',
+                        atmosphere: '#90CAF9',
+                        surface: ['vast oceans', 'deep trenches', 'floating islands'],
+                        temperature: '5°C',
+                        gravity: '1.0g',
+                        population: '800 million',
+                        resources: ['deep sea minerals', 'marine life', 'thermal vents'],
+                        orbitRadius: 350,
+                        orbitSpeed: 0.004,
+                        rotationSpeed: 0.018,
+                        biomes: ['Deep Ocean Trench', 'Coral Reef', 'Floating Islands', 'Thermal Vent Field'],
+                        events: ['Marine Life Migration', 'Underwater Earthquake', 'Deep Sea Discovery'],
+                        specialEvents: ['Lost City of Atlantis', 'Ancient Sea Creature']
+                    },
+                    {
+                        name: 'Ice World',
+                        color: '#2196F3',
+                        size: 140,
                         type: 'Frozen',
                         atmosphere: '#B3E5FC',
                         surface: ['ice sheets', 'glaciers', 'frozen oceans'],
                         temperature: '-50°C',
                         gravity: '1.2g',
                         population: '100 million',
-                        resources: ['ice', 'frozen gases'],
+                        resources: ['ice', 'frozen gases', 'rare minerals'],
                         orbitRadius: 400,
                         orbitSpeed: 0.003,
-                        rotationSpeed: 0.01
+                        rotationSpeed: 0.01,
+                        biomes: ['Polar Ice Cap', 'Frozen Tundra', 'Ice Caves', 'Glacial Mountains'],
+                        events: ['Aurora Borealis', 'Ice Storm', 'Wildlife Sighting'],
+                        specialEvents: ['Ancient Ice Temple', 'Frozen Time Capsule']
                     },
-                    { 
-                        name: 'Volcanic Planet', 
-                        color: '#FF9800', 
-                        size: 110, 
+                    {
+                        name: 'Volcanic Planet',
+                        color: '#FF9800',
+                        size: 110,
                         type: 'Volcanic',
                         atmosphere: '#FFB74D',
                         surface: ['lava flows', 'volcanoes', 'ash clouds'],
                         temperature: '200°C',
                         gravity: '1.1g',
                         population: '50 million',
-                        resources: ['lava', 'metals', 'gases'],
+                        resources: ['lava', 'metals', 'gases', 'rare earth elements'],
                         orbitRadius: 250,
                         orbitSpeed: 0.006,
-                        rotationSpeed: 0.025
+                        rotationSpeed: 0.025,
+                        biomes: ['Lava Fields', 'Volcanic Crater', 'Ash Plains', 'Magma Caves'],
+                        events: ['Volcanic Eruption', 'Lava Flow', 'Geothermal Activity'],
+                        specialEvents: ['Ancient Forge Temple', 'Magma Creature Awakening']
                     },
-                    { 
-                        name: 'Crystal World', 
-                        color: '#9C27B0', 
-                        size: 130, 
+                    {
+                        name: 'Quantum Nexus',
+                        color: '#E91E63',
+                        size: 75,
+                        type: 'Mystical',
+                        atmosphere: '#F8BBD9',
+                        surface: ['energy fields', 'crystal spires', 'dimensional rifts'],
+                        temperature: 'Unknown',
+                        gravity: 'Variable',
+                        population: 'Unknown',
+                        resources: ['quantum particles', 'dimensional crystals', 'energy matrices'],
+                        orbitRadius: 600,
+                        orbitSpeed: 0.001,
+                        rotationSpeed: 0.05,
+                        biomes: ['Crystal Sanctum', 'Energy Vortex', 'Dimensional Rift', 'Temporal Field'],
+                        events: ['Quantum Fluctuation', 'Reality Shift', 'Energy Surge'],
+                        specialEvents: ['Time Paradox', 'Alternate Reality Portal']
+                    },
+                    {
+                        name: 'Bioforge Prime',
+                        color: '#4CAF50',
+                        size: 115,
+                        type: 'Organic',
+                        atmosphere: '#A5D6A7',
+                        surface: ['living tissue', 'neural networks', 'bio-luminescent areas'],
+                        temperature: '25°C',
+                        gravity: '0.9g',
+                        population: 'Self-sustaining',
+                        resources: ['organic compounds', 'neural tissue', 'bio-energy'],
+                        orbitRadius: 275,
+                        orbitSpeed: 0.006,
+                        rotationSpeed: 0.02,
+                        biomes: ['Neural Forest', 'Bio-Luminescent Grove', 'Organic Core', 'Symbiotic Zone'],
+                        events: ['Evolutionary Surge', 'Neural Storm', 'Symbiotic Bond'],
+                        specialEvents: ['Collective Consciousness', 'Evolutionary Leap']
+                    },
+                    {
+                        name: 'Crystal World',
+                        color: '#9C27B0',
+                        size: 130,
                         type: 'Crystalline',
                         atmosphere: '#CE93D8',
                         surface: ['crystal formations', 'prismatic fields', 'energy crystals'],
@@ -905,7 +3917,10 @@
                         resources: ['crystals', 'energy', 'rare elements'],
                         orbitRadius: 350,
                         orbitSpeed: 0.004,
-                        rotationSpeed: 0.018
+                        rotationSpeed: 0.018,
+                        biomes: ['Crystal Spires', 'Prismatic Caves', 'Energy Nexus', 'Crystal Garden'],
+                        events: ['Crystal Resonance', 'Energy Harmonic', 'Prismatic Display'],
+                        specialEvents: ['Crystal Heart Awakening', 'Dimensional Crystal Portal']
                     }
                 ];
                 
@@ -1061,7 +4076,13 @@
             
             update() {
                 if (this.gameState !== 'playing') return;
-                
+
+                // Update planet events
+                this.updatePlanetEvents();
+
+                // Update combat system
+                this.updateCombat();
+
                 // Handle input
                 let inputX = 0;
                 let inputZ = 0;
@@ -1106,6 +4127,9 @@
                     this.player.onGround = true;
                     this.player.flying = false;
                 }
+
+                // Check for planet landing and quest updates
+                this.updatePlanetInteractions();
                 
                 // Update animations
                 this.player.animationFrame += this.player.animationSpeed;
@@ -2525,3 +5549,4 @@
     </script>
 </body>
 </html>
+
