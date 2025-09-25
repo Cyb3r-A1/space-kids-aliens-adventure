@@ -48,10 +48,10 @@
     <div id="app"></div>
 
     <script type="module">
-        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-        import { EffectComposer } from 'https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
-        import { UnrealBloomPass } from 'https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+        import * as THREE from 'https://esm.sh/three@0.160.0';
+        import { EffectComposer } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 
         // Renderer
         const canvasParent = document.getElementById('app');
@@ -62,6 +62,7 @@
         renderer.toneMappingExposure = 1.0;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.shadowMap.enabled = false;
+        renderer.setClearColor(0x000010, 1);
         canvasParent.appendChild(renderer.domElement);
 
         // Scene & Camera
@@ -109,24 +110,21 @@
         const loader = new THREE.TextureLoader();
         loader.setCrossOrigin('anonymous');
         const PLANET_URL = 'https://threejs.org/examples/textures/planets/';
-        const tex = {
-            earth: loader.load(PLANET_URL + 'earth_atmos_2048.jpg'),
-            earthSpec: loader.load(PLANET_URL + 'earth_specular_2048.jpg'),
-            earthNormal: loader.load(PLANET_URL + 'earth_normal_2048.jpg'),
-            earthClouds: loader.load(PLANET_URL + 'earth_clouds_1024.png'),
-            mars: loader.load(PLANET_URL + 'mars_1k_color.jpg'),
-            jupiter: loader.load(PLANET_URL + 'jupiter2_1024.jpg')
-        };
-        tex.earth.colorSpace = THREE.SRGBColorSpace;
-        tex.mars.colorSpace = THREE.SRGBColorSpace;
-        tex.jupiter.colorSpace = THREE.SRGBColorSpace;
+        function asyncLoad(url, onLoad) {
+            try {
+                loader.load(url, (t) => {
+                    if (t) { t.colorSpace = THREE.SRGBColorSpace; }
+                    onLoad && onLoad(t);
+                }, undefined, () => {
+                    onLoad && onLoad(null);
+                });
+            } catch (e) { onLoad && onLoad(null); }
+        }
 
         // Planets
         function makeEarth() {
             const geo = new THREE.SphereGeometry(10, 64, 64);
             const mat = new THREE.MeshPhysicalMaterial({
-                map: tex.earth,
-                normalMap: tex.earthNormal,
                 roughness: 0.9,
                 metalness: 0.0,
                 clearcoat: 0.2,
@@ -135,15 +133,23 @@
             const earth = new THREE.Mesh(geo, mat);
             earth.position.set(-80, 0, -40);
 
-            // Specular highlight via second material layer (approx)
-            const spec = new THREE.MeshPhongMaterial({ map: tex.earthSpec, color: 0xffffff, transparent: true, opacity: 0.25 });
+            // Base color fallback so it's not black if textures fail
+            mat.color = new THREE.Color(0x3b6dbb);
+            // Load textures asynchronously; if they fail, we keep the fallback
+            asyncLoad(PLANET_URL + 'earth_atmos_2048.jpg', (t) => { if (t) { mat.map = t; mat.needsUpdate = true; } });
+            asyncLoad(PLANET_URL + 'earth_normal_2048.jpg', (t) => { if (t) { mat.normalMap = t; mat.needsUpdate = true; } });
+
+            // Specular overlay
+            const spec = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.18 });
             const earthSpecMesh = new THREE.Mesh(geo.clone(), spec);
+            asyncLoad(PLANET_URL + 'earth_specular_2048.jpg', (t) => { if (t) { spec.map = t; spec.needsUpdate = true; } });
             earth.add(earthSpecMesh);
 
             // Clouds
             const cloudsGeo = new THREE.SphereGeometry(10.15, 64, 64);
-            const cloudsMat = new THREE.MeshLambertMaterial({ map: tex.earthClouds, transparent: true, opacity: 0.6, depthWrite: false });
+            const cloudsMat = new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.5, depthWrite: false });
             const clouds = new THREE.Mesh(cloudsGeo, cloudsMat);
+            asyncLoad(PLANET_URL + 'earth_clouds_1024.png', (t) => { if (t) { cloudsMat.map = t; cloudsMat.needsUpdate = true; } });
             earth.add(clouds);
 
             scene.add(earth);
@@ -152,7 +158,8 @@
 
         function makeMars() {
             const geo = new THREE.SphereGeometry(6, 64, 64);
-            const mat = new THREE.MeshStandardMaterial({ map: tex.mars, roughness: 1.0, metalness: 0.0 });
+            const mat = new THREE.MeshStandardMaterial({ color: 0xbd5c3a, roughness: 1.0, metalness: 0.0 });
+            asyncLoad(PLANET_URL + 'mars_1k_color.jpg', (t) => { if (t) { mat.map = t; mat.needsUpdate = true; } });
             const mars = new THREE.Mesh(geo, mat);
             mars.position.set(70, -8, -20);
             scene.add(mars);
@@ -161,7 +168,8 @@
 
         function makeJupiter() {
             const geo = new THREE.SphereGeometry(18, 64, 64);
-            const mat = new THREE.MeshStandardMaterial({ map: tex.jupiter, roughness: 1.0, metalness: 0.0 });
+            const mat = new THREE.MeshStandardMaterial({ color: 0xd6a56a, roughness: 1.0, metalness: 0.0 });
+            asyncLoad(PLANET_URL + 'jupiter2_1024.jpg', (t) => { if (t) { mat.map = t; mat.needsUpdate = true; } });
             const jupiter = new THREE.Mesh(geo, mat);
             jupiter.position.set(140, 20, -120);
             scene.add(jupiter);
