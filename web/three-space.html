@@ -280,11 +280,11 @@
         // Camera rig follows ship
         const rig = new THREE.Group();
         ship.group.add(rig);
-        camera.position.set(18, 5, 0);
+        camera.position.set(-18, 6, 0);
         rig.add(camera);
 
         // Controls (Pointer lock style flight)
-        const keys = { w: false, a: false, s: false, d: false, q: false, e: false, shift: false, mouseDown: false };
+        const keys = { w: false, a: false, s: false, d: false, q: false, e: false, shift: false, mouseDown: false, arrowUp: false, arrowDown: false, arrowLeft: false, arrowRight: false };
         window.addEventListener('keydown', (e) => {
             if (e.key === 'h' || e.key === 'H') toggleHUD();
             if (e.key === 'w' || e.key === 'W') keys.w = true;
@@ -294,6 +294,10 @@
             if (e.key === 'q' || e.key === 'Q') keys.q = true;
             if (e.key === 'e' || e.key === 'E') keys.e = true;
             if (e.key === 'Shift') keys.shift = true;
+            if (e.key === 'ArrowUp') keys.arrowUp = true;
+            if (e.key === 'ArrowDown') keys.arrowDown = true;
+            if (e.key === 'ArrowLeft') keys.arrowLeft = true;
+            if (e.key === 'ArrowRight') keys.arrowRight = true;
         });
         window.addEventListener('keyup', (e) => {
             if (e.key === 'w' || e.key === 'W') keys.w = false;
@@ -303,6 +307,10 @@
             if (e.key === 'q' || e.key === 'Q') keys.q = false;
             if (e.key === 'e' || e.key === 'E') keys.e = false;
             if (e.key === 'Shift') keys.shift = false;
+            if (e.key === 'ArrowUp') keys.arrowUp = false;
+            if (e.key === 'ArrowDown') keys.arrowDown = false;
+            if (e.key === 'ArrowLeft') keys.arrowLeft = false;
+            if (e.key === 'ArrowRight') keys.arrowRight = false;
         });
 
         let pointerLocked = false;
@@ -579,6 +587,16 @@
                 mouse.dx = 0; mouse.dy = 0;
             }
 
+            // Arrow keys yaw/pitch (works without pointer lock)
+            const keyYawSpeed = 1.2;
+            const keyPitchSpeed = 0.8;
+            const yawKeys = (keys.arrowRight ? 1 : 0) - (keys.arrowLeft ? 1 : 0);
+            const pitchKeys = (keys.arrowUp ? 1 : 0) - (keys.arrowDown ? 1 : 0);
+            if (yawKeys !== 0) ship.group.rotation.y += yawKeys * keyYawSpeed * dt;
+            if (pitchKeys !== 0) ship.group.rotation.x += pitchKeys * keyPitchSpeed * dt;
+            // Clamp pitch to avoid flipping
+            ship.group.rotation.x = Math.max(-1.2, Math.min(1.2, ship.group.rotation.x));
+
             // Keyboard movement in ship local space
             const forward = new THREE.Vector3(1, 0, 0).applyQuaternion(ship.group.quaternion);
             const up = new THREE.Vector3(0, 1, 0).applyQuaternion(ship.group.quaternion);
@@ -597,6 +615,14 @@
             velocity.add(accel.multiplyScalar(dt));
             velocity.multiplyScalar(0.98);
             ship.group.position.add(velocity.clone().multiplyScalar(dt));
+
+            // Make camera look ahead of the ship (chase cam)
+            {
+                const forward = new THREE.Vector3(1, 0, 0).applyQuaternion(ship.group.quaternion);
+                const worldShipPos = ship.group.getWorldPosition(new THREE.Vector3());
+                const lookTarget = worldShipPos.clone().add(forward.clone().multiplyScalar(100));
+                camera.lookAt(lookTarget);
+            }
 
             // Update HUD
             const spd = velocity.length();
