@@ -323,6 +323,39 @@
             mouse.dy += e.movementY || 0;
         });
 
+        // WebAudio - initialized on first user gesture
+        let audioCtx = null;
+        let engineOsc = null;
+        let engineGain = null;
+        function initAudio() {
+            if (audioCtx) return;
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return;
+            audioCtx = new Ctx();
+            engineOsc = audioCtx.createOscillator();
+            engineOsc.type = 'sawtooth';
+            engineGain = audioCtx.createGain();
+            engineGain.gain.value = 0.0;
+            engineOsc.connect(engineGain).connect(audioCtx.destination);
+            engineOsc.start();
+        }
+        function playLaserSound() {
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            osc.type = 'square';
+            const gain = audioCtx.createGain();
+            gain.gain.value = 0.2;
+            osc.connect(gain).connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            osc.frequency.setValueAtTime(1200, now);
+            osc.frequency.exponentialRampToValueAtTime(300, now + 0.08);
+            gain.gain.setValueAtTime(0.22, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+            osc.start(now);
+            osc.stop(now + 0.12);
+        }
+
         // Simulation params
         const thrustBase = 12.0;
         const boostMultiplier = 2.4;
@@ -334,6 +367,49 @@
         let fireCooldown = 0;
         const projectileSpeed = 220;
         const projectileLifetime = 2.2;
+
+        // Engine trails (simple particle sprites)
+        const trailParticles = [];
+        const trailPool = [];
+        const MAX_TRAILS = 160;
+        function getTrailParticle() {
+            let p = trailPool.pop();
+            if (!p) {
+                const geo = new THREE.SphereGeometry(0.18, 8, 8);
+                const mat = new THREE.MeshBasicMaterial({ color: 0x66ccff, transparent: true, opacity: 0.85 });
+                const mesh = new THREE.Mesh(geo, mat);
+                p = { mesh, vel: new THREE.Vector3(), life: 0, maxLife: 0.6 };
+            }
+            p.life = 0;
+            p.maxLife = 0.6;
+            p.mesh.material.opacity = 0.85;
+            return p;
+        }
+        function spawnTrailAt(pos, dir, speed) {
+            if (trailParticles.length >= MAX_TRAILS) return;
+            const p = getTrailParticle();
+            p.mesh.position.copy(pos);
+            const spread = new THREE.Vector3((Math.random()-0.5)*0.6, (Math.random()-0.5)*0.6, (Math.random()-0.5)*0.6);
+            p.vel.copy(dir).multiplyScalar(-8 - speed * 0.06).add(spread);
+            scene.add(p.mesh);
+            trailParticles.push(p);
+        }
+        function updateTrails(dt) {
+            for (let i = trailParticles.length - 1; i >= 0; i--) {
+                const p = trailParticles[i];
+                p.life += dt;
+                p.mesh.position.add(p.vel.clone().multiplyScalar(dt));
+                const t = Math.min(p.life / p.maxLife, 1);
+                const op = 0.85 * (1 - t);
+                p.mesh.material.opacity = op;
+                p.mesh.scale.setScalar(1 - 0.6 * t);
+                if (p.life >= p.maxLife) {
+                    scene.remove(p.mesh);
+                    trailParticles.splice(i, 1);
+                    trailPool.push(p);
+                }
+            }
+        }
 
         // Resize
         window.addEventListener('resize', () => {
@@ -372,6 +448,49 @@
             return asteroids;
         }
         const asteroids = createAsteroids();
+
+        // Explosions on impact
+        const explosions = [];
+        function spawnExplosion(position) {
+            const parts = [];
+            const count = 26;
+            for (let i = 0; i < count; i++) {
+                const geo = new THREE.SphereGeometry(0.25 + Math.random()*0.2, 6, 6);
+                const mat = new THREE.MeshBasicMaterial({ color: 0xffbb55, transparent: true, opacity: 1.0 });
+                const m = new THREE.Mesh(geo, mat);
+                m.position.copy(position);
+                const dir = new THREE.Vector3((Math.random()-0.5), (Math.random()-0.5), (Math.random()-0.5)).normalize();
+                const speed = 18 + Math.random()*22;
+                parts.push({ mesh: m, vel: dir.multiplyScalar(speed) });
+                scene.add(m);
+            }
+            const light = new THREE.PointLight(0xffaa66, 2, 80);
+            light.position.copy(position);
+            scene.add(light);
+            explosions.push({ parts, light, life: 0, maxLife: 0.7 });
+        }
+        function updateExplosions(dt) {
+            for (let i = explosions.length - 1; i >= 0; i--) {
+                const e = explosions[i];
+                e.life += dt;
+                const t = e.life / e.maxLife;
+                const fade = Math.max(1 - t, 0);
+                e.light.intensity = 2 * fade;
+                for (let j = 0; j < e.parts.length; j++) {
+                    const pr = e.parts[j];
+                    pr.mesh.position.add(pr.vel.clone().multiplyScalar(dt));
+                    pr.mesh.material.opacity = fade;
+                    pr.mesh.scale.setScalar(0.8 + t * 0.4);
+                }
+                if (e.life >= e.maxLife) {
+                    for (let j = 0; j < e.parts.length; j++) {
+                        scene.remove(e.parts[j].mesh);
+                    }
+                    scene.remove(e.light);
+                    explosions.splice(i, 1);
+                }
+            }
+        }
 
         // Mission integration
         let mission = null;
@@ -412,6 +531,7 @@
                     scene.add(proj);
                     projectiles.push(proj);
                 });
+                playLaserSound();
             }
             // Update and cull
             for (let i = projectiles.length - 1; i >= 0; i--) {
@@ -421,6 +541,26 @@
                 if (p.userData.time > projectileLifetime) {
                     scene.remove(p);
                     projectiles.splice(i, 1);
+                }
+            }
+        }
+
+        function checkProjectileCollisions() {
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const p = projectiles[i];
+                for (let j = asteroids.length - 1; j >= 0; j--) {
+                    const a = asteroids[j];
+                    const dist = p.position.distanceTo(a.position);
+                    const approxRadius = 1.5 * Math.max(a.scale.x, a.scale.y, a.scale.z);
+                    if (dist < approxRadius + 0.5) {
+                        // Hit
+                        spawnExplosion(a.position.clone());
+                        scene.remove(a);
+                        asteroids.splice(j, 1);
+                        scene.remove(p);
+                        projectiles.splice(i, 1);
+                        break;
+                    }
                 }
             }
         }
@@ -463,8 +603,21 @@
             speedValue.textContent = spd.toFixed(1);
             boostValue.textContent = keys.shift ? 'on' : 'off';
 
+            // WebAudio engine dynamics
+            if (audioCtx && engineGain && engineOsc) {
+                const vol = Math.min(spd / 60, 1) * (keys.shift ? 0.24 : 0.16);
+                const freq = 60 + spd * 5 + (keys.shift ? 40 : 0);
+                const now = audioCtx.currentTime;
+                engineGain.gain.cancelScheduledValues(now);
+                engineGain.gain.linearRampToValueAtTime(vol, now + 0.05);
+                engineOsc.frequency.setTargetAtTime(freq, now, 0.05);
+            }
+
             // Fire projectiles
             fireProjectiles(dt);
+
+            // Projectile collisions
+            checkProjectileCollisions();
 
             // Asteroids rotation and simple collision proximity (feedback only)
             const shipPos = ship.group.position;
@@ -491,6 +644,21 @@
             const pulse = 0.85 + Math.sin(t) * 0.15;
             ship.flames.forEach(f => { f.scale.set(pulse, pulse, pulse); });
 
+            // Engine trails: spawn behind thrusters based on speed
+            if (spd > 2) {
+                const dir = new THREE.Vector3(1,0,0).applyQuaternion(ship.group.quaternion).normalize();
+                for (let i = 0; i < ship.flames.length; i++) {
+                    const worldPos = ship.flames[i].getWorldPosition(new THREE.Vector3());
+                    // Spawn rate scales with speed
+                    if (Math.random() < Math.min(0.2 + spd * 0.01, 0.6)) {
+                        spawnTrailAt(worldPos, dir, spd);
+                    }
+                }
+            }
+
+            updateTrails(dt);
+            updateExplosions(dt);
+
             if (useComposer && composer) {
                 composer.render();
             } else {
@@ -499,6 +667,11 @@
             requestAnimationFrame(animate);
         }
         animate();
+
+        // Ensure audio starts on first interaction
+        renderer.domElement.addEventListener('click', () => {
+            initAudio();
+        }, { once: true });
     </script>
 </body>
 </html>
